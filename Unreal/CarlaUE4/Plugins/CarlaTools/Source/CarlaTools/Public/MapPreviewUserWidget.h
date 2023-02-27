@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "HAL/Runnable.h"
 #include "MapPreviewUserWidget.generated.h"
 
 class FSocket;
@@ -12,46 +13,54 @@ class UTexture2D;
 UCLASS()
 class CARLATOOLS_API UMapPreviewUserWidget : public UUserWidget
 {
-	GENERATED_BODY()
+  GENERATED_BODY()
 
 private:
-	FSocket* Socket;
+  FSocket* Socket;
 
-	bool SendStr(FString Msg);
-	FString RecvCornersLatLonCoords();
+  bool SendStr(FString Msg);
+  FString RecvCornersLatLonCoords();
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* MapTexture;
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  UTexture2D* MapTexture;
 
-	UPROPERTY(BlueprintReadOnly)
-	float TopRightLat = 0.f;
-	UPROPERTY(BlueprintReadOnly)
-	float TopRightLon = 0.f;
-	UPROPERTY(BlueprintReadOnly)
-	float BottomLeftLat = 0.f;
-	UPROPERTY(BlueprintReadOnly)
-	float BottomLeftLon = 0.f;
+  UPROPERTY(BlueprintReadOnly)
+  float TopRightLat = 0.f;
+  UPROPERTY(BlueprintReadOnly)
+  float TopRightLon = 0.f;
+  UPROPERTY(BlueprintReadOnly)
+  float BottomLeftLat = 0.f;
+  UPROPERTY(BlueprintReadOnly)
+  float BottomLeftLon = 0.f;
 
-	UFUNCTION(BlueprintCallable)
-	void ConnectToSocket(FString DatabasePath, FString StylesheetPath, int Size);
+  UFUNCTION(BlueprintCallable)
+  void ConnectToSocket(FString DatabasePath, FString StylesheetPath, int Size);
 
-	UFUNCTION(BlueprintCallable)
-	void RenderMap(FString Latitude, FString Longitude, FString Zoom);
+  UFUNCTION(BlueprintCallable)
+  void RenderMap(FString Latitude, FString Longitude, FString Zoom);
 
-	UFUNCTION(BlueprintCallable)
-	void Shutdown();
+  UFUNCTION(BlueprintCallable)
+  void Shutdown();
 
-	UFUNCTION(BlueprintCallable)
-	void CreateTexture();
+  UFUNCTION(BlueprintCallable)
+  void CreateTexture();
 
-	UFUNCTION(BlueprintCallable)
-	void OpenServer();
+  UFUNCTION(BlueprintCallable)
+  void OpenServer();
 
-	UFUNCTION(BlueprintCallable)
-	void CloseServer();
+  UFUNCTION(BlueprintCallable)
+  void CloseServer();
 
-	UFUNCTION(BlueprintCallable)
-	void UpdateLatLonCoordProperties();
-	
+  UFUNCTION(BlueprintCallable)
+  void UpdateLatLonCoordProperties();
+  
 };
+
+/*UCLASS()
+class FServerProcessRunnable : public FRunnable
+{
+public:
+  virtual uint32 Run() override;
+
+}*/

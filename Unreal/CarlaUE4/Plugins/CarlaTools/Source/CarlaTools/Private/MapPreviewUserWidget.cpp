@@ -8,7 +8,7 @@
 #endif
 
 #include "GenericPlatform/GenericPlatformMath.h"
-//#include "GenericPlatform/GenericPlatformProcess.h"
+#include "GenericPlatform/GenericPlatformProcess.h"
 #include "GenericPlatform/GenericPlatformFile.h"
 
 #include "Sockets.h"
@@ -21,6 +21,8 @@
   #include "HideWindowsPlatformTypes.h"
 #endif
 
+#include "Async/Async.h"
+#include "Async/Future.h"
 #include "Engine/Texture2D.h"
 #include "Containers/ResourceArray.h"
 #include "Containers/UnrealString.h"
@@ -33,8 +35,17 @@
 #include "Misc/Paths.h"
 
 
+THIRD_PARTY_INCLUDES_START
+#if PLATFORM_WINDOWS
+  #include "AllowWindowsPlatformTypes.h"
+#endif
+#include <boost/process.hpp>
+#if PLATFORM_WINDOWS
+  #include "HideWindowsPlatformTypes.h"
+#endif
+THIRD_PARTY_INCLUDES_END
 
-
+namespace BoostProcess = boost::process;
 
 //#include "Unix/UnixPlatformProcess.h"
 
@@ -164,6 +175,57 @@ void UMapPreviewUserWidget::OpenServer()
       nullptr,  // directory to place after running the program
       nullptr   // redirection pipe
   );*/
+  //TUniquePtr<FServerProcessRunnable> ServerRunnable =  MakeUnique<FServerProcessRunnable>();
+  //FRunnableThread* ServerThread = FRunnableThread::Create(*ServerRunnable, TEXT("ServerRunnable"));
+
+  TFuture<void> ServerFuture = Async(EAsyncExecution::Thread, 
+      [](){
+        //FGenericPlatformProcess:Sleep(5);
+        UE_LOG(LogTemp, Error, TEXT("Hello from the future!"));
+
+        BoostProcess::ipstream pipe_stream;
+
+        BoostProcess::child ChildProcess = BoostProcess::child("C:\\carla\\Build\\osm-world-renderer-visualstudio\\Release\\osm-world-renderer.exe", BoostProcess::std_out > pipe_stream);
+
+        std::string line;
+        while (ChildProcess.running() && std::getline(pipe_stream, line))
+        {
+            UE_LOG(LogTemp, Display, TEXT("%s"), *FString(line.c_str())); // write the output to the Unreal console
+        }
+      }
+  );
+
+  //#if PLATFORM_WINDOWS
+  /*FPlatformProcess::CreateProc(
+      TEXT("C:\\carla\\Build\\osm-world-renderer-visualstudio\\Release\\osm-world-renderer.exe"), 
+      nullptr,  // Args
+      true,     // if true process will have its own window
+      false,     // if true it will be minimized
+      false,    // if true it will be hidden in task bar
+      nullptr,  // filled with PID
+      0,        // priority
+      nullptr,  // directory to place after running the program
+      nullptr   // redirection pipe
+  );*/
+    //BoostProcess::child ChildProcess = BoostProcess::child("C:\\carla\\Build\\osm-world-renderer-visualstudio\\Release\\osm-world-renderer.exe");
+    // auto ChildPid = ChildProcess.get_id();
+    //HANDLE process_handle = ChildProcess.native_handle();
+    //DWORD ChildPid = GetProcessId(process_handle);
+
+    /*if(ChildPid)
+    {
+      UE_LOG(LogTemp, Log, TEXT("Child PID = %d"), ChildPid);
+    }
+    else
+    {
+      UE_LOG(LogTemp, Error, TEXT("NO PID for CHild Process"));
+    }*/
+
+  //#endif //PLATFORM_WINDOWS
+  
+  //BoostProcess::process_handle Handle = ChildProcess.native_handle();
+
+  //pid_t pid = getpid(native);
 
 }
 
@@ -209,3 +271,34 @@ void UMapPreviewUserWidget::UpdateLatLonCoordProperties()
   BottomLeftLat = FCString::Atof(*CoordsArray[2]);
   BottomLeftLon = FCString::Atof(*CoordsArray[3]);
 }
+
+/*uint32 FServerProcessRunnable::Run()
+{
+   #if PLATFORM_WINDOWS
+  /*FPlatformProcess::CreateProc(
+      TEXT("C:\\carla\\Build\\osm-world-renderer-visualstudio\\Release\\osm-world-renderer.exe"), 
+      nullptr,  // Args
+      true,     // if true process will have its own window
+      false,     // if true it will be minimized
+      false,    // if true it will be hidden in task bar
+      nullptr,  // filled with PID
+      0,        // priority
+      nullptr,  // directory to place after running the program
+      nullptr   // redirection pipe
+  );*
+    BoostProcess::child ChildProcess = BoostProcess::child("C:\\carla\\Build\\osm-world-renderer-visualstudio\\Release\\osm-world-renderer.exe");
+    // auto ChildPid = ChildProcess.get_id();
+    //HANDLE process_handle = ChildProcess.native_handle();
+    //DWORD ChildPid = GetProcessId(process_handle);
+
+    /*if(ChildPid)
+    {
+      UE_LOG(LogTemp, Log, TEXT("Child PID = %d"), ChildPid);
+    }
+    else
+    {
+      UE_LOG(LogTemp, Error, TEXT("NO PID for CHild Process"));
+    }*
+
+  #endif //PLATFORM_WINDOWS
+}*/
