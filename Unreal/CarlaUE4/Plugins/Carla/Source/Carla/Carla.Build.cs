@@ -101,9 +101,9 @@ public class Carla : ModuleRules
         "Json",
         "JsonUtilities",
         "Landscape",
-        // "PhysX",
-        // "PhysXVehicles",
-        // "PhysXVehicleLib",
+        "PhysX",
+        "PhysXVehicles",
+        "PhysXVehicleLib",
         "Slate",
         "SlateCore",
         "PhysicsCore"
