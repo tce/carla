@@ -9,7 +9,7 @@ public class CarlaTools : ModuleRules
   bool UsingHoudini = true;
   private bool IsWindows(ReadOnlyTargetRules Target)
   {
-    return (Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32);
+    return Target.Platform == UnrealTargetPlatform.Win64;
   }
 
 	public CarlaTools(ReadOnlyTargetRules Target) : base(Target)
@@ -65,7 +65,6 @@ public class CarlaTools : ModuleRules
 				"Foliage",
 				"FoliageEdit",
 				"Carla",
-				"PhysXVehicles",
         "Json",
         "JsonUtilities",
         "Networking",

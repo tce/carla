@@ -11,7 +11,7 @@ public class Carla : ModuleRules
   bool UsingPytorch = false;
   private bool IsWindows(ReadOnlyTargetRules Target)
   {
-    return (Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32);
+    return Target.Platform == UnrealTargetPlatform.Win64;
   }
 
   public Carla(ReadOnlyTargetRules Target) : base(Target)
@@ -101,9 +101,9 @@ public class Carla : ModuleRules
         "Json",
         "JsonUtilities",
         "Landscape",
-        "PhysX",
-        "PhysXVehicles",
-        "PhysXVehicleLib",
+        // "PhysX",
+        // "PhysXVehicles",
+        // "PhysXVehicleLib",
         "Slate",
         "SlateCore",
         "PhysicsCore"
