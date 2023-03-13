@@ -107,7 +107,7 @@ command -v autopep8 >/dev/null 2>&1 || {
 # ==============================================================================
 
 UNCRUSTIFY_CONFIG=${CARLA_BUILD_TOOLS_FOLDER}/uncrustify.cfg
-UNCRUSTIFY_UNREAL_ENGINE_CONFIG=${CARLA_BUILD_TOOLS_FOLDER}/uncrustify-ue4.cfg
+UNCRUSTIFY_UNREAL_ENGINE_CONFIG=${CARLA_BUILD_TOOLS_FOLDER}/uncrustify-unreal.cfg
 UNCRUSTIFY_COMMAND="${UNCRUSTIFY} --no-backup --replace"
 
 AUTOPEP8_COMMAND="autopep8 --jobs 0 --in-place -a"
