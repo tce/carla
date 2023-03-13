@@ -107,7 +107,7 @@ command -v autopep8 >/dev/null 2>&1 || {
 # ==============================================================================
 
 UNCRUSTIFY_CONFIG=${CARLA_BUILD_TOOLS_FOLDER}/uncrustify.cfg
-UNCRUSTIFY_UE4_CONFIG=${CARLA_BUILD_TOOLS_FOLDER}/uncrustify-ue4.cfg
+UNCRUSTIFY_UNREAL_ENGINE_CONFIG=${CARLA_BUILD_TOOLS_FOLDER}/uncrustify-ue4.cfg
 UNCRUSTIFY_COMMAND="${UNCRUSTIFY} --no-backup --replace"
 
 AUTOPEP8_COMMAND="autopep8 --jobs 0 --in-place -a"
@@ -124,9 +124,9 @@ elif [[ -f ${PRETTIFY_FILE} ]] ; then
   if [[ ${PRETTIFY_FILE} == *.py ]] ; then
     log "autopep8 ${PRETTIFY_FILE}"
     ${AUTOPEP8_COMMAND} ${PRETTIFY_FILE}
-  elif [[ ${PRETTIFY_FILE} == *Unreal/CarlaUE4/* ]] ; then
-    log "uncrustify for UE4 ${PRETTIFY_FILE}"
-    ${UNCRUSTIFY_COMMAND} -c ${UNCRUSTIFY_UE4_CONFIG} ${PRETTIFY_FILE}
+  elif [[ ${PRETTIFY_FILE} == *Unreal/CarlaUnreal/* ]] ; then
+    log "uncrustify for UE ${PRETTIFY_FILE}"
+    ${UNCRUSTIFY_COMMAND} -c ${UNCRUSTIFY_UNREAL_ENGINE_CONFIG} ${PRETTIFY_FILE}
   else
     log "uncrustify ${PRETTIFY_FILE}"
     ${UNCRUSTIFY_COMMAND} -c ${UNCRUSTIFY_CONFIG} ${PRETTIFY_FILE}

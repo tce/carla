@@ -47,7 +47,7 @@ class Scenario(object):
         self.sensor_queue = Queue()
 
         self.reload_world(settings, spectator_tr)
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
 
         # Init timestamp
@@ -87,7 +87,7 @@ class Scenario(object):
             self.reset_spectator(spectator_tr)
 
         self.client.reload_world(False)
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
 
     def reset_spectator(self, spectator_tr):

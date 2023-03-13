@@ -8,11 +8,11 @@
 
 #include "carla/MsgPack.h"
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 #include <compiler/enable-ue4-macros.h>
 #include "Carla/Vehicle/VehicleLightState.h"
 #include <compiler/disable-ue4-macros.h>
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
 namespace carla {
 namespace rpc {
@@ -53,7 +53,7 @@ namespace rpc {
     VehicleLightState(flag_type light_state)
       : light_state(light_state) {}
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     VehicleLightState(const FVehicleLightState &InLightState) {
       light_state = static_cast<flag_type>(LightState::None);
@@ -86,7 +86,7 @@ namespace rpc {
       return Lights;
     }
 
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     /// Returns the current light state as an enum type
     LightState GetLightStateEnum() const {

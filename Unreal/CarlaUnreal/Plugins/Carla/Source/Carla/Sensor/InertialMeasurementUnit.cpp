@@ -101,7 +101,7 @@ const carla::geom::Vector3D AInertialMeasurementUnit::ComputeGyroscopeNoise(
 carla::geom::Vector3D AInertialMeasurementUnit::ComputeAccelerometer(
     const float DeltaTime)
 {
-  // Used to convert from UE4's cm to meters
+  // Used to convert from (UE's) cm to meters
   constexpr float TO_METERS = 1e-2;
   // Earth's gravitational acceleration is approximately 9.81 m/s^2
   constexpr float GRAVITY = 9.81f;

@@ -149,7 +149,7 @@ namespace rpc {
       return !(*this != rhs);
     }
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     VehiclePhysicsControl(const FVehiclePhysicsControl &Control) {
       // Engine Setup

@@ -10,11 +10,11 @@
 
 #include <cstdint>
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 #include <compiler/enable-ue4-macros.h>
 #include "Math/Color.h"
 #include <compiler/disable-ue4-macros.h>
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
 namespace carla {
 namespace rpc {
@@ -44,7 +44,7 @@ namespace rpc {
       return !(*this == rhs);
     }
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     FloatColor(const FColor &color)
       : FloatColor(color.R / 255.f, color.G / 255.f, color.B / 255.f, color.A / 255.f) {}
@@ -64,7 +64,7 @@ namespace rpc {
       return FLinearColor{ r, g, b, a };
     }
 
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     MSGPACK_DEFINE_ARRAY(r, g, b, a);
   };

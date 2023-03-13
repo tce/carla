@@ -142,10 +142,10 @@ namespace geom {
     }
 
     // =========================================================================
-    // -- Conversions to UE4 types ---------------------------------------------
+    // -- Conversions to Unreal Engine types ---------------------------------------------
     // =========================================================================
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     /// These 2 methods are explicitly deleted to avoid creating them by other users,
     /// unlike locations, some vectors have units and some don't, by removing
@@ -167,7 +167,7 @@ namespace geom {
       return FVector{x, y, z};
     }
 
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     // =========================================================================
     /// @todo The following is copy-pasted from MSGPACK_DEFINE_ARRAY.

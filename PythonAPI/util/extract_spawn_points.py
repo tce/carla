@@ -32,7 +32,7 @@ def extract(args):
 
         if not _map.get_spawn_points():
             logging.info('There are no spawn points available in your map/town.')
-            logging.info('Please add some Vehicle Spawn Point to your UE4 scene.')
+            logging.info('Please add some Vehicle Spawn Point to your UE5 scene.')
             sys.exit(1)
         spawn_points = _map.get_spawn_points()
         with open(args.output_dir + "/spawn_points.csv", "w", encoding='utf8') as file:

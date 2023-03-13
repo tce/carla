@@ -186,7 +186,7 @@ def tutorial(args):
             # Transform the points from world space to camera space.
             sensor_points = np.dot(world_2_camera, world_points)
 
-            # New we must change from UE4's coordinate system to an "standard"
+            # New we must change from UE5's coordinate system to an "standard"
             # camera coordinate system (the same used by OpenCV):
 
             # ^ z                       . z

@@ -3,11 +3,11 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class CarlaUE4Target : TargetRules
+public class CarlaUnrealTarget : TargetRules
 {
-	public CarlaUE4Target(TargetInfo Target) : base(Target)
+	public CarlaUnrealTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		ExtraModuleNames.Add("CarlaUE4");
+		ExtraModuleNames.Add("CarlaUnreal");
 	}
 }

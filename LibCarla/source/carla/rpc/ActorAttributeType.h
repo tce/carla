@@ -23,7 +23,7 @@ namespace rpc {
   };
 
   // Serialization of this class is in ActorAttribute.h, to reduce dependencies
-  // since this file is directly included in UE4 code.
+  // since this file is directly included in Unreal Engine code.
 
 } // namespace rpc
 } // namespace carla

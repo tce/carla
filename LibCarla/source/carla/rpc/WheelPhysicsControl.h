@@ -67,7 +67,7 @@ namespace rpc {
     bool operator==(const WheelPhysicsControl &rhs) const {
       return !(*this != rhs);
     }
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     WheelPhysicsControl(const FWheelPhysicsControl &Wheel)
       : tire_friction(Wheel.TireFriction),

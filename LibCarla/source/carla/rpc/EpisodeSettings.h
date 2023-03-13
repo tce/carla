@@ -9,11 +9,11 @@
 #include "carla/MsgPack.h"
 #include "carla/MsgPackAdaptors.h"
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 #include <compiler/enable-ue4-macros.h>
 #include "Carla/Settings/EpisodeSettings.h"
 #include <compiler/disable-ue4-macros.h>
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
 #include <boost/optional.hpp>
 
@@ -103,10 +103,10 @@ namespace rpc {
     }
 
     // =========================================================================
-    // -- Conversions to UE4 types ---------------------------------------------
+    // -- Conversions to Unreal Engine types ---------------------------------------------
     // =========================================================================
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     EpisodeSettings(const FEpisodeSettings &Settings)
       : EpisodeSettings(
@@ -144,7 +144,7 @@ namespace rpc {
       return Settings;
     }
 
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
   };
 
 } // namespace rpc

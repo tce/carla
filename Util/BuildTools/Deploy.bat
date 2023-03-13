@@ -42,7 +42,7 @@ for /f %%i in ('git describe --tags --dirty --always') do set REPOSITORY_TAG=%%i
 if not defined REPOSITORY_TAG goto error_carla_version
 
 rem Last package data
-set CARLA_DIST_FOLDER=%~dp0%\Build\UE4Carla
+set CARLA_DIST_FOLDER=%~dp0%\Build\CarlaUnreal
 set LATEST_PACKAGE=CARLA_%REPOSITORY_TAG%.zip
 set LATEST_PACKAGE_PATH=%CARLA_DIST_FOLDER%\%LATEST_PACKAGE%
 

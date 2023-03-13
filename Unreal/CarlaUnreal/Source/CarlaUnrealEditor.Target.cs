@@ -3,11 +3,11 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class CarlaUE4EditorTarget : TargetRules
+public class CarlaUnrealEditorTarget : TargetRules
 {
-	public CarlaUE4EditorTarget(TargetInfo Target) : base(Target)
+	public CarlaUnrealEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		ExtraModuleNames.Add("CarlaUE4");
+		ExtraModuleNames.Add("CarlaUnreal");
 	}
 }

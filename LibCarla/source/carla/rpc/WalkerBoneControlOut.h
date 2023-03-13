@@ -11,11 +11,11 @@
 #include "carla/rpc/String.h"
 #include "carla/rpc/Transform.h"
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 #include <compiler/enable-ue4-macros.h>
 #include "Carla/Walker/WalkerBoneControlOut.h"
 #include <compiler/disable-ue4-macros.h>
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
 #include <vector>
 

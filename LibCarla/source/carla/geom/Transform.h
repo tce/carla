@@ -11,11 +11,11 @@
 #include "carla/geom/Math.h"
 #include "carla/geom/Rotation.h"
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 #include <compiler/enable-ue4-macros.h>
 #include "Math/Transform.h"
 #include <compiler/disable-ue4-macros.h>
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
 namespace carla {
 namespace geom {
@@ -148,10 +148,10 @@ namespace geom {
     }
 
     // =========================================================================
-    // -- Conversions to UE4 types ---------------------------------------------
+    // -- Conversions to Unreal Engine types ---------------------------------------------
     // =========================================================================
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     Transform(const FTransform &transform)
       : Transform(Location(transform.GetLocation()), Rotation(transform.Rotator())) {}
@@ -161,7 +161,7 @@ namespace geom {
       return FTransform{FRotator(rotation), FVector(location), scale};
     }
 
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
   };
 
 } // namespace geom

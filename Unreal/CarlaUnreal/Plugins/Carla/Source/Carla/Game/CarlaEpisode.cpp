@@ -131,7 +131,7 @@ static FString BuildRecastBuilderFile()
   const FString RecastToolName = "RecastBuilder";
 #endif // PLATFORM_WINDOWS
 
-  // Define path depending on the UE4 build type (Package or Editor)
+  // Define path depending on the Unreal Engine build type (Package or Editor)
 #if UE_BUILD_SHIPPING
   const FString AbsoluteRecastBuilderPath = FPaths::ConvertRelativePathToFull(
       FPaths::RootDir() + "Tools/" + RecastToolName);

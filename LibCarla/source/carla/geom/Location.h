@@ -10,11 +10,11 @@
 #include "carla/geom/Vector3DInt.h"
 #include "carla/geom/Math.h"
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 #include <compiler/enable-ue4-macros.h>
 #include "Math/Vector.h"
 #include <compiler/disable-ue4-macros.h>
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
 namespace carla {
 namespace geom {
@@ -82,10 +82,10 @@ namespace geom {
     }
 
     // =========================================================================
-    // -- Conversions to UE4 types ---------------------------------------------
+    // -- Conversions to Unreal Engine types ---------------------------------------------
     // =========================================================================
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     Location(const FVector &vector) // from centimeters to meters.
       : Location(1e-2f * vector.X, 1e-2f * vector.Y, 1e-2f * vector.Z) {}
@@ -94,7 +94,7 @@ namespace geom {
       return FVector{1e2f * x, 1e2f * y, 1e2f * z}; // from meters to centimeters.
     }
 
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
   };
 
 } // namespace geom

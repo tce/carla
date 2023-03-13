@@ -78,7 +78,7 @@ class Scenario(object):
         self.wait(5)
 
         self.client.reload_world(False)
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
 
         self.wait(5)
@@ -398,7 +398,7 @@ class TestCollisionDeterminism(SmokeTest):
 
         # Loading Town03 for test
         self.client.load_world("Town03")
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
 
         try:
@@ -424,7 +424,7 @@ class TestCollisionDeterminism(SmokeTest):
 
         # Loading Town03 for test
         self.client.load_world("Town03")
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
 
         try:
@@ -450,7 +450,7 @@ class TestCollisionDeterminism(SmokeTest):
 
         # Loading Town03 for test
         self.client.load_world("Town03")
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
 
         try:
@@ -476,7 +476,7 @@ class TestCollisionDeterminism(SmokeTest):
 
         # Loading Town03 for test
         self.client.load_world("Town03")
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
 
         try:

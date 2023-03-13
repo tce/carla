@@ -8,11 +8,11 @@
 
 #include "carla/MsgPack.h"
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 #include <compiler/enable-ue4-macros.h>
 #include "Carla/Weather/WeatherParameters.h"
 #include <compiler/disable-ue4-macros.h>
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
 namespace carla {
 namespace rpc {
@@ -96,7 +96,7 @@ namespace rpc {
     float rayleigh_scattering_scale = 0.0331f;
     float dust_storm = 0.0f;
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     WeatherParameters(const FWeatherParameters &Weather)
       : cloudiness(Weather.Cloudiness),
@@ -133,7 +133,7 @@ namespace rpc {
       return Weather;
     }
 
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     bool operator!=(const WeatherParameters &rhs) const {
       return

@@ -37,7 +37,7 @@ namespace rpc {
     bool operator==(const GearPhysicsControl &rhs) const {
       return !(*this != rhs);
     }
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     GearPhysicsControl(const FGearPhysicsControl &Gear)
       : ratio(Gear.Ratio),

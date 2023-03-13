@@ -2252,4 +2252,4 @@
 #pragma pop_macro("RETURN_FALSE_ON_FAIL")
 #pragma pop_macro("PI")
 
-#undef LIBCARLA_INCLUDED_FROM_UE4
+#undef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE

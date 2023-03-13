@@ -61,7 +61,7 @@ public:
 private:
 
   /// The following data structures are declared as class members and with
-  /// UPROPERTY macro to avoid UE4 to garbage collect them.
+  /// UPROPERTY macro to avoid unwanted GC.
 
   /// Loaded assets from any object library
   UPROPERTY()

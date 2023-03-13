@@ -4,14 +4,14 @@
 # -- Parse arguments -----------------------------------------------------------
 # ==============================================================================
 
-DOC_STRING="Build and launch CarlaUE4."
+DOC_STRING="Build and launch CarlaUnreal."
 
 USAGE_STRING="Usage: $0 [-h|--help] [--build] [--rebuild] [--launch] [--clean] [--hard-clean] [--opengl]"
 
 REMOVE_INTERMEDIATE=false
 HARD_CLEAN=false
-BUILD_CARLAUE4=false
-LAUNCH_UE4_EDITOR=false
+BUILD_CARLA_UNREAL=false
+LAUNCH_UNREAL_EDITOR=false
 USE_CARSIM=false
 USE_CHRONO=false
 USE_PYTORCH=false
@@ -34,14 +34,14 @@ while [[ $# -gt 0 ]]; do
       GDB="gdb --args";
       shift ;;
     --build )
-      BUILD_CARLAUE4=true;
+      BUILD_CARLA_UNREAL=true;
       shift ;;
     --rebuild )
       REMOVE_INTERMEDIATE=true;
-      BUILD_CARLAUE4=true;
+      BUILD_CARLA_UNREAL=true;
       shift ;;
     --launch )
-      LAUNCH_UE4_EDITOR=true;
+      LAUNCH_UNREAL_EDITOR=true;
       shift ;;
     --clean )
       REMOVE_INTERMEDIATE=true;
@@ -87,14 +87,14 @@ else
   log "Using Unreal Engine at '$CARLA_UE_ROOT'"
 fi
 
-if ! { ${REMOVE_INTERMEDIATE} || ${BUILD_CARLAUE4} || ${LAUNCH_UE4_EDITOR}; }; then
+if ! { ${REMOVE_INTERMEDIATE} || ${BUILD_CARLA_UNREAL} || ${LAUNCH_UNREAL_EDITOR}; }; then
   fatal_error "Nothing selected to be done."
 fi
 
-pushd "${CARLAUE4_ROOT_FOLDER}" >/dev/null
+pushd "${CARLA_UNREAL_ROOT_FOLDER}" >/dev/null
 
 # ==============================================================================
-# -- Clean CarlaUE4 ------------------------------------------------------------
+# -- Clean CarlaUnreal ------------------------------------------------------------
 # ==============================================================================
 
 if ${HARD_CLEAN} ; then
@@ -105,7 +105,7 @@ if ${HARD_CLEAN} ; then
 
   log "Doing a \"hard\" clean of the Unreal Engine project."
 
-  make CarlaUE4Editor ARGS=-clean
+  make CarlaUnrealEditor ARGS=-clean
 
 fi
 
@@ -113,15 +113,15 @@ if ${REMOVE_INTERMEDIATE} ; then
 
   log "Cleaning intermediate files and folders."
 
-  UE4_INTERMEDIATE_FOLDERS="Binaries Build Intermediate DerivedDataCache"
+  UNREAL_ENGINE_INTERMEDIATE_FOLDERS="Binaries Build Intermediate DerivedDataCache"
 
-  rm -Rf ${UE4_INTERMEDIATE_FOLDERS}
+  rm -Rf ${UNREAL_ENGINE_INTERMEDIATE_FOLDERS}
 
   rm -f Makefile
 
-  pushd "${CARLAUE4_PLUGIN_ROOT_FOLDER}" >/dev/null
+  pushd "${CARLA_UNREAL_PLUGIN_ROOT_FOLDER}" >/dev/null
 
-  rm -Rf ${UE4_INTERMEDIATE_FOLDERS}
+  rm -Rf ${UNREAL_ENGINE_INTERMEDIATE_FOLDERS}
 
   popd >/dev/null
 
@@ -143,17 +143,17 @@ if [[ ! -d ${HOUDINI_PLUGIN_PATH} ]] ; then
 fi
 
 # ==============================================================================
-# -- Build CarlaUE4 ------------------------------------------------------------
+# -- Build CarlaUnreal ------------------------------------------------------------
 # ==============================================================================
 
-if ${BUILD_CARLAUE4} ; then
+if ${BUILD_CARLA_UNREAL} ; then
 
   OPTIONAL_MODULES_TEXT=""
   if ${USE_CARSIM} ; then
-    python ${PWD}/../../Util/BuildTools/enable_carsim_to_uproject.py -f="CarlaUE4.uproject" -e
+    python ${PWD}/../../Util/BuildTools/enable_carsim_to_uproject.py -f="CarlaUnreal.uproject" -e
     OPTIONAL_MODULES_TEXT="CarSim ON"$'\n'"${OPTIONAL_MODULES_TEXT}"
   else
-    python ${PWD}/../../Util/BuildTools/enable_carsim_to_uproject.py -f="CarlaUE4.uproject"
+    python ${PWD}/../../Util/BuildTools/enable_carsim_to_uproject.py -f="CarlaUnreal.uproject"
     OPTIONAL_MODULES_TEXT="CarSim OFF"$'\n'"${OPTIONAL_MODULES_TEXT}"
   fi
   if ${USE_CHRONO} ; then
@@ -173,29 +173,29 @@ if ${BUILD_CARLAUE4} ; then
     # This command fails sometimes but normally we can continue anyway.
     set +e
     log "Generate Unreal project files."
-    ${CARLA_UE_ROOT}/GenerateProjectFiles.sh -project="${PWD}/CarlaUE4.uproject" -game -engine -makefiles
+    ${CARLA_UE_ROOT}/GenerateProjectFiles.sh -project="${PWD}/CarlaUnreal.uproject" -game -engine -makefiles
     set -e
 
   fi
 
-  log "Build CarlaUE4 project."
-  make CarlaUE4Editor
+  log "Build CarlaUnreal project."
+  make CarlaUnrealEditor
 
   #Providing the user with the ExportedMaps folder
-  EXPORTED_MAPS="${CARLAUE4_ROOT_FOLDER}/Content/Carla/ExportedMaps"
+  EXPORTED_MAPS="${CARLA_UNREAL_ROOT_FOLDER}/Content/Carla/ExportedMaps"
   mkdir -p "${EXPORTED_MAPS}"
 
 
 fi
 
 # ==============================================================================
-# -- Launch UE4Editor ----------------------------------------------------------
+# -- Launch UnrealEditor ----------------------------------------------------------
 # ==============================================================================
 
-if ${LAUNCH_UE4_EDITOR} ; then
+if ${LAUNCH_UNREAL_EDITOR} ; then
 
-  log "Launching UE4Editor..."
-  ${GDB} ${CARLA_UE_ROOT}/Engine/Binaries/Linux/UE4Editor "${PWD}/CarlaUE4.uproject" ${RHI} ${EDITOR_FLAGS}
+  log "Launching UnrealEditor..."
+  ${GDB} ${CARLA_UE_ROOT}/Engine/Binaries/Linux/UnrealEditor "${PWD}/CarlaUnreal.uproject" ${RHI} ${EDITOR_FLAGS}
 
 else
 

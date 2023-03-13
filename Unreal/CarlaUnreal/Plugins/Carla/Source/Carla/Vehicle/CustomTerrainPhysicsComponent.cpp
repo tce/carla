@@ -1493,7 +1493,7 @@ void UCustomTerrainPhysicsComponent::TickComponent(float DeltaTime,
 
     if( MPCInstance ){
       MPCInstance->SetVectorParameterValue("PositionToUpdate", GetTileCenter(LastUpdatedPosition));
-      // We set texture radius in cm as is UE4 default measure unit
+      // We set texture radius in cm as it's UE's default measure unit
       MPCInstance->SetScalarParameterValue("TextureRadius", TextureRadius * 100);
       MPCInstance->SetScalarParameterValue("LargeTextureRadius", TextureRadius * 100);
       MPCInstance->SetScalarParameterValue("EffectMultiplayer", EffectMultiplayer);

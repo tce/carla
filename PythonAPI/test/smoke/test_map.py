@@ -25,7 +25,7 @@ class TestMap(SmokeTest):
             # ignore empty or large maps by now
             if map_name != '/Game/Carla/Maps/BaseMap/BaseMap' and map_name != '/Game/Carla/Maps/Town11/Town11' and map_name != '/Game/Carla/Maps/Town12/Town12':
                 world = self.client.load_world(map_name)
-                # workaround: give time to UE4 to clean memory after loading (old assets)
+                # workaround: give time to UE5 to clean memory after loading (old assets)
                 time.sleep(5)
                 m = world.get_map()
                 self.assertEqual(map_name.split('/')[-1], m.name.split('/')[-1])

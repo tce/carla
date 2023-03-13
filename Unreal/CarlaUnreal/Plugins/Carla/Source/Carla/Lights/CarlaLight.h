@@ -21,7 +21,7 @@
 UENUM(BlueprintType)
 enum class ELightType : uint8
 {
-  Null      = 0, // Workarround for UE4.24 issue with enums
+  Null      = 0, // Workaround for UE4.24 issue with enums
   Vehicle   = CARLA_ENUM_FROM_RPC(Vehicle)    UMETA(DisplayName = "Vehicle"),
   Street    = CARLA_ENUM_FROM_RPC(Street)     UMETA(DisplayName = "Street"),
   Building  = CARLA_ENUM_FROM_RPC(Building)   UMETA(DisplayName = "Building"),

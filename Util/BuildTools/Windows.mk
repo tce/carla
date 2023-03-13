@@ -16,14 +16,14 @@ help:
 import: server
 	@"${CARLA_BUILD_TOOLS_FOLDER}/Import.py" $(ARGS)
 
-CarlaUE4Editor: LibCarla osm2odr
-	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildCarlaUE4.bat" --build $(ARGS)
+CarlaUnrealEditor: LibCarla osm2odr
+	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildCarlaUnreal.bat" --build $(ARGS)
 
-launch: CarlaUE4Editor
-	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildCarlaUE4.bat" --launch $(ARGS)
+launch: CarlaUnrealEditor
+	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildCarlaUnreal.bat" --launch $(ARGS)
 
 launch-only:
-	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildCarlaUE4.bat" --launch $(ARGS)
+	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildCarlaUnreal.bat" --launch $(ARGS)
 
 package: PythonAPI
 	@"${CARLA_BUILD_TOOLS_FOLDER}/Package.bat" --ue-version 4.26 $(ARGS)
@@ -39,13 +39,13 @@ PythonAPI.docs:
 
 clean:
 	@"${CARLA_BUILD_TOOLS_FOLDER}/Package.bat" --clean --ue-version 4.26
-	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildCarlaUE4.bat" --clean
+	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildCarlaUnreal.bat" --clean
 	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildPythonAPI.bat" --clean
 	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildLibCarla.bat" --clean
 	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildOSM2ODR.bat" --clean
 
 rebuild: setup
-	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildCarlaUE4.bat" --rebuild
+	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildCarlaUnreal.bat" --rebuild
 	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildLibCarla.bat" --rebuild
 	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildOSM2ODR.bat" --rebuild
 	@"${CARLA_BUILD_TOOLS_FOLDER}/BuildPythonAPI.bat" --rebuild

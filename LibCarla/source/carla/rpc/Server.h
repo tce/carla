@@ -51,11 +51,11 @@ namespace rpc {
     }
 
     void SyncRunFor(time_duration duration) {
-      #ifdef LIBCARLA_INCLUDED_FROM_UE4
+      #ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
       #include <compiler/enable-ue4-macros.h>
       TRACE_CPUPROFILER_EVENT_SCOPE_STR(__FUNCTION__);
       #include <compiler/disable-ue4-macros.h>
-      #endif // LIBCARLA_INCLUDED_FROM_UE4
+      #endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
       _sync_io_context.reset();
       _sync_io_context.run_for(duration.to_chrono());
     }

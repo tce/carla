@@ -15,7 +15,7 @@ class TestSnapshot(SyncSmokeTest):
     def test_spawn_points(self):
         print("TestSnapshot.test_spawn_points")
         self.world = self.client.reload_world()
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
 
         # Check why the world settings aren't applied after a reload

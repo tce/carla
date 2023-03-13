@@ -81,7 +81,7 @@ class TestDeterminism(SmokeTest):
         tm_seed = 1
 
         self.client.load_world("Town03")
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
 
         # set setting for round 1
@@ -119,7 +119,7 @@ class TestDeterminism(SmokeTest):
 
         # reset for simulation 1
         self.client.reload_world(False)
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
         world = self.client.get_world()
         traffic_manager = self.client.get_trafficmanager(TM_PORT)
@@ -134,7 +134,7 @@ class TestDeterminism(SmokeTest):
 
         # reset for simulation 2
         self.client.reload_world(False)
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
         world = self.client.get_world()
         traffic_manager = self.client.get_trafficmanager(TM_PORT)
@@ -149,7 +149,7 @@ class TestDeterminism(SmokeTest):
 
         self.client.reload_world()
         world.apply_settings(old_settings)
-        # workaround: give time to UE4 to clean memory after loading (old assets)
+        # workaround: give time to UE5 to clean memory after loading (old assets)
         time.sleep(5)
 
         self.compare_records(record_run1, record_run2)

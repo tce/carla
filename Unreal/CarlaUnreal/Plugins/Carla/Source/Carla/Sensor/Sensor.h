@@ -122,7 +122,7 @@ private:
 
   const UCarlaEpisode *Episode = nullptr;
 
-  /// Allows the sensor to tick with the tick rate from UE4.
+  /// Allows the sensor to tick with the tick rate from UE.
   bool ReadyToTick = false;
 
   bool bClientsListening = false;

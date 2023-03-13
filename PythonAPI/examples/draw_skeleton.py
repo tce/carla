@@ -138,7 +138,7 @@ def get_screen_points(camera, K, image_w, image_h, points3d):
     # convert world points to camera space
     points_camera = np.dot(world_2_camera, points)
     
-    # New we must change from UE4's coordinate system to an "standard"
+    # New we must change from UE5's coordinate system to an "standard"
     # (x, y ,z) -> (y, -z, x)
     # and we remove the fourth component also
     points = np.array([

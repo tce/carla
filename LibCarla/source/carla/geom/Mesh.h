@@ -11,11 +11,11 @@
 #include <carla/geom/Vector3D.h>
 #include <carla/geom/Vector2D.h>
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 #include <compiler/enable-ue4-macros.h>
 #include "Util/ProceduralCustomMesh.h"
 #include <compiler/disable-ue4-macros.h>
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
 namespace carla {
 namespace geom {
@@ -153,10 +153,10 @@ namespace geom {
     friend Mesh operator+(const Mesh &lhs, const Mesh &rhs);
 
     // =========================================================================
-    // -- Conversions to UE4 types ---------------------------------------------
+    // -- Conversions to Unreal Engine types ---------------------------------------------
     // =========================================================================
 
-#ifdef LIBCARLA_INCLUDED_FROM_UE4
+#ifdef LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
     operator FProceduralCustomMesh() const {
       FProceduralCustomMesh Mesh;
@@ -215,7 +215,7 @@ namespace geom {
       return Mesh;
     }
 
-#endif // LIBCARLA_INCLUDED_FROM_UE4
+#endif // LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 
   private:
 
