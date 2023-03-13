@@ -60,28 +60,28 @@ using namespace chrono;
 using namespace chrono::vehicle;
 
 constexpr double CMTOM = 0.01;
-ChVector<> UE4LocationToChrono(const FVector& Location)
+ChVector<> UELocationToChrono(const FVector& Location)
 {
   return CMTOM*ChVector<>(Location.X, -Location.Y, Location.Z);
 }
 constexpr double MTOCM = 100;
-FVector ChronoToUE4Location(const ChVector<>& position)
+FVector ChronoToUELocation(const ChVector<>& position)
 {
   return MTOCM*FVector(position.x(), -position.y(), position.z());
 }
-ChVector<> UE4DirectionToChrono(const FVector& Location)
+ChVector<> UEDirectionToChrono(const FVector& Location)
 {
   return ChVector<>(Location.X, -Location.Y, Location.Z);
 }
-FVector ChronoToUE4Direction(const ChVector<>& position)
+FVector ChronoToUEDirection(const ChVector<>& position)
 {
   return FVector(position.x(), -position.y(), position.z());
 }
-ChQuaternion<> UE4QuatToChrono(const FQuat& Quat)
+ChQuaternion<> UEQuatToChrono(const FQuat& Quat)
 {
   return ChQuaternion<>(Quat.W, -Quat.X, Quat.Y, -Quat.Z);
 }
-FQuat ChronoToUE4Quat(const ChQuaternion<>& quat)
+FQuat ChronoToUEQuat(const ChQuaternion<>& quat)
 {
   return FQuat(-quat.e1(), quat.e2(), -quat.e3(), quat.e0());
 }
@@ -113,7 +113,7 @@ std::pair<bool, FHitResult>
 
 double UERayCastTerrain::GetHeight(const ChVector<>& loc) const
 {
-  FVector Location = ChronoToUE4Location(loc + ChVector<>(0,0,0.5)); // small offset to detect the ground properly
+  FVector Location = ChronoToUELocation(loc + ChVector<>(0,0,0.5)); // small offset to detect the ground properly
   auto point_pair = GetTerrainProperties(Location);
   if (point_pair.first)
   {
@@ -124,15 +124,15 @@ double UERayCastTerrain::GetHeight(const ChVector<>& loc) const
 }
 ChVector<> UERayCastTerrain::GetNormal(const ChVector<>& loc) const
 {
-  FVector Location = ChronoToUE4Location(loc);
+  FVector Location = ChronoToUELocation(loc);
   auto point_pair = GetTerrainProperties(Location);
   if (point_pair.first)
   {
     FVector Normal = point_pair.second.Normal;
-    auto ChronoNormal = UE4DirectionToChrono(Normal);
+    auto ChronoNormal = UEDirectionToChrono(Normal);
     return ChronoNormal;
   }
-  return UE4DirectionToChrono(FVector(0,0,1));
+  return UEDirectionToChrono(FVector(0,0,1));
 }
 float UERayCastTerrain::GetCoefficientFriction(const ChVector<>& loc) const
 {
@@ -169,8 +169,8 @@ void UChronoMovementComponent::InitializeChronoVehicle()
   // Initial location with small offset to prevent falling through the ground
   FVector VehicleLocation = CarlaVehicle->GetActorLocation() + FVector(0,0,25);
   FQuat VehicleRotation = CarlaVehicle->GetActorRotation().Quaternion();
-  auto ChronoLocation = UE4LocationToChrono(VehicleLocation);
-  auto ChronoRotation = UE4QuatToChrono(VehicleRotation);
+  auto ChronoLocation = UELocationToChrono(VehicleLocation);
+  auto ChronoRotation = UEQuatToChrono(VehicleRotation);
 
   // Set base path for vehicle JSON files
   vehicle::SetDataPath(carla::rpc::FromFString(BaseJSONPath));
@@ -272,8 +272,8 @@ void UChronoMovementComponent::TickComponent(float DeltaTime,
   auto VehicleRot = Vehicle->GetVehicleRot();
   double Time = Vehicle->GetSystem()->GetChTime();
 
-  FVector NewLocation = ChronoToUE4Location(VehiclePos);
-  FQuat NewRotation = ChronoToUE4Quat(VehicleRot);
+  FVector NewLocation = ChronoToUELocation(VehiclePos);
+  FQuat NewRotation = ChronoToUEQuat(VehicleRot);
   if(NewLocation.ContainsNaN() || NewRotation.ContainsNaN())
   {
     UE_LOG(LogCarla, Warning, TEXT(
@@ -304,7 +304,7 @@ FVector UChronoMovementComponent::GetVelocity() const
 {
   if (Vehicle)
   {
-    return ChronoToUE4Location(
+    return ChronoToUELocation(
         Vehicle->GetVehiclePointVelocity(ChVector<>(0,0,0)));
   }
   return FVector();
