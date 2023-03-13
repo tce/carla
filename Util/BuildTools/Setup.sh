@@ -43,9 +43,9 @@ done
 
 source $(dirname "$0")/Environment.sh
 
-export CC="$UE4_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang"
-export CXX="$UE4_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++"
-export PATH="$UE4_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin:$PATH"
+export CC="$CARLA_UE_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang"
+export CXX="$CARLA_UE_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++"
+export PATH="$CARLA_UE_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin:$PATH"
 
 CXX_TAG=c10
 
@@ -55,8 +55,8 @@ IFS="," read -r -a PY_VERSION_LIST <<< "${PY_VERSION_LIST}"
 mkdir -p ${CARLA_BUILD_FOLDER}
 pushd ${CARLA_BUILD_FOLDER} >/dev/null
 
-LLVM_INCLUDE="$UE4_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/include/c++/v1"
-LLVM_LIBPATH="$UE4_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/lib/Linux/x86_64-unknown-linux-gnu"
+LLVM_INCLUDE="$CARLA_UE_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/include/c++/v1"
+LLVM_LIBPATH="$CARLA_UE_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/lib/Linux/x86_64-unknown-linux-gnu"
 
 # ==============================================================================
 # -- Get boost includes --------------------------------------------------------
@@ -445,10 +445,10 @@ mkdir -p ${LIBCARLA_INSTALL_SERVER_FOLDER}/lib/
 cp -p ${XERCESC_SERVER_LIB} ${LIBCARLA_INSTALL_SERVER_FOLDER}/lib/
 
 # ==============================================================================
-# -- Get Eigen headers 3.1.0 (CARLA dependency) -------------------------------------
+# -- Get Eigen headers (CARLA dependency) -------------------------------------
 # ==============================================================================
 
-EIGEN_VERSION=3.1.0
+EIGEN_VERSION=3.4.0
 EIGEN_REPO=https://gitlab.com/libeigen/eigen/-/archive/${EIGEN_VERSION}/eigen-${EIGEN_VERSION}.tar.gz
 EIGEN_BASENAME=eigen-${EIGEN_VERSION}
 

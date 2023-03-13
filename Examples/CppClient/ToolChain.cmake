@@ -1,7 +1,7 @@
 message("Hello world!")    
 
-set(CC, "$ENV{UE4_ROOT}/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang")
-set(CXX, "$ENV{UE4_ROOT}/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++")
+set(CC, "$ENV{CARLA_UE_ROOT}/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang")
+set(CXX, "$ENV{CARLA_UE_ROOT}/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++")
 
 message(STATUS "COMBINED_PATH: ${CC}")
 message(STATUS "COMBINED_PATH: ${CXX}")

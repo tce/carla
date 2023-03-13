@@ -40,7 +40,7 @@ rem -- Get Eigen (Chrono dependency) -------------------------------------------
 rem ============================================================================
 
 set EIGEN_VERSION=3.3.7
-set EIGEN_REPO=https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.zip
+set EIGEN_REPO=https://gitlab.com/libeigen/eigen/-/archive/%EIGEN_VERSION%/eigen-%EIGEN_VERSION%.zip
 set EIGEN_BASENAME=eigen-%EIGEN_VERSION%
 
 set EIGEN_SRC_DIR=%BUILD_DIR%%EIGEN_BASENAME%

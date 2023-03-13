@@ -91,15 +91,15 @@ if not "%1"=="" (
 )
 
 rem Get Unreal Engine root path
-if not defined UE4_ROOT (
+if not defined CARLA_UE_ROOT (
     set KEY_NAME="HKEY_LOCAL_MACHINE\SOFTWARE\EpicGames\Unreal Engine"
     set VALUE_NAME=InstalledDirectory
     for /f "usebackq tokens=1,2,*" %%A in (`reg query !KEY_NAME! /s /reg:64`) do (
         if "%%A" == "!VALUE_NAME!" (
-            set UE4_ROOT=%%C
+            set CARLA_UE_ROOT=%%C
         )
     )
-    if not defined UE4_ROOT goto error_unreal_no_found
+    if not defined CARLA_UE_ROOT goto error_unreal_no_found
 )
 
 rem Set packaging paths
@@ -128,7 +128,7 @@ if %DO_PACKAGE%==true (
 
     if not exist "!BUILD_FOLDER!" mkdir "!BUILD_FOLDER!"
 
-    call "%UE4_ROOT%\Engine\Build\BatchFiles\Build.bat"^
+    call "%CARLA_UE_ROOT%\Engine\Build\BatchFiles\Build.bat"^
         CarlaUE4Editor^
         Win64^
         Development^
@@ -138,14 +138,14 @@ if %DO_PACKAGE%==true (
 
     if errorlevel 1 goto error_build_editor
 
-    echo "%UE4_ROOT%\Engine\Build\BatchFiles\Build.bat"^
+    echo "%CARLA_UE_ROOT%\Engine\Build\BatchFiles\Build.bat"^
         CarlaUE4^
         Win64^
         %PACKAGE_CONFIG%^
         -WaitMutex^
         -FromMsBuild^
         "%ROOT_PATH%Unreal/CarlaUE4/CarlaUE4.uproject"
-    call "%UE4_ROOT%\Engine\Build\BatchFiles\Build.bat"^
+    call "%CARLA_UE_ROOT%\Engine\Build\BatchFiles\Build.bat"^
         CarlaUE4^
         Win64^
         %PACKAGE_CONFIG%^
@@ -155,7 +155,7 @@ if %DO_PACKAGE%==true (
 
     if errorlevel 1 goto error_build
 
-    echo "%UE4_ROOT%\Engine\Build\BatchFiles\RunUAT.bat"^
+    echo "%CARLA_UE_ROOT%\Engine\Build\BatchFiles\RunUAT.bat"^
         BuildCookRun^
         -nocompileeditor^
         -TargetPlatform=Win64^
@@ -171,7 +171,7 @@ if %DO_PACKAGE%==true (
         -package^
         -clientconfig=%PACKAGE_CONFIG%
 
-    call "%UE4_ROOT%\Engine\Build\BatchFiles\RunUAT.bat"^
+    call "%CARLA_UE_ROOT%\Engine\Build\BatchFiles\RunUAT.bat"^
         BuildCookRun^
         -nocompileeditor^
         -TargetPlatform=Win64^
@@ -305,7 +305,7 @@ for /f "tokens=* delims=" %%i in ("!PACKAGES!") do (
         echo   - prepare
         REM # Prepare cooking of package
         echo Prepare cooking of package: !PACKAGE_NAME!
-        call "%UE4_ROOT%/Engine/Binaries/Win64/UE4Editor.exe "^
+        call "%CARLA_UE_ROOT%/Engine/Binaries/Win64/UE4Editor.exe "^
         "%CARLAUE4_ROOT_FOLDER%/CarlaUE4.uproject"^
         -run=PrepareAssetsForCooking^
         -PackageName=!PACKAGE_NAME!^
@@ -318,7 +318,7 @@ for /f "tokens=* delims=" %%i in ("!PACKAGES!") do (
         for /f "tokens=*" %%a in (%MAP_LIST_FILE%) do (
             REM # Cook maps
             echo Cooking: %%a
-            call "%UE4_ROOT%/Engine/Binaries/Win64/UE4Editor.exe "^
+            call "%CARLA_UE_ROOT%/Engine/Binaries/Win64/UE4Editor.exe "^
             "%CARLAUE4_ROOT_FOLDER%/CarlaUE4.uproject"^
             -run=cook^
             -map="%%a"^
