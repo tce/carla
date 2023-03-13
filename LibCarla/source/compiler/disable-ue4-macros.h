@@ -4,8 +4,8 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#ifndef LIBCARLA_INCLUDED_DISABLE_UE4_MACROS_HEADER
-#define LIBCARLA_INCLUDED_DISABLE_UE4_MACROS_HEADER
+#ifndef LIBCARLA_INCLUDED_DISABLE_UNREAL_ENGINE_MACROS_HEADER
+#define LIBCARLA_INCLUDED_DISABLE_UNREAL_ENGINE_MACROS_HEADER
 
 #include "Carla.h"
 
@@ -23,7 +23,7 @@
 #  error LibCarla should be compiled with -DLIBCARLA_NO_EXCEPTIONS when used inside Unreal Engine.
 #endif // LIBCARLA_NO_EXCEPTIONS
 
-#endif // LIBCARLA_INCLUDED_DISABLE_UE4_MACROS_HEADER
+#endif // LIBCARLA_INCLUDED_DISABLE_UNREAL_ENGINE_MACROS_HEADER
 
 #define LIBCARLA_INCLUDED_FROM_UNREAL_ENGINE
 

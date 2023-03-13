@@ -362,7 +362,7 @@ void BackwardsConvertCm2ToM2NW(float& val, float defaultValue)
 void UWheeledVehicleMovementComponentNW::Serialize(FArchive& Ar)
 {
 	Super::Serialize(Ar);
-	if (Ar.IsLoading() && Ar.UE4Ver() < VER_UE4_VEHICLES_UNIT_CHANGE)
+	if (Ar.IsLoading() && Ar.UEVer() < VER_UE4_VEHICLES_UNIT_CHANGE)
 	{
 		PxVehicleEngineData DefEngineData;
 		const float DefaultRPM = OmegaToRPM(DefEngineData.mMaxOmega);
@@ -371,7 +371,7 @@ void UWheeledVehicleMovementComponentNW::Serialize(FArchive& Ar)
 		EngineSetup.MaxRPM = EngineSetup.MaxRPM != DefaultRPM ? OmegaToRPM(EngineSetup.MaxRPM) : DefaultRPM;	//need to convert from rad/s to RPM
 	}
 
-	if (Ar.IsLoading() && Ar.UE4Ver() < VER_UE4_VEHICLES_UNIT_CHANGE2)
+	if (Ar.IsLoading() && Ar.UEVer() < VER_UE4_VEHICLES_UNIT_CHANGE2)
 	{
 		PxVehicleEngineData DefEngineData;
 		PxVehicleClutchData DefClutchData;

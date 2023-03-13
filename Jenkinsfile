@@ -303,7 +303,7 @@ pipeline
                             }
                             post {
                                 always {
-                                    archiveArtifacts 'Build/UE4Carla/*.zip'
+                                    archiveArtifacts 'Build/CarlaUnreal/*.zip'
                                 }
                             }
                         }
