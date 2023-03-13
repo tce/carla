@@ -204,14 +204,14 @@ def invoke_commandlet(name, arguments):
 
     if os.name == "nt":
         sys_name = "Win64"
-        editor_path = "%s/Engine/Binaries/%s/UE4Editor" % (ue4_path, sys_name)
+        editor_path = "%s/Engine/Binaries/%s/UnrealEditor" % (ue4_path, sys_name)
         command = [editor_path, uproject_path, run]
         command.extend(arguments)
         print("Commandlet:", command)
         subprocess.check_call(command, shell=True)
     elif os.name == "posix":
         sys_name = "Linux"
-        editor_path = "%s/Engine/Binaries/%s/UE4Editor" % (ue4_path, sys_name)
+        editor_path = "%s/Engine/Binaries/%s/UnrealEditor" % (ue4_path, sys_name)
         full_command = "%s %s %s %s" % (editor_path, uproject_path, run, " ".join(arguments))
         print("Commandlet:", full_command)
         subprocess.call([full_command], shell=True)
