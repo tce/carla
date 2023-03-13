@@ -143,7 +143,7 @@ void UChronoMovementComponent::BeginPlay()
 {
   Super::BeginPlay();
 
-  DisableUE4VehiclePhysics();
+  DisableUEVehiclePhysics();
 
   // // // Chrono System
   Sys.Set_G_acc(ChVector<>(0, 0, -9.81));
@@ -351,7 +351,7 @@ void UChronoMovementComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void UChronoMovementComponent::DisableChronoPhysics()
 {
   this->SetComponentTickEnabled(false);
-  EnableUE4VehiclePhysics(true);
+  EnableUEVehiclePhysics(true);
   CarlaVehicle->OnActorHit.RemoveDynamic(this, &UChronoMovementComponent::OnVehicleHit);
   CarlaVehicle->GetMesh()->OnComponentBeginOverlap.RemoveDynamic(
       this, &UChronoMovementComponent::OnVehicleOverlap);

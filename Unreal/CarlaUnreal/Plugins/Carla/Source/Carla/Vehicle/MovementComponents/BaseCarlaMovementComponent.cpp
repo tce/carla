@@ -50,7 +50,7 @@ float UBaseCarlaMovementComponent::GetVehicleForwardSpeed() const
   return 0.f;
 }
 
-void UBaseCarlaMovementComponent::DisableUE4VehiclePhysics()
+void UBaseCarlaMovementComponent::DisableUEVehiclePhysics()
 {
   if(!CarlaVehicle)
   {
@@ -67,7 +67,7 @@ void UBaseCarlaMovementComponent::DisableUE4VehiclePhysics()
   }
 }
 
-void UBaseCarlaMovementComponent::EnableUE4VehiclePhysics(bool bResetVelocity)
+void UBaseCarlaMovementComponent::EnableUEVehiclePhysics(bool bResetVelocity)
 {
 
   FVector CurrentVelocity(0, 0, 0);

@@ -37,7 +37,7 @@ public:
 
 protected:
 
-  void DisableUE4VehiclePhysics();
+  void DisableUEVehiclePhysics();
 
-  void EnableUE4VehiclePhysics(bool bResetVelocity = true);
+  void EnableUEVehiclePhysics(bool bResetVelocity = true);
 };
