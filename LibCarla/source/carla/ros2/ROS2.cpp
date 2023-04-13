@@ -11,6 +11,8 @@
 #include "carla/sensor/data/DVSEvent.h"
 #include "carla/sensor/data/LidarData.h"
 
+#include <fastdds/dds/publisher/qos/DataWriterQos.hpp>
+
 namespace carla {
 namespace ros2 {
 
