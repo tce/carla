@@ -9,7 +9,11 @@
 #include "WheeledVehicleMovementComponentNW.h"
 
 ACarlaWheeledVehicleNW::ACarlaWheeledVehicleNW(const FObjectInitializer& ObjectInitializer) :
-  Super(ObjectInitializer.SetDefaultSubobjectClass<UWheeledVehicleMovementComponentNW>(AWheeledVehicle::VehicleMovementComponentName))
+#if 0 // @CARLA_UE5
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UWheeledVehicleMovementComponentNW>(AWheeledVehicle::VehicleMovementComponentName))
+#else
+	Super(ObjectInitializer)
+#endif
 {
   bIsNWVehicle = true;
 }

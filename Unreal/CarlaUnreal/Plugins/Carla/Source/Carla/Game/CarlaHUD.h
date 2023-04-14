@@ -23,8 +23,10 @@
 
 #include "Containers/Array.h"
 #include "GameFramework/HUD.h"
-#include "WheeledVehicleMovementComponent.h"
+// #include "WheeledVehicleMovementComponent.h"
 #include "CarlaHUD.generated.h"
+
+class UWheeledVehicleMovementComponent;
 
 struct HUDString
 {

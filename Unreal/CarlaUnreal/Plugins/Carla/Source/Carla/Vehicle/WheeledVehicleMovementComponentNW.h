@@ -5,14 +5,9 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
 #pragma once
-#include "WheeledVehicleMovementComponent.h"
 #include "Curves/CurveFloat.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "WheeledVehicleMovementComponentNW.generated.h"
-
-namespace physx
-{
-	class PxVehicleWheelData;
-}
 
 USTRUCT()
 struct FVehicleNWWheelDifferentialData
@@ -117,7 +112,7 @@ struct FVehicleNWTransmissionData
 };
 
 UCLASS(ClassGroup = (Physics), meta = (BlueprintSpawnableComponent), hidecategories = (PlanarMovement, "Components|Movement|Planar", Activation, "Components|Activation"))
-class CARLA_API UWheeledVehicleMovementComponentNW : public UWheeledVehicleMovementComponent
+class CARLA_API UWheeledVehicleMovementComponentNW : public UPawnMovementComponent // @CARLA_UE5
 {
 	GENERATED_UCLASS_BODY()
 
@@ -138,23 +133,25 @@ class CARLA_API UWheeledVehicleMovementComponentNW : public UWheeledVehicleMovem
 	FRuntimeFloatCurve SteeringCurve;
 
 	virtual void Serialize(FArchive& Ar) override;
-	virtual void ComputeConstants() override;
+	void ComputeConstants();
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 
 protected:
 
+#if 0 // @CARLA_UE5
 	virtual const void* GetTireData(physx::PxVehicleWheels* Wheels, UVehicleWheel* Wheel);
 	virtual const int32 GetWheelShapeMapping(physx::PxVehicleWheels* Wheels, uint32 Wheel);
 	virtual const physx::PxVehicleWheelData GetWheelData(physx::PxVehicleWheels* Wheels, uint32 Wheel);
+#endif
 
 	/** Allocate and setup the PhysX vehicle */
-	virtual void SetupVehicle() override;
+	void SetupVehicle();
 
 	virtual int32 GetCustomGearBoxNumForwardGears() const;
 
-	virtual void UpdateSimulation(float DeltaTime) override;
+	void UpdateSimulation(float DeltaTime);
 
 	/** update simulation data: engine */
 	virtual void UpdateEngineSetup(const FVehicleNWEngineData& NewEngineSetup);

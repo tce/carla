@@ -1967,7 +1967,7 @@ void FCarlaServer::FPimpl::BindActions()
         else
         {
           auto Actor = View.GetActor();
-          if (!Actor->IsPendingKill())
+          if (IsValid(Actor))
           {
             const ACarlaWheeledVehicle *Vehicle = Cast<ACarlaWheeledVehicle>(Actor);
             List.emplace_back(
@@ -2080,6 +2080,7 @@ void FCarlaServer::FPimpl::BindActions()
         " Actor Id: " + FString::FromInt(ActorId));
     }
 
+#if 0 // @CARLA_UE5
     switch (GBufferId)
     {
       case 0:
@@ -2151,6 +2152,9 @@ void FCarlaServer::FPimpl::BindActions()
         UE_LOG(LogCarla, Error, TEXT("Requested invalid GBuffer ID %u"), GBufferId);
         return {};
     }
+#else
+    return {};
+#endif
   };
 
   // ~~ Logging and playback ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

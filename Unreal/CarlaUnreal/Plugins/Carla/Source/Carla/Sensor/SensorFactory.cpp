@@ -132,13 +132,14 @@ FActorSpawnResult ASensorFactory::SpawnActor(
   }
   else
   {
-    auto *Episode = GameInstance->GetCarlaEpisode();
+    auto Episode = GameInstance->GetCarlaEpisode();
     check(Episode != nullptr);
     
     Sensor->SetEpisode(*Episode);
     Sensor->Set(Description);
     Sensor->SetDataStream(GameInstance->GetServer().OpenStream());
-    ASceneCaptureSensor * SceneCaptureSensor = Cast<ASceneCaptureSensor>(Sensor);
+    auto SceneCaptureSensor = Cast<ASceneCaptureSensor>(Sensor);
+#if 0 // @CARLA_UE5
     if(SceneCaptureSensor)
     {
       SceneCaptureSensor->CameraGBuffers.SceneColor.SetDataStream(GameInstance->GetServer().OpenStream());
@@ -155,6 +156,7 @@ FActorSpawnResult ASensorFactory::SpawnActor(
       SceneCaptureSensor->CameraGBuffers.CustomDepth.SetDataStream(GameInstance->GetServer().OpenStream());
       SceneCaptureSensor->CameraGBuffers.CustomStencil.SetDataStream(GameInstance->GetServer().OpenStream());
     }
+#endif
   }
   UGameplayStatics::FinishSpawningActor(Sensor, Transform);
   return FActorSpawnResult{Sensor};

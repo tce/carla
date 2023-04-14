@@ -350,6 +350,7 @@ void UChronoMovementComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UChronoMovementComponent::DisableChronoPhysics()
 {
+#if 0 // @CARLA_UE5
   this->SetComponentTickEnabled(false);
   EnableUEVehiclePhysics(true);
   CarlaVehicle->OnActorHit.RemoveDynamic(this, &UChronoMovementComponent::OnVehicleHit);
@@ -359,6 +360,7 @@ void UChronoMovementComponent::DisableChronoPhysics()
       ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
   UDefaultMovementComponent::CreateDefaultMovementComponent(CarlaVehicle);
   carla::log_warning("Chrono physics does not support collisions yet, reverting to default PhysX physics.");
+#endif
 }
 
 void UChronoMovementComponent::OnVehicleHit(AActor *Actor,

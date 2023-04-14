@@ -385,7 +385,7 @@ void FFrameData::AddVehicleAnimation(FCarlaActor *CarlaActor)
 {
   check(CarlaActor != nullptr);
 
-  if (CarlaActor->IsPendingKill())
+  if (IsValid(CarlaActor))
   {
     return;
   }
@@ -406,8 +406,9 @@ void FFrameData::AddVehicleAnimation(FCarlaActor *CarlaActor)
 
 void FFrameData::AddVehicleWheelsAnimation(FCarlaActor *CarlaActor)
 {
+#if 0 // @CARLA_UE5
   check(CarlaActor != nullptr)
-  if (CarlaActor->IsPendingKill())
+  if (IsValid(CarlaActor))
     return;
   if (CarlaActor->GetActorType() != FCarlaActor::ActorType::Vehicle)
     return;
@@ -460,13 +461,14 @@ void FFrameData::AddVehicleWheelsAnimation(FCarlaActor *CarlaActor)
       WheeledVehicleMovementComponent->GetEngineRotationSpeed() / WheeledVehicleMovementComponent->GetEngineMaxRotationSpeed()
     });
   }
+#endif
 }
 
 void FFrameData::AddWalkerAnimation(FCarlaActor *CarlaActor)
 {
   check(CarlaActor != nullptr);
 
-  if (!CarlaActor->IsPendingKill())
+  if (!IsValid(CarlaActor))
   {
     FWalkerControl Control;
     CarlaActor->GetWalkerControl(Control);
@@ -985,6 +987,7 @@ bool FFrameData::ProcessReplayerStateTrafficLight(CarlaRecorderStateTrafficLight
 // set the animation for Vehicles
 void FFrameData::ProcessReplayerAnimVehicle(CarlaRecorderAnimVehicle Vehicle)
 {
+#if 0 // @CARLA_UE5
   check(Episode != nullptr);
   FCarlaActor *CarlaActor = Episode->FindCarlaActor(Vehicle.DatabaseId);
   if (CarlaActor)
@@ -999,10 +1002,12 @@ void FFrameData::ProcessReplayerAnimVehicle(CarlaRecorderAnimVehicle Vehicle)
     Control.bManualGearShift = false;
     CarlaActor->ApplyControlToVehicle(Control, EVehicleInputPriority::User);
   }
+#endif
 }
 
 void FFrameData::ProcessReplayerAnimVehicleWheels(CarlaRecorderAnimWheels VehicleAnimWheels)
 {
+#if 0 // @CARLA_UE5
   check(Episode != nullptr)
   FCarlaActor *CarlaActor = Episode->FindCarlaActor(VehicleAnimWheels.DatabaseId);
   if (CarlaActor == nullptr)
@@ -1022,6 +1027,7 @@ void FFrameData::ProcessReplayerAnimVehicleWheels(CarlaRecorderAnimWheels Vehicl
     VehicleAnim->SetWheelRotYaw(static_cast<uint8>(Element.Location), Element.SteeringAngle);
     VehicleAnim->SetWheelPitchAngle(static_cast<uint8>(Element.Location), Element.TireRotation);
   }
+#endif
 }
 
 // set the lights for vehicles

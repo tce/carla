@@ -10,8 +10,14 @@
 #include "Kismet/BlueprintAsyncActionBase.h"
 
 #include "HoudiniPublicAPIProcessHDANode.h"
-
 #include "HoudiniImportNodeWrapper.generated.h"
+
+
+
+class UHoudiniPublicAPIAssetWrapper;
+class UHoudiniPublicAPIProcessHDANode;
+
+
 
 // Delegate type for output pins on the node.
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnProcessImporterOutputPinDelegate, const bool, bCookSuccess, const bool, bBakeSuccess);

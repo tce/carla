@@ -1,6 +1,6 @@
 #include "Carla.h"
 #include "TaggedComponent.h"
-
+#include "RHIDefinitions.h"
 #include "Rendering/SkeletalMeshRenderData.h"
 #include "SkeletalRenderPublic.h"
 
@@ -108,14 +108,14 @@ FPrimitiveSceneProxy * UTaggedComponent::CreateSceneProxy(UStaticMeshComponent *
     return NULL;
   }
 
-  if (StaticMesh->RenderData == NULL)
+  if (StaticMesh->GetRenderData() == NULL)
   {
     UE_LOG(LogCarla, Error, TEXT("Failed to create scene proxy for static mesh component (because render data is null): %s"), *StaticMeshComponent->GetReadableName());
     return NULL;
   }
 
 
-  if (StaticMesh->RenderData->LODResources.Num() == 0)
+  if (StaticMesh->GetRenderData()->LODResources.Num() == 0)
   {
     UE_LOG(LogCarla, Error, TEXT("Failed to create scene proxy for static mesh component (because num LOD resources is 0): %s"), *StaticMeshComponent->GetReadableName());
     return NULL;
@@ -142,7 +142,7 @@ FPrimitiveSceneProxy * UTaggedComponent::CreateSceneProxy(USkeletalMeshComponent
 		// Only create a scene proxy if the bone count being used is supported, or if we don't have a skeleton (this is the case with destructibles)
 		int32 MinLODIndex = SkeletalMeshComponent->ComputeMinLOD();
 		int32 MaxBonesPerChunk = SkelMeshRenderData->GetMaxBonesPerSection(MinLODIndex);
-		int32 MaxSupportedNumBones = SkeletalMeshComponent->MeshObject->IsCPUSkinned() ? MAX_int32 : GetFeatureLevelMaxNumberOfBones(SceneFeatureLevel);
+		int32 MaxSupportedNumBones = MAX_int32;
 		if (MaxBonesPerChunk <= MaxSupportedNumBones)
 		{
 			return new FTaggedSkeletalMeshSceneProxy(SkeletalMeshComponent, SkelMeshRenderData, TaggedMID);
@@ -297,7 +297,7 @@ FPrimitiveViewRelevance FTaggedInstancedStaticMeshSceneProxy::GetViewRelevance(c
 
 FTaggedHierarchicalStaticMeshSceneProxy::FTaggedHierarchicalStaticMeshSceneProxy(
     UHierarchicalInstancedStaticMeshComponent * Component, bool bInIsGrass, ERHIFeatureLevel::Type InFeatureLevel, UMaterialInstance * MaterialInstance)
-  : FHierarchicalStaticMeshSceneProxy(bInIsGrass, Component, InFeatureLevel)
+  : FHierarchicalStaticMeshSceneProxy(Component, InFeatureLevel)
 {
   TaggedMaterialInstance = MaterialInstance;
 

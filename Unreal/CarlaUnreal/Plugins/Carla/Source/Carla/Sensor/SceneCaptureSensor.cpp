@@ -8,10 +8,6 @@
 #include "Carla/Sensor/SceneCaptureSensor.h"
 #include "Carla/Game/CarlaStatics.h"
 
-#include <mutex>
-#include <atomic>
-#include <thread>
-
 static auto SCENE_CAPTURE_COUNTER = 0u;
 
 // =============================================================================
@@ -63,7 +59,7 @@ ASceneCaptureSensor::ASceneCaptureSensor(const FObjectInitializer &ObjectInitial
   CaptureComponent2D->bCaptureEveryFrame = false;
   CaptureComponent2D->bAlwaysPersistRenderingState = true;
 
-  SceneCaptureSensor_local_ns::SetCameraDefaultOverrides(*CaptureComponent2D);
+  // SceneCaptureSensor_local_ns::SetCameraDefaultOverrides(*CaptureComponent2D); @CARLA_UE5
 
   ++SCENE_CAPTURE_COUNTER;
 }
@@ -452,6 +448,7 @@ void ASceneCaptureSensor::EnqueueRenderSceneImmediate() {
   CaptureSceneExtended();
 }
 
+#if 0 // @CARLA_UE5
 constexpr const TCHAR* GBufferNames[] =
 {
   TEXT("SceneColor"),
@@ -539,6 +536,12 @@ void ASceneCaptureSensor::SendGBufferTextures(FGBufferRequest& GBuffer)
 {
   SendGBufferTexturesInternal(*this, GBuffer);
 }
+#endif
+
+void ASceneCaptureSensor::CaptureSceneExtended()
+{
+  CaptureComponent2D->CaptureScene();
+}
 
 void ASceneCaptureSensor::BeginPlay()
 {
@@ -547,15 +550,17 @@ void ASceneCaptureSensor::BeginPlay()
   // Determine the gamma of the player.
   const bool bInForceLinearGamma = !bEnablePostProcessingEffects;
 
-  CaptureRenderTarget->InitCustomFormat(ImageWidth, ImageHeight, bEnable16BitFormat ? PF_FloatRGBA : PF_B8G8R8A8,
-                                        bInForceLinearGamma);
+  CaptureRenderTarget->InitCustomFormat(
+      ImageWidth, ImageHeight,
+      bEnable16BitFormat ? PF_FloatRGBA : PF_B8G8R8A8,
+      bInForceLinearGamma);
 
   if (bEnablePostProcessingEffects)
   {
     CaptureRenderTarget->TargetGamma = TargetGamma;
   }
 
-  check(IsValid(CaptureComponent2D) && !CaptureComponent2D->IsPendingKill());
+  check(IsValid(CaptureComponent2D));
 
   CaptureComponent2D->Deactivate();
   CaptureComponent2D->TextureTarget = CaptureRenderTarget;
@@ -587,12 +592,14 @@ void ASceneCaptureSensor::PrePhysTick(float DeltaSeconds)
 {
   Super::PrePhysTick(DeltaSeconds);
 
+#if 0 // @CARLA_UE5
   // Add the view information every tick. It's only used for one tick and then
   // removed by the streamer.
   IStreamingManager::Get().AddViewInformation(
       CaptureComponent2D->GetComponentLocation(),
       ImageWidth,
       ImageWidth / FMath::Tan(CaptureComponent2D->FOVAngle));
+#endif
 }
 
 void ASceneCaptureSensor::PostPhysTick(UWorld *World, ELevelTick TickType, float DeltaTime)
@@ -838,7 +845,9 @@ namespace SceneCaptureSensor_local_ns {
     ShowFlags.SetVisualizeDOF(false);
     ShowFlags.SetVisualizeHDR(false);
     ShowFlags.SetVisualizeLightCulling(false);
+#if 0 // @CARLA_UE5
     ShowFlags.SetVisualizeLPV(false);
+#endif
     ShowFlags.SetVisualizeMeshDistanceFields(false);
     ShowFlags.SetVisualizeMotionBlur(false);
     ShowFlags.SetVisualizeOutOfBoundsPixels(false);

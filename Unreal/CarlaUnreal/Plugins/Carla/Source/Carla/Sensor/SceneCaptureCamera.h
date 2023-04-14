@@ -27,7 +27,7 @@ public:
 
 protected:
 	
-  virtual void SendGBufferTextures(FGBufferRequest& GBuffer) override;
+  // virtual void SendGBufferTextures(FGBufferRequest& GBuffer) override; // @CARLA_UE5
 
 
   void BeginPlay() override;

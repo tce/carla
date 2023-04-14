@@ -15,7 +15,7 @@
 
 #include "EngineUtils.h"
 #include "GameFramework/Pawn.h"
-#include "WheeledVehicleMovementComponent.h"
+// #include "WheeledVehicleMovementComponent.h" // @CARLA_UE5
 
 // =============================================================================
 // -- Static local methods -----------------------------------------------------

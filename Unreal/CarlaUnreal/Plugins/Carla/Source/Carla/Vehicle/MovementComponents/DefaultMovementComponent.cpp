@@ -22,6 +22,7 @@ void UDefaultMovementComponent::BeginPlay()
 
 void UDefaultMovementComponent::ProcessControl(FVehicleControl &Control)
 {
+#if 0 // @CARLA_UE5
   auto *MovementComponent = CarlaVehicle->GetVehicleMovementComponent();
   MovementComponent->SetThrottleInput(Control.Throttle);
   MovementComponent->SetSteeringInput(Control.Steer);
@@ -41,16 +42,25 @@ void UDefaultMovementComponent::ProcessControl(FVehicleControl &Control)
     }
   }
   Control.Gear = MovementComponent->GetCurrentGear();
+#endif
 }
 
 // FVector GetVelocity() const override;
 
 int32 UDefaultMovementComponent::GetVehicleCurrentGear() const
 {
+#if 0 // @CARLA_UE5
   return CarlaVehicle->GetVehicleMovementComponent()->GetCurrentGear();
+#else
+  return 0;
+#endif
 }
 
 float UDefaultMovementComponent::GetVehicleForwardSpeed() const
 {
+#if 0 // @CARLA_UE5
   return CarlaVehicle->GetVehicleMovementComponent()->GetForwardSpeed();
+#else
+  return 0.0f;
+#endif
 }

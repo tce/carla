@@ -93,15 +93,18 @@ template <typename TSensor, typename TPixel>
 void FPixelReader::SendPixelsInRenderThread(TSensor &Sensor, bool use16BitFormat, std::function<TArray<TPixel>(void *, uint32)> Conversor)
 {
   TRACE_CPUPROFILER_EVENT_SCOPE(FPixelReader::SendPixelsInRenderThread);
-  check(Sensor.CaptureRenderTarget != nullptr);
 
-  if (!Sensor.HasActorBegunPlay() || Sensor.IsPendingKill())
+  if (!IsValid(&Sensor) || !Sensor.HasActorBegunPlay())
   {
     return;
   }
 
+  check(Sensor.CaptureRenderTarget != nullptr);
+  
   /// Blocks until the render thread has finished all it's tasks.
   Sensor.EnqueueRenderSceneImmediate();
+
+  SavePixelsToDisk(*Sensor.CaptureRenderTarget, FString::Printf(TEXT("C:/FrameCapture/Frame%d.png"), FCarlaEngine::GetFrameCounter()));
 
   // Enqueue a command in the render-thread that will write the image buffer to
   // the data stream. The stream is created in the capture thus executed in the
@@ -113,12 +116,14 @@ void FPixelReader::SendPixelsInRenderThread(TSensor &Sensor, bool use16BitFormat
       TRACE_CPUPROFILER_EVENT_SCOPE_STR("FWritePixels_SendPixelsInRenderThread");
 
       /// @todo Can we make sure the sensor is not going to be destroyed?
-      if (!Sensor.IsPendingKill())
+      if (IsValid(&Sensor))
       {
+          auto Frame = FCarlaEngine::GetFrameCounter();
         FPixelReader::Payload FuncForSending = 
-          [&Sensor, Frame = FCarlaEngine::GetFrameCounter(), Conversor = std::move(Conversor)](void *LockedData, uint32 Size, uint32 Offset, uint32 ExpectedRowBytes)
+          [&Sensor, Frame, Conversor = std::move(Conversor)](void *LockedData, uint32 Size, uint32 Offset, uint32 ExpectedRowBytes)
           {
-            if (Sensor.IsPendingKill()) return;
+            if (!IsValid(&Sensor))
+              return;
 
             TArray<TPixel> Converted;
 
@@ -140,7 +145,7 @@ void FPixelReader::SendPixelsInRenderThread(TSensor &Sensor, bool use16BitFormat
 #ifdef _WIN32
             // DirectX uses additional bytes to align each row to 256 boundry, 
             // so we need to remove that extra data
-            if (IsD3DPlatform(GMaxRHIShaderPlatform, false))
+            if (IsD3DPlatform(GMaxRHIShaderPlatform))
             {
               CurrentRowBytes = Align(ExpectedRowBytes, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT);
               if (ExpectedRowBytes != CurrentRowBytes)
@@ -179,7 +184,7 @@ void FPixelReader::SendPixelsInRenderThread(TSensor &Sensor, bool use16BitFormat
               }
             }
           };
-          
+
           WritePixelsToBuffer(
               *Sensor.CaptureRenderTarget,
               carla::sensor::SensorRegistry::get<TSensor *>::type::header_offset,

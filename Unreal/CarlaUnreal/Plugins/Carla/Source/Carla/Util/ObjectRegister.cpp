@@ -150,10 +150,12 @@ void UObjectRegister::RegisterEnvironmentObject(
 
 void UObjectRegister::RegisterVehicle(ACarlaWheeledVehicle* Vehicle)
 {
+#if 0 // @CARLA_UE5
   check(Vehicle);
   FBoundingBox BB = UBoundingBoxCalculator::GetVehicleBoundingBox(Vehicle);
   auto Tag = ATagger::GetTagOfTaggedComponent(*Vehicle->GetMesh());
   RegisterEnvironmentObject(Vehicle, BB, EnvironmentObjectType::Vehicle, static_cast<uint8>(Tag));
+#endif
 }
 
 void UObjectRegister::RegisterCharacter(ACharacter* Character)

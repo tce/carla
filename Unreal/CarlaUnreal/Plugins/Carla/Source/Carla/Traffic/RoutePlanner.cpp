@@ -22,7 +22,7 @@ static bool IsSplineValid(const USplineComponent *SplineComponent)
 
 static AWheeledVehicleAIController *GetVehicleController(AActor *Actor)
 {
-  auto *Vehicle = (Actor->IsPendingKill() ? nullptr : Cast<ACarlaWheeledVehicle>(Actor));
+  auto *Vehicle = (IsValid(Actor) ? nullptr : Cast<ACarlaWheeledVehicle>(Actor));
   return (Vehicle != nullptr ?
          Cast<AWheeledVehicleAIController>(Vehicle->GetController()) :
          nullptr);

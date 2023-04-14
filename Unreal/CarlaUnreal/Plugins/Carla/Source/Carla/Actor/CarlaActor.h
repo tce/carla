@@ -461,6 +461,16 @@ protected:
 
 };
 
+inline bool IsValidChecked(FCarlaActor* ActorPtr)
+{
+  return !ActorPtr->IsPendingKill();
+}
+
+inline bool IsValid(FCarlaActor* ActorPtr)
+{
+  return ActorPtr != nullptr && IsValidChecked(ActorPtr);
+}
+
 class FVehicleActor : public FCarlaActor
 {
 public:

@@ -13,7 +13,7 @@
 #include "Carla/Weather/Weather.h"
 #include "Carla/Vehicle/CustomTerrainPhysicsComponent.h"
 #include "Components/SplineComponent.h"
-#include "Editor/FoliageEdit/Public/FoliageEdMode.h"
+// #include "Editor/FoliageEdit/Public/FoliageEdMode.h"
 #include "EditorLevelLibrary.h"
 #include "FileHelpers.h"
 #include "GenericPlatform/GenericPlatformFile.h"
@@ -1190,14 +1190,15 @@ bool UMapGeneratorWidget::CookVegetationToWorld(
   for(auto Spawner : FoliageSpawners)
   {
     ULevel* Level = World->GetCurrentLevel();
-
-    VectorRegister	Rotation{ 0,0,0 };
-    VectorRegister	Translation{ 200000.0, 200000.0, 0.0 };
-    VectorRegister Scale3D{ 2500,2500,900 };
     EObjectFlags InObjectFlags = RF_Transactional;
     FName InName = NAME_None;
 
-    FTransform Transform{ Rotation,Translation,Scale3D };
+    FTransform Transform
+    {
+        FRotator::ZeroRotator,
+        FVector(200000.0, 200000.0, 0.0),
+        FVector(2500.0, 2500.0, 900.0)
+    };
 
     UActorFactory* ActorFactory = GEditor->FindActorFactoryForActorClass(AProceduralFoliageVolume::StaticClass());
     AProceduralFoliageVolume* FoliageVolumeActor = (AProceduralFoliageVolume*) ActorFactory->CreateActor(
@@ -1213,6 +1214,7 @@ bool UMapGeneratorWidget::CookVegetationToWorld(
     {
       FoliageComponent->RemoveProceduralContent(false);
 
+#if 0 // @CARLA_UE5
       FFoliagePaintingGeometryFilter OverrideGeometryFilter;
       OverrideGeometryFilter.bAllowStaticMesh = FoliageComponent->bAllowStaticMesh;
       OverrideGeometryFilter.bAllowBSP = FoliageComponent->bAllowBSP;
@@ -1221,6 +1223,7 @@ bool UMapGeneratorWidget::CookVegetationToWorld(
       OverrideGeometryFilter.bAllowTranslucent = FoliageComponent->bAllowTranslucent;
 
       FEdModeFoliage::AddInstances(World, FoliageInstances, OverrideGeometryFilter, true);
+#endif
     }
     else
     {

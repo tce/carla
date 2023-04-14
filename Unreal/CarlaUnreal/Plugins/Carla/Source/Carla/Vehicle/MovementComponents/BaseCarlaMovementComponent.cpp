@@ -33,10 +33,12 @@ void UBaseCarlaMovementComponent::ProcessControl(FVehicleControl &Control)
 
 FVector UBaseCarlaMovementComponent::GetVelocity() const
 {
+#if 0 // @CARLA_UE5
   if (CarlaVehicle)
   {
     return CarlaVehicle->AWheeledVehicle::GetVelocity();
   }
+#endif
   return FVector();
 }
 
@@ -52,6 +54,7 @@ float UBaseCarlaMovementComponent::GetVehicleForwardSpeed() const
 
 void UBaseCarlaMovementComponent::DisableUEVehiclePhysics()
 {
+#if 0 // @CARLA_UE5
   if(!CarlaVehicle)
   {
     UE_LOG(LogCarla, Warning, TEXT("Error: Owner is not properly set for UCarSimManagerComponent") );
@@ -65,11 +68,12 @@ void UBaseCarlaMovementComponent::DisableUEVehiclePhysics()
   {
     Bone->SetInstanceSimulatePhysics(false);
   }
+#endif
 }
 
 void UBaseCarlaMovementComponent::EnableUEVehiclePhysics(bool bResetVelocity)
 {
-
+#if 0 // @CARLA_UE5
   FVector CurrentVelocity(0, 0, 0);
   if (!bResetVelocity)
   {
@@ -91,4 +95,5 @@ void UBaseCarlaMovementComponent::EnableUEVehiclePhysics(bool bResetVelocity)
   CarlaVehicle->GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
   CarlaVehicle->GetMesh()->SetCollisionProfileName("Vehicle");
   CarlaVehicle->RestoreVehiclePhysicsControl();
+#endif
 }

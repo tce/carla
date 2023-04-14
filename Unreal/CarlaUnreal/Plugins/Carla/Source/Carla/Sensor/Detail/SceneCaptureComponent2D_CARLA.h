@@ -13,7 +13,8 @@
 
 
 UCLASS(hidecategories=(Collision, Object, Physics, SceneComponent, Mobility))
-class CARLA_API USceneCaptureComponent2D_CARLA : public USceneCaptureComponent2D
+class CARLA_API USceneCaptureComponent2D_CARLA :
+  public USceneCaptureComponent2D
 {
 	GENERATED_BODY()
 public:

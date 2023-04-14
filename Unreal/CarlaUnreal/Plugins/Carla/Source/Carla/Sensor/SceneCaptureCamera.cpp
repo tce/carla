@@ -63,7 +63,9 @@ void ASceneCaptureCamera::PostPhysTick(UWorld *World, ELevelTick TickType, float
   FPixelReader::SendPixelsInRenderThread<ASceneCaptureCamera, FColor>(*this);
 }
 
+#if 0 // @CARLA_UE5
 void ASceneCaptureCamera::SendGBufferTextures(FGBufferRequest& GBuffer)
 {
     SendGBufferTexturesInternal(*this, GBuffer);
 }
+#endif

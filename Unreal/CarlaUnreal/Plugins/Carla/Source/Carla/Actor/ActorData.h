@@ -6,7 +6,9 @@
 
 #pragma once
 
+#include "CoreMinimal.h"
 #include "Math/DVector.h"
+#include "Carla/Actor/ActorInfo.h"
 #include "Carla/Vehicle/AckermannControllerSettings.h"
 #include "Carla/Vehicle/VehicleAckermannControl.h"
 #include "Carla/Vehicle/VehicleControl.h"

@@ -4,7 +4,7 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#include <PxScene.h>
+// #include <PxScene.h>
 #include <cmath>
 #include "Carla.h"
 #include "Carla/Actor/ActorBlueprintFunctionLibrary.h"
@@ -105,6 +105,7 @@ void ARayCastSemanticLidar::SimulateLidar(const float DeltaTime)
   ResetRecordedHits(ChannelCount, PointsToScanWithOneLaser);
   PreprocessRays(ChannelCount, PointsToScanWithOneLaser);
 
+#if 0 // @CARLA_UE5
   GetWorld()->GetPhysicsScene()->GetPxScene()->lockRead();
   {
     TRACE_CPUPROFILER_EVENT_SCOPE(ParallelFor);
@@ -129,6 +130,7 @@ void ARayCastSemanticLidar::SimulateLidar(const float DeltaTime)
     });
   }
   GetWorld()->GetPhysicsScene()->GetPxScene()->unlockRead();
+#endif
 
   FTransform ActorTransf = GetTransform();
   ComputeAndSaveDetections(ActorTransf);
@@ -190,7 +192,7 @@ void ARayCastSemanticLidar::ComputeRawDetection(const FHitResult& HitInfo, const
 
     const FActorRegistry &Registry = GetEpisode().GetActorRegistry();
 
-    const AActor* actor = HitInfo.Actor.Get();
+    const AActor* actor = HitInfo.GetActor();
     Detection.object_idx = 0;
     Detection.object_tag = static_cast<uint32_t>(HitInfo.Component->CustomDepthStencilValue);
 
@@ -226,6 +228,7 @@ bool ARayCastSemanticLidar::ShootLaser(const float VerticalAngle, const float Ho
   const auto Range = Description.Range;
   FVector EndTrace = Range * UKismetMathLibrary::GetForwardVector(ResultRot) + LidarBodyLoc;
 
+#if 0 // @CARLA_UE5
   GetWorld()->ParallelLineTraceSingleByChannel(
     HitInfo,
     LidarBodyLoc,
@@ -234,6 +237,7 @@ bool ARayCastSemanticLidar::ShootLaser(const float VerticalAngle, const float Ho
     TraceParams,
     FCollisionResponseParams::DefaultResponseParam
   );
+#endif
 
   if (HitInfo.bBlockingHit) {
     HitResult = HitInfo;

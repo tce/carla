@@ -4,7 +4,7 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#include <PxScene.h>
+// #include <PxScene.h>
 #include <cmath>
 #include "Carla.h"
 #include "Carla/Sensor/RayCastLidar.h"

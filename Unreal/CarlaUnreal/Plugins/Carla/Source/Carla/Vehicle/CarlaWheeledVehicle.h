@@ -6,8 +6,6 @@
 
 #pragma once
 
-#include "WheeledVehicle.h"
-
 #include "Vehicle/AckermannController.h"
 #include "Vehicle/AckermannControllerSettings.h"
 #include "Vehicle/CarlaWheeledVehicleState.h"
@@ -17,9 +15,7 @@
 #include "Vehicle/VehicleInputPriority.h"
 #include "Vehicle/VehiclePhysicsControl.h"
 #include "VehicleVelocityControl.h"
-#include "WheeledVehicleMovementComponent4W.h"
 #include "WheeledVehicleMovementComponentNW.h"
-#include "VehicleAnimInstance.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "MovementComponents/BaseCarlaMovementComponent.h"
 
@@ -39,6 +35,7 @@
 #include "CarlaWheeledVehicle.generated.h"
 
 class UBoxComponent;
+class UWheeledVehicleMovementComponent4W;
 
 UENUM()
 enum class EVehicleWheelLocation : uint8 {
@@ -69,7 +66,8 @@ enum class EVehicleDoor : uint8 {
 
 /// Base class for CARLA wheeled vehicles.
 UCLASS()
-class CARLA_API ACarlaWheeledVehicle : public AWheeledVehicle
+class CARLA_API ACarlaWheeledVehicle :
+  public APawn // AWheeledVehicle @CARLA_UE5
 {
   GENERATED_BODY()
 

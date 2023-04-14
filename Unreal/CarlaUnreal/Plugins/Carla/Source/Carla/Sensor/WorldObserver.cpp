@@ -78,6 +78,7 @@ static auto FWorldObserver_GetActorState(const FCarlaActor &View, const FActorRe
   }
   else if (AType::TrafficLight == View.GetActorType())
   {
+#if 0 // @CARLA_UE5
     auto TrafficLight = Cast<ATrafficLightBase>(View.GetActor());
     if (TrafficLight != nullptr)
     {
@@ -134,6 +135,7 @@ static auto FWorldObserver_GetActorState(const FCarlaActor &View, const FActorRe
         }
       }
     }
+#endif
   }
   else if (AType::TrafficSign == View.GetActorType())
   {
@@ -170,7 +172,7 @@ static auto FWorldObserver_GetDormantActorState(const FCarlaActor &View, const F
 
   if (AType::Vehicle == View.GetActorType())
   {
-      const FVehicleData* ActorData = View.GetActorData<FVehicleData>();
+      const FVehicleData* ActorData = nullptr; // View.GetActorData<FVehicleData>();
       state.vehicle_data.control = carla::rpc::VehicleControl{ActorData->Control};
       using TLS = carla::rpc::TrafficLightState;
       state.vehicle_data.traffic_light_state = TLS::Green;
@@ -179,17 +181,20 @@ static auto FWorldObserver_GetDormantActorState(const FCarlaActor &View, const F
   }
   else if (AType::Walker == View.GetActorType())
   {
+#if 0 // @CARLA_UE5
     const FWalkerData* ActorData = View.GetActorData<FWalkerData>();
-    // auto Walker = Cast<APawn>(View.GetActor());
-    // auto Controller = Walker != nullptr ? Cast<AWalkerController>(Walker->GetController()) : nullptr;
-    // if (Controller != nullptr)
-    // {
-    //   state.walker_control = carla::rpc::WalkerControl{Controller->GetWalkerControl()};
-    // }
+    auto Walker = Cast<APawn>(View.GetActor());
+    auto Controller = Walker != nullptr ? Cast<AWalkerController>(Walker->GetController()) : nullptr;
+    if (Controller != nullptr)
+    {
+      state.walker_control = carla::rpc::WalkerControl{Controller->GetWalkerControl()};
+    }
     state.walker_control = ActorData->WalkerControl;
+#endif
   }
   else if (AType::TrafficLight == View.GetActorType())
   {
+#if 0 // @CARLA_UE5
     const FTrafficLightData* ActorData = View.GetActorData<FTrafficLightData>();
     const UTrafficLightController* Controller = ActorData->Controller;
     if(Controller)
@@ -222,9 +227,11 @@ static auto FWorldObserver_GetDormantActorState(const FCarlaActor &View, const F
         state.traffic_light_data.pole_index = ActorData->PoleIndex;
       }
     }
+#endif
   }
   else if (AType::TrafficSign == View.GetActorType())
   {
+#if 0 // @CARLA_UE5
     const FTrafficSignData* ActorData = View.GetActorData<FTrafficSignData>();
     const FString fstring_sign_id = ActorData->SignId;
     const std::string sign_id = carla::rpc::FromFString(fstring_sign_id);
@@ -237,6 +244,7 @@ static auto FWorldObserver_GetDormantActorState(const FCarlaActor &View, const F
     }
     std::memset(state.traffic_light_data.sign_id, '\0', max_size);
     std::memcpy(state.traffic_sign_data.sign_id, sign_id.c_str(), sign_id_length);
+#endif
   }
   return state;
 }
@@ -248,7 +256,12 @@ static carla::geom::Vector3D FWorldObserver_GetAngularVelocity(const AActor &Act
       RootComponent != nullptr ?
           RootComponent->GetPhysicsAngularVelocityInDegrees() :
           FVector{0.0f, 0.0f, 0.0f};
-  return {AngularVelocity.X, AngularVelocity.Y, AngularVelocity.Z};
+  return
+  {
+      (float)AngularVelocity.X,
+      (float)AngularVelocity.Y,
+      (float)AngularVelocity.Z
+  };
 }
 
 static carla::geom::Vector3D FWorldObserver_GetAcceleration(
@@ -259,7 +272,12 @@ static carla::geom::Vector3D FWorldObserver_GetAcceleration(
   FVector &PreviousVelocity = View.GetActorInfo()->Velocity;
   const FVector Acceleration = (Velocity - PreviousVelocity) / DeltaSeconds;
   PreviousVelocity = Velocity;
-  return {Acceleration.X, Acceleration.Y, Acceleration.Z};
+  return
+  {
+      (float)Acceleration.X,
+      (float)Acceleration.Y,
+      (float)Acceleration.Z
+  };
 }
 
 static carla::Buffer FWorldObserver_Serialize(
@@ -326,9 +344,11 @@ static carla::Buffer FWorldObserver_Serialize(
       const FActorData* ActorData = View->GetActorData();
       Velocity = TO_METERS * ActorData->Velocity;
       AngularVelocity = carla::geom::Vector3D
-                        {ActorData->AngularVelocity.X,
-                         ActorData->AngularVelocity.Y,
-                         ActorData->AngularVelocity.Z};
+        {
+            (float)ActorData->AngularVelocity.X,
+            (float)ActorData->AngularVelocity.Y,
+            (float)ActorData->AngularVelocity.Z
+        };
       Acceleration = FWorldObserver_GetAcceleration(*View, Velocity, DeltaSeconds);
       State = FWorldObserver_GetDormantActorState(*View, Registry);
     }

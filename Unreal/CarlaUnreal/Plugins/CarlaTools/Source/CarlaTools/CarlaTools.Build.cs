@@ -6,7 +6,8 @@ using UnrealBuildTool;
 
 public class CarlaTools : ModuleRules
 {
-  bool UsingHoudini = false;
+  bool UsingHoudini = true;
+  
   private bool IsWindows(ReadOnlyTargetRules Target)
   {
     return Target.Platform == UnrealTargetPlatform.Win64;

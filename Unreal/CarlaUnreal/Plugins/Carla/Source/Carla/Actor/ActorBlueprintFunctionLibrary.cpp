@@ -1514,14 +1514,14 @@ FColor UActorBlueprintFunctionLibrary::RetrieveActorAttributeToColor(
 // editor crashing while people are testing new actor definitions.
 #if WITH_EDITOR
 #  define CARLA_ABFL_CHECK_ACTOR(ActorPtr)                    \
-  if ((ActorPtr == nullptr) || ActorPtr->IsPendingKill())     \
+  if (!IsValid(ActorPtr))     \
   {                                                           \
     UE_LOG(LogCarla, Error, TEXT("Cannot set empty actor!")); \
     return;                                                   \
   }
 #else
 #  define CARLA_ABFL_CHECK_ACTOR(ActorPtr) \
-  check((ActorPtr != nullptr) && !ActorPtr->IsPendingKill());
+  check(IsValid(ActorPtr));
 #endif // WITH_EDITOR
 
 void UActorBlueprintFunctionLibrary::SetCamera(
@@ -1534,6 +1534,7 @@ void UActorBlueprintFunctionLibrary::SetCamera(
       RetrieveActorAttributeToInt("image_size_y", Description.Variations, 600));
   Camera->SetFOVAngle(
       RetrieveActorAttributeToFloat("fov", Description.Variations, 90.0f));
+#if 0 // @CARLA_UE5
   if (Description.Variations.Contains("enable_postprocess_effects"))
   {
     Camera->EnablePostProcessingEffects(
@@ -1613,6 +1614,7 @@ void UActorBlueprintFunctionLibrary::SetCamera(
     Camera->SetChromAberrOffset(
         RetrieveActorAttributeToFloat("chromatic_aberration_offset", Description.Variations, 0.0f));
   }
+#endif
 }
 
 void UActorBlueprintFunctionLibrary::SetCamera(

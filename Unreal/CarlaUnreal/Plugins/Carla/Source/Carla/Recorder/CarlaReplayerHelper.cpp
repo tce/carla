@@ -321,6 +321,7 @@ bool CarlaReplayerHelper::ProcessReplayerPosition(CarlaRecorderPosition Pos1, Ca
 
 void CarlaReplayerHelper::ProcessReplayerAnimVehicleWheels(CarlaRecorderAnimWheels VehicleAnimWheels)
 {
+#if 0 // @CARLA_UE5
   check(Episode != nullptr)
   FCarlaActor *CarlaActor = Episode->FindCarlaActor(VehicleAnimWheels.DatabaseId);
   if (CarlaActor == nullptr)
@@ -340,6 +341,7 @@ void CarlaReplayerHelper::ProcessReplayerAnimVehicleWheels(CarlaRecorderAnimWhee
     VehicleAnim->SetWheelRotYaw(static_cast<uint8>(Element.Location), Element.SteeringAngle);
     VehicleAnim->SetWheelPitchAngle(static_cast<uint8>(Element.Location), Element.TireRotation);
   }
+#endif
 }
 
 // reposition the camera

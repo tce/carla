@@ -181,7 +181,7 @@ void ACarlaRecorder::AddVehicleAnimation(FCarlaActor *CarlaActor)
 {
   check(CarlaActor != nullptr);
 
-  if (CarlaActor->IsPendingKill())
+  if (IsValid(CarlaActor))
   {
     return;
   }
@@ -203,12 +203,13 @@ void ACarlaRecorder::AddVehicleAnimation(FCarlaActor *CarlaActor)
 void ACarlaRecorder::AddVehicleWheelsAnimation(FCarlaActor *CarlaActor)
 {
   check(CarlaActor != nullptr)
-  if (CarlaActor->IsPendingKill())
+  if (IsValid(CarlaActor))
     return;
   if (CarlaActor->GetActorType() != FCarlaActor::ActorType::Vehicle)
     return;
   ACarlaWheeledVehicle* CarlaVehicle = Cast<ACarlaWheeledVehicle>(CarlaActor->GetActor());
   check(CarlaVehicle != nullptr)
+#if 0 // @CARLA_UE5
   USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
   check(SkeletalMesh != nullptr)
   UVehicleAnimInstance* VehicleAnim = Cast<UVehicleAnimInstance>(SkeletalMesh->GetAnimInstance());
@@ -242,13 +243,14 @@ void ACarlaRecorder::AddVehicleWheelsAnimation(FCarlaActor *CarlaActor)
       WheeledVehicleMovementComponent->GetEngineRotationSpeed() / WheeledVehicleMovementComponent->GetEngineMaxRotationSpeed()
     });
   }
+#endif
 }
 
 void ACarlaRecorder::AddWalkerAnimation(FCarlaActor *CarlaActor)
 {
   check(CarlaActor != nullptr);
 
-  if (!CarlaActor->IsPendingKill())
+  if (!IsValid(CarlaActor))
   {
     FWalkerControl Control;
     CarlaActor->GetWalkerControl(Control);

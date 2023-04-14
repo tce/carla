@@ -122,6 +122,8 @@ FBoundingBox UBoundingBoxCalculator::GetVehicleBoundingBox(
 
   UActorComponent *ActorComp = Vehicle->GetComponentByClass(USkeletalMeshComponent::StaticClass());
   USkeletalMeshComponent* ParentComp = Cast<USkeletalMeshComponent>(ActorComp);
+  if (ParentComp == nullptr) // @CARLA_UE5: Remove this
+      return {};
 
   // Filter by tag
   crp::CityObjectLabel Tag = ATagger::GetTagOfTaggedComponent(*ParentComp);
@@ -272,8 +274,8 @@ FBoundingBox UBoundingBoxCalculator::GetSkeletalMeshBoundingBox(const USkeletalM
   uint32 NumVertices = FPositionVertexBuffer.GetNumVertices();
 
   // Look for Skeletal Mesh bounds (vertex perfect)
-  FVector Max(TNumericLimits<float>::Lowest());
-  FVector Min(TNumericLimits<float>::Max());
+  FVector3f Max(TNumericLimits<double>::Lowest());
+  FVector3f Min(TNumericLimits<double>::Max());
 
   for(uint32 i = 0; i < NumVertices; i++)
   {
@@ -285,7 +287,11 @@ FBoundingBox UBoundingBoxCalculator::GetSkeletalMeshBoundingBox(const USkeletalM
   auto Extent = (Max - Min) * 0.5f;
   auto Origin = Min + Extent;
 
-  return {Origin, Extent};
+  return
+  {
+      FVector(Origin),
+      FVector(Extent)
+  };
 }
 
 FBoundingBox UBoundingBoxCalculator::GetStaticMeshBoundingBox(const UStaticMesh* StaticMesh)

@@ -105,8 +105,10 @@ public class Carla : ModuleRules
         "PhysX",
         "PhysXVehicles",
         "PhysXVehicleLib",
+#else
+        "Chaos",
 #endif
-        "Slate",
+          "Slate",
         "SlateCore",
         "PhysicsCore"
         // ... add private dependencies that you statically link with here ...

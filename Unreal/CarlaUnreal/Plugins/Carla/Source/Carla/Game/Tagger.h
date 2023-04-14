@@ -74,7 +74,7 @@ public:
   /// Method that computes the label corresponding to an specific object
   /// using the folder path in which it is stored
   template <typename T>
-  static crp::CityObjectLabel GetLabelByPath(const T *Object) {
+  static crp::CityObjectLabel GetLabelByPath(T&& Object) {
     const FString Path = Object->GetPathName();
     TArray<FString> StringArray;
     Path.ParseIntoArray(StringArray, TEXT("/"), false);

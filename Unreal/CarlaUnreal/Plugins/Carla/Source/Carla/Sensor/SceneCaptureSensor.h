@@ -11,8 +11,7 @@
 #include "Carla/Sensor/Detail/SceneCaptureComponent2D_CARLA.h"
 #include "Carla/Sensor/ImageUtil.h"
 
-#include "Async/Async.h"
-#include "Renderer/Public/GBufferView.h"
+// #include "Renderer/Public/GBufferView.h" // @CARLA_UE5
 
 #include <type_traits>
 
@@ -402,6 +401,7 @@ public:
     // FlushRenderingCommands();
   }
 
+#if 0 // @CARLA_UE5
   struct
   {
     FCameraGBufferUint8 SceneColor;
@@ -418,12 +418,13 @@ public:
     FCameraGBufferUint8 CustomDepth;
     FCameraGBufferUint8 CustomStencil;
   } CameraGBuffers;
+#endif
 
 protected:
     
   void CaptureSceneExtended();
 
-  virtual void SendGBufferTextures(FGBufferRequest& GBuffer);
+  // virtual void SendGBufferTextures(FGBufferRequest& GBuffer);
 
   virtual void BeginPlay() override;
 
@@ -460,6 +461,8 @@ protected:
   /// Whether to change render target format to PF_A16B16G16R16, offering 16bit / channel
   UPROPERTY(EditAnywhere)
   bool bEnable16BitFormat = false;
+
+#if 0 // @CARLA_UE5
 
 private:
 
@@ -587,5 +590,5 @@ protected:
       }
     }
   }
-
+#endif
 };
