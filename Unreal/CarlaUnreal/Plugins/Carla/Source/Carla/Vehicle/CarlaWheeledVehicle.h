@@ -18,6 +18,7 @@
 #include "WheeledVehicleMovementComponentNW.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "MovementComponents/BaseCarlaMovementComponent.h"
+#include "ChaosVehicles/Public/WheeledVehiclePawn.h"
 
 
 #include "FoliageInstancedStaticMeshComponent.h"
@@ -67,7 +68,7 @@ enum class EVehicleDoor : uint8 {
 /// Base class for CARLA wheeled vehicles.
 UCLASS()
 class CARLA_API ACarlaWheeledVehicle :
-  public APawn // AWheeledVehicle @CARLA_UE5
+  public AWheeledVehiclePawn // AWheeledVehicle @CARLA_UE5
 {
   GENERATED_BODY()
 

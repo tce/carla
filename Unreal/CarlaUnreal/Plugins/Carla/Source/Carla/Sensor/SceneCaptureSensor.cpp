@@ -8,6 +8,8 @@
 #include "Carla/Sensor/SceneCaptureSensor.h"
 #include "Carla/Game/CarlaStatics.h"
 
+#define USE_LUMEN
+
 static auto SCENE_CAPTURE_COUNTER = 0u;
 
 // =============================================================================
@@ -59,7 +61,7 @@ ASceneCaptureSensor::ASceneCaptureSensor(const FObjectInitializer &ObjectInitial
   CaptureComponent2D->bCaptureEveryFrame = false;
   CaptureComponent2D->bAlwaysPersistRenderingState = true;
 
-  // SceneCaptureSensor_local_ns::SetCameraDefaultOverrides(*CaptureComponent2D); @CARLA_UE5
+  SceneCaptureSensor_local_ns::SetCameraDefaultOverrides(*CaptureComponent2D);
 
   ++SCENE_CAPTURE_COUNTER;
 }
@@ -568,7 +570,7 @@ void ASceneCaptureSensor::BeginPlay()
   // Call derived classes to set up their things.
   SetUpSceneCaptureComponent(*CaptureComponent2D);
 
-  CaptureComponent2D->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
+  CaptureComponent2D->CaptureSource = ESceneCaptureSource::SCS_FinalToneCurveHDR;
 
   CaptureComponent2D->UpdateContent();
   CaptureComponent2D->Activate();
@@ -623,6 +625,42 @@ namespace SceneCaptureSensor_local_ns {
   {
     auto &PostProcessSettings = CaptureComponent2D.PostProcessSettings;
 
+#ifdef USE_LUMEN
+    PostProcessSettings.ReflectionMethod = EReflectionMethod::Lumen;
+    PostProcessSettings.TranslucencyType = ETranslucencyType::RayTracing;
+
+    PostProcessSettings.bOverride_LumenReflectionQuality = true;
+    PostProcessSettings.bOverride_LumenSceneLightingQuality = true;
+    PostProcessSettings.bOverride_LumenSceneDetail = true;
+    PostProcessSettings.bOverride_LumenSceneViewDistance = true;
+    PostProcessSettings.bOverride_LumenSceneLightingUpdateSpeed = true;
+    PostProcessSettings.bOverride_LumenFinalGatherQuality = true;
+    PostProcessSettings.bOverride_LumenFinalGatherLightingUpdateSpeed = true;
+    PostProcessSettings.bOverride_LumenMaxTraceDistance = true;
+    PostProcessSettings.bOverride_LumenDiffuseColorBoost = true;
+    PostProcessSettings.bOverride_LumenSkylightLeaking = true;
+    PostProcessSettings.bOverride_LumenFullSkylightLeakingDistance = true;
+    PostProcessSettings.bOverride_LumenRayLightingMode = true;
+    PostProcessSettings.bOverride_LumenFrontLayerTranslucencyReflections = true;
+    PostProcessSettings.bOverride_LumenSurfaceCacheResolution = true;
+
+    PostProcessSettings.LumenSceneLightingQuality = 1.0f;
+    PostProcessSettings.LumenSceneDetail = 1.0f;
+    PostProcessSettings.LumenSceneViewDistance = 20000.0f;
+    PostProcessSettings.LumenSceneLightingUpdateSpeed = 1.0f;
+    PostProcessSettings.LumenFinalGatherQuality = 1.0f;
+    PostProcessSettings.LumenFinalGatherLightingUpdateSpeed = 1.0f;
+    PostProcessSettings.LumenMaxTraceDistance = 20000.0f;
+    PostProcessSettings.LumenDiffuseColorBoost = 1.0f;
+    PostProcessSettings.LumenSkylightLeaking = 0.0f;
+    PostProcessSettings.LumenFullSkylightLeakingDistance = 1000.0f;
+    PostProcessSettings.LumenSurfaceCacheResolution = 1.0f;
+    PostProcessSettings.LumenReflectionQuality = 1.0f;
+    PostProcessSettings.LumenRayLightingMode = ELumenRayLightingModeOverride::HitLighting;
+    PostProcessSettings.LumenFrontLayerTranslucencyReflections = true;
+#else
+
+#if 0
     // Exposure
     PostProcessSettings.bOverride_AutoExposureMethod = true;
     PostProcessSettings.AutoExposureMethod = EAutoExposureMethod::AEM_Histogram;
@@ -700,6 +738,8 @@ namespace SceneCaptureSensor_local_ns {
     // Lens
     PostProcessSettings.bOverride_LensFlareIntensity = true;
     PostProcessSettings.LensFlareIntensity = 0.1;
+#endif
+#endif
   }
 
   // Remove the show flags that might interfere with post-processing effects
@@ -713,6 +753,12 @@ namespace SceneCaptureSensor_local_ns {
       return;
     }
 
+    ShowFlags.SetLumenScreenTraces(true);
+    ShowFlags.SetLumenDetailTraces(true);
+    ShowFlags.SetLumenGlobalTraces(true);
+    ShowFlags.SetLumenFarFieldTraces(true);
+    ShowFlags.SetLumenSecondaryBounces(true);
+    ShowFlags.SetLumenScreenSpaceDirectionalOcclusion(true);
     ShowFlags.SetAmbientOcclusion(false);
     ShowFlags.SetAntiAliasing(false);
     ShowFlags.SetVolumetricFog(false);

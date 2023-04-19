@@ -13,7 +13,7 @@
 #include "Carla/Weather/Weather.h"
 #include "Carla/Vehicle/CustomTerrainPhysicsComponent.h"
 #include "Components/SplineComponent.h"
-// #include "Editor/FoliageEdit/Public/FoliageEdMode.h"
+#include "Editor/FoliageEdit/Public/FoliageEdMode.h"
 #include "EditorLevelLibrary.h"
 #include "FileHelpers.h"
 #include "GenericPlatform/GenericPlatformFile.h"
@@ -1214,7 +1214,7 @@ bool UMapGeneratorWidget::CookVegetationToWorld(
     {
       FoliageComponent->RemoveProceduralContent(false);
 
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
       FFoliagePaintingGeometryFilter OverrideGeometryFilter;
       OverrideGeometryFilter.bAllowStaticMesh = FoliageComponent->bAllowStaticMesh;
       OverrideGeometryFilter.bAllowBSP = FoliageComponent->bAllowBSP;
