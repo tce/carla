@@ -38,20 +38,20 @@ struct FActiveActor
   FQuat Rotation;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FCarlaMapTile
 {
   GENERATED_BODY()
 
-  UPROPERTY(VisibleAnywhere, Category = "Carla Map Tile")
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Carla Map Tile")
   FString Name; // Tile_{TileID_X}_{TileID_Y}
 
   // Absolute location, does not depend on rebasing
-  UPROPERTY(VisibleAnywhere, Category = "Carla Map Tile")
+  UPROPERTY(VisibleAnywhere,  BlueprintReadWrite, Category = "Carla Map Tile")
   FVector Location{0.0f};
   // TODO: not FVector
 
-  UPROPERTY(VisibleAnywhere, Category = "Carla Map Tile")
+  UPROPERTY(VisibleAnywhere,  BlueprintReadWrite, Category = "Carla Map Tile")
   ULevelStreamingDynamic* StreamingLevel = nullptr;
 
   bool TilesSpawned = false;
@@ -166,6 +166,7 @@ public:
 
   float GetActorStreamingDistance() const;
 
+  UFUNCTION(BlueprintCallable, Category = "Large Map Manager")
   FIntVector GetTileVectorID(FVector TileLocation) const;
 
   FIntVector GetTileVectorID(FDVector TileLocation) const;
@@ -173,7 +174,8 @@ public:
   FIntVector GetTileVectorID(TileID TileID) const;
 
   FVector GetTileLocation(TileID TileID) const;
-
+  
+  UFUNCTION(BlueprintCallable, Category = "Large Map Manager")
   FVector GetTileLocation(FIntVector TileVectorID) const;
 
   FDVector GetTileLocationD(TileID TileID) const;
@@ -187,17 +189,23 @@ public:
 
   TileID GetTileID(FIntVector TileVectorID) const;
 public:
-  FCarlaMapTile& GetCarlaMapTile(FVector Location);
+  FCarlaMapTile* GetCarlaMapTile(FVector Location);
 
   FCarlaMapTile& GetCarlaMapTile(ULevel* InLevel);
 
-  FCarlaMapTile* GetCarlaMapTile(FIntVector TileVectorID);
+  UFUNCTION(BlueprintCallable, Category = "Large Map Manager")
+  FCarlaMapTile& GetCarlaMapTile(FIntVector TileVectorID);
   
   FCarlaMapTile* GetCarlaMapTile(TileID TileID);
 
   FCarlaMapTile& LoadCarlaMapTile(FString TileMapPath, TileID TileId);
 
   ACarlaWheeledVehicle* GetHeroVehicle();
+
+  // The spectator is treated as an ego vehicle by default when no other egos are around,
+  // but this can be changed from the Python API, which ends up in this function.
+  bool SpectatorAsEgo = false;
+  void ConsiderSpectatorAsEgo(bool _SpectatorAsEgo);
 
 protected:
 
@@ -340,5 +348,4 @@ protected:
 
   UPROPERTY(VisibleAnywhere, Category = "Large Map Manager")
   bool bHasTerramechanics = false;
-
 };
