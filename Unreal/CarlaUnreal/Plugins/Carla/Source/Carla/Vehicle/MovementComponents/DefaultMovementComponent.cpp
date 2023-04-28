@@ -22,7 +22,7 @@ void UDefaultMovementComponent::BeginPlay()
 
 void UDefaultMovementComponent::ProcessControl(FVehicleControl &Control)
 {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   auto *MovementComponent = CarlaVehicle->GetVehicleMovementComponent();
   MovementComponent->SetThrottleInput(Control.Throttle);
   MovementComponent->SetSteeringInput(Control.Steer);
@@ -30,12 +30,12 @@ void UDefaultMovementComponent::ProcessControl(FVehicleControl &Control)
   MovementComponent->SetHandbrakeInput(Control.bHandBrake);
   if (CarlaVehicle->GetVehicleControl().bReverse != Control.bReverse)
   {
-    MovementComponent->SetUseAutoGears(!Control.bReverse);
+    MovementComponent->SetUseAutomaticGears(!Control.bReverse);
     MovementComponent->SetTargetGear(Control.bReverse ? -1 : 1, true);
   }
   else
   {
-    MovementComponent->SetUseAutoGears(!Control.bManualGearShift);
+    MovementComponent->SetUseAutomaticGears(!Control.bManualGearShift);
     if (Control.bManualGearShift)
     {
       MovementComponent->SetTargetGear(Control.Gear, true);
@@ -49,7 +49,7 @@ void UDefaultMovementComponent::ProcessControl(FVehicleControl &Control)
 
 int32 UDefaultMovementComponent::GetVehicleCurrentGear() const
 {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   return CarlaVehicle->GetVehicleMovementComponent()->GetCurrentGear();
 #else
   return 0;
@@ -58,7 +58,7 @@ int32 UDefaultMovementComponent::GetVehicleCurrentGear() const
 
 float UDefaultMovementComponent::GetVehicleForwardSpeed() const
 {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   return CarlaVehicle->GetVehicleMovementComponent()->GetForwardSpeed();
 #else
   return 0.0f;

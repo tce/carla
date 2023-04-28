@@ -350,7 +350,7 @@ void UChronoMovementComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UChronoMovementComponent::DisableChronoPhysics()
 {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   this->SetComponentTickEnabled(false);
   EnableUEVehiclePhysics(true);
   CarlaVehicle->OnActorHit.RemoveDynamic(this, &UChronoMovementComponent::OnVehicleHit);

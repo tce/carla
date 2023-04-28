@@ -416,7 +416,7 @@ void FFrameData::AddVehicleWheelsAnimation(FCarlaActor *CarlaActor)
   check(CarlaVehicle != nullptr)
   USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
   check(SkeletalMesh != nullptr)
-  UVehicleAnimInstance* VehicleAnim = Cast<UVehicleAnimInstance>(SkeletalMesh->GetAnimInstance());
+  UVehicleAnimationInstance* VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
   check(VehicleAnim != nullptr)
   const UWheeledVehicleMovementComponent* WheeledVehicleMovementComponent = VehicleAnim->GetWheeledVehicleMovementComponent();
   check(WheeledVehicleMovementComponent != nullptr)
@@ -987,7 +987,7 @@ bool FFrameData::ProcessReplayerStateTrafficLight(CarlaRecorderStateTrafficLight
 // set the animation for Vehicles
 void FFrameData::ProcessReplayerAnimVehicle(CarlaRecorderAnimVehicle Vehicle)
 {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   check(Episode != nullptr);
   FCarlaActor *CarlaActor = Episode->FindCarlaActor(Vehicle.DatabaseId);
   if (CarlaActor)
@@ -1018,7 +1018,7 @@ void FFrameData::ProcessReplayerAnimVehicleWheels(CarlaRecorderAnimWheels Vehicl
   check(CarlaVehicle != nullptr)
   USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
   check(SkeletalMesh != nullptr)
-  UVehicleAnimInstance* VehicleAnim = Cast<UVehicleAnimInstance>(SkeletalMesh->GetAnimInstance());
+  UVehicleAnimationInstance* VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
   check(VehicleAnim != nullptr)
 
   for (uint32_t i = 0; i < VehicleAnimWheels.WheelValues.size(); ++i)

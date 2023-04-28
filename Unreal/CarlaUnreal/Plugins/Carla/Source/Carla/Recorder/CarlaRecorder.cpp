@@ -18,6 +18,10 @@
 #include "Carla/Walker/WalkerController.h"
 #include "Components/BoxComponent.h"
 
+#include "ChaosVehicleMovementComponent.h"
+#include "ChaosWheeledVehicleMovementComponent.h"
+#include "VehicleAnimationInstance.h"
+
 #include <compiler/disable-ue4-macros.h>
 #include "carla/rpc/VehicleLightState.h"
 #include <compiler/enable-ue4-macros.h>
@@ -212,9 +216,9 @@ void ACarlaRecorder::AddVehicleWheelsAnimation(FCarlaActor *CarlaActor)
 #if 0 // @CARLA_UE5
   USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
   check(SkeletalMesh != nullptr)
-  UVehicleAnimInstance* VehicleAnim = Cast<UVehicleAnimInstance>(SkeletalMesh->GetAnimInstance());
+  auto VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
   check(VehicleAnim != nullptr)
-  const UWheeledVehicleMovementComponent* WheeledVehicleMovementComponent = VehicleAnim->GetWheeledVehicleMovementComponent();
+  auto WheeledVehicleMovementComponent = VehicleAnim->GetWheeledVehicleMovementComponent();
   check(WheeledVehicleMovementComponent != nullptr)
 
   CarlaRecorderAnimWheels Record;

@@ -222,7 +222,7 @@ void UWheeledVehicleMovementComponentNW::SetupVehicle()
 
 	for (int32 WheelIdx = 0; WheelIdx < WheelSetups.Num(); ++WheelIdx)
 	{
-		const FWheelSetup& WheelSetup = WheelSetups[WheelIdx];
+		const FChaosWheelSetup& WheelSetup = WheelSetups[WheelIdx];
 		if (WheelSetup.BoneName == NAME_None)
 		{
 			return;
@@ -413,7 +413,7 @@ void UWheeledVehicleMovementComponentNW::ComputeConstants()
 }
 
 #if 0 // @CARLA_UE5
-const void* UWheeledVehicleMovementComponentNW::GetTireData(physx::PxVehicleWheels* InWheels, UVehicleWheel* InWheel)
+const void* UWheeledVehicleMovementComponentNW::GetTireData(physx::PxVehicleWheels* InWheels, UChaosVehicleWheel* InWheel)
 {
 	const void* realShaderData = &InWheels->mWheelsSimData.getTireData((PxU32)InWheel->WheelIndex);
 	return realShaderData;

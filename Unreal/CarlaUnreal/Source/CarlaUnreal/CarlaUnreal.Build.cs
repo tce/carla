@@ -8,7 +8,15 @@ public class CarlaUnreal : ModuleRules
 	{
     PrivatePCHHeaderFile = "CarlaUnreal.h";
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"Core",
+			"CoreUObject",
+			"Engine",
+			"InputCore",
+			"Chaos",
+			"ChaosVehicles"
+		});
 
 		if (Target.Type == TargetType.Editor)
         {

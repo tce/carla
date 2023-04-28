@@ -150,7 +150,7 @@ void UObjectRegister::RegisterEnvironmentObject(
 
 void UObjectRegister::RegisterVehicle(ACarlaWheeledVehicle* Vehicle)
 {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   check(Vehicle);
   FBoundingBox BB = UBoundingBoxCalculator::GetVehicleBoundingBox(Vehicle);
   auto Tag = ATagger::GetTagOfTaggedComponent(*Vehicle->GetMesh());

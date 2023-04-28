@@ -635,7 +635,7 @@ ECarlaServerResponse FVehicleActor::GetPhysicsControl(FVehiclePhysicsControl& Ph
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     PhysicsControl = ActorData->PhysicsControl;
 #endif
@@ -656,7 +656,7 @@ ECarlaServerResponse FVehicleActor::GetFailureState(carla::rpc::VehicleFailureSt
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     FailureState = ActorData->FailureState;
 #endif
@@ -677,7 +677,7 @@ ECarlaServerResponse FVehicleActor::GetVehicleLightState(FVehicleLightState& Lig
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     LightState = ActorData->LightState;
 #endif
@@ -728,7 +728,7 @@ ECarlaServerResponse FVehicleActor::ApplyPhysicsControl(
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     ActorData->PhysicsControl = PhysicsControl;
 #endif
@@ -751,7 +751,7 @@ ECarlaServerResponse FVehicleActor::SetVehicleLightState(
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     ActorData->LightState = LightState;
 #endif
@@ -828,7 +828,7 @@ ECarlaServerResponse FVehicleActor::ApplyControlToVehicle(
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     ActorData->Control = Control;
     ActorData->bAckermannControlActive = false;
@@ -851,7 +851,7 @@ ECarlaServerResponse FVehicleActor::ApplyAckermannControlToVehicle(
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     ActorData->AckermannControl = AckermannControl;
     ActorData->bAckermannControlActive = true;
@@ -873,7 +873,7 @@ ECarlaServerResponse FVehicleActor::GetVehicleControl(FVehicleControl& VehicleCo
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     VehicleControl = ActorData->Control;
 #endif
@@ -894,7 +894,7 @@ ECarlaServerResponse FVehicleActor::GetVehicleAckermannControl(FVehicleAckermann
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     VehicleAckermannControl = ActorData->AckermannControl;
 #endif
@@ -916,7 +916,7 @@ ECarlaServerResponse FVehicleActor::GetAckermannControllerSettings(
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     AckermannSettings = ActorData->AckermannControllerSettings;
 #endif
@@ -938,7 +938,7 @@ ECarlaServerResponse FVehicleActor::ApplyAckermannControllerSettings(
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FVehicleData* ActorData = GetActorData<FVehicleData>();
     ActorData->AckermannControllerSettings = AckermannSettings;
 #endif
@@ -1074,7 +1074,7 @@ ECarlaServerResponse FTrafficLightActor::SetTrafficLightState(const ETrafficLigh
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FTrafficLightData* ActorData = GetActorData<FTrafficLightData>();
     ActorData->LightState = State;
 #endif
@@ -1095,7 +1095,7 @@ ETrafficLightState FTrafficLightActor::GetTrafficLightState() const
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     const FTrafficLightData* ActorData = GetActorData<FTrafficLightData>();
     return ActorData->LightState;
 #else
@@ -1117,7 +1117,7 @@ UTrafficLightController* FTrafficLightActor::GetTrafficLightController()
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FTrafficLightData* ActorData = GetActorData<FTrafficLightData>();
     return ActorData->Controller;
 #else
@@ -1245,7 +1245,7 @@ ECarlaServerResponse FWalkerActor::SetWalkerState(
 
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FWalkerData* WalkerData = GetActorData<FWalkerData>();
     WalkerData->WalkerControl = WalkerControl;
 #endif
@@ -1280,7 +1280,7 @@ ECarlaServerResponse FWalkerActor::GetWalkerControl(
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FWalkerData* WalkerData = GetActorData<FWalkerData>();
     Control = WalkerData->WalkerControl;
 #endif
@@ -1367,7 +1367,7 @@ ECarlaServerResponse FWalkerActor::ApplyControlToWalker(
 {
   if (IsDormant())
   {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     FWalkerData* ActorData = GetActorData<FWalkerData>();
     ActorData->WalkerControl = Control;
 #endif

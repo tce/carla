@@ -13,6 +13,9 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+#include "ChaosVehicleMovementComponent.h"
+#include "ChaosWheeledVehicleMovementComponent.h"
+
 // #include "TireConfig.h"
 // #include "VehicleWheel.h"
 
@@ -41,7 +44,7 @@ ACarlaWheeledVehicle::ACarlaWheeledVehicle(const FObjectInitializer& ObjectIniti
   VelocityControl = CreateDefaultSubobject<UVehicleVelocityControl>(TEXT("VelocityControl"));
   VelocityControl->Deactivate();
 
-  // GetVehicleMovementComponent()->bReverseAsBrake = false; // @CARLA_UE5
+  GetVehicleMovementComponent()->bReverseAsBrake = false; // @CARLA_UE5
   BaseMovementComponent = CreateDefaultSubobject<UBaseCarlaMovementComponent>(TEXT("BaseMovementComponent"));
 }
 
@@ -156,7 +159,7 @@ void ACarlaWheeledVehicle::BeginPlay()
   float FrictionScale = 3.5f;
 
 #if 0 // @CARLA_UE5
-  UWheeledVehicleMovementComponent* MovementComponent = GetVehicleMovementComponent();
+  auto MovementComponent = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovementComponent());
 
   if (MovementComponent)
   {
@@ -183,10 +186,10 @@ void ACarlaWheeledVehicle::BeginPlay()
     }
 
     // Set the friction scale to Wheel CDO and update wheel setups
-    TArray<FWheelSetup> NewWheelSetups = MovementComponent->WheelSetups;
+    TArray<FChaosWheelSetup> NewWheelSetups = MovementComponent->WheelSetups;
     for (const auto &WheelSetup : NewWheelSetups)
     {
-      UVehicleWheel *Wheel = WheelSetup.WheelClass.GetDefaultObject();
+      UChaosVehicleWheel *Wheel = WheelSetup.WheelClass.GetDefaultObject();
       check(Wheel != nullptr);
     }
 
@@ -306,9 +309,9 @@ FVector ACarlaWheeledVehicle::GetVehicleBoundingBoxExtent() const
 float ACarlaWheeledVehicle::GetMaximumSteerAngle() const
 {
 #if 0 // @CARLA_UE5
-  const auto &Wheels = GetVehicleMovementComponent()->Wheels;
+  const auto &Wheels = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovementComponent())->Wheels;
   check(Wheels.Num() > 0);
-  const auto *FrontWheel = Wheels[0];
+  auto FrontWheel = Wheels[0];
   check(FrontWheel != nullptr);
   return FrontWheel->SteerAngle;
 #else
@@ -371,7 +374,7 @@ void ACarlaWheeledVehicle::SetHandbrakeInput(const bool Value)
 TArray<float> ACarlaWheeledVehicle::GetWheelsFrictionScale()
 {
 #if 0 // @CARLA_UE5
-  UWheeledVehicleMovementComponent* Movement = GetVehicleMovement();
+  auto Movement = GetVehicleMovement();
   if (Movement)
   {
     check(Movement != nullptr);
@@ -389,7 +392,7 @@ TArray<float> ACarlaWheeledVehicle::GetWheelsFrictionScale()
 void ACarlaWheeledVehicle::SetWheelsFrictionScale(TArray<float> &WheelsFrictionScale)
 {
 #if 0 // @CARLA_UE5
-  UWheeledVehicleMovementComponent* Movement = GetVehicleMovement();
+    auto Movement = GetVehicleMovement();
   if (Movement)
   {
     check(Movement != nullptr);
@@ -408,7 +411,7 @@ FVehiclePhysicsControl ACarlaWheeledVehicle::GetVehiclePhysicsControl() const
   FVehiclePhysicsControl PhysicsControl;
 #if 0 // @CARLA_UE5
   if (!bIsNWVehicle) {
-    UWheeledVehicleMovementComponent4W *Vehicle4W = Cast<UWheeledVehicleMovementComponent4W>(
+      auto Vehicle4W = Cast<UWheeledVehicleMovementComponent4W>(
           GetVehicleMovement());
     check(Vehicle4W != nullptr);
 
@@ -485,7 +488,7 @@ FVehiclePhysicsControl ACarlaWheeledVehicle::GetVehiclePhysicsControl() const
     PhysicsControl.Wheels = Wheels;
 
   } else {
-    UWheeledVehicleMovementComponentNW *VehicleNW = Cast<UWheeledVehicleMovementComponentNW>(
+      auto VehicleNW = Cast<UWheeledVehicleMovementComponentNW>(
       GetVehicleMovement());
 
     check(VehicleNW != nullptr);
@@ -583,7 +586,7 @@ void ACarlaWheeledVehicle::ApplyVehiclePhysicsControl(const FVehiclePhysicsContr
 #if 0 // @CARLA_UE5
   LastPhysicsControl = PhysicsControl;
   if (!bIsNWVehicle) {
-    UWheeledVehicleMovementComponent4W *Vehicle4W = Cast<UWheeledVehicleMovementComponent4W>(
+      auto Vehicle4W = Cast<UWheeledVehicleMovementComponent4W>(
           GetVehicleMovement());
     check(Vehicle4W != nullptr);
 
@@ -646,11 +649,11 @@ void ACarlaWheeledVehicle::ApplyVehiclePhysicsControl(const FVehiclePhysicsContr
     // Change, if required, the collision mode for wheels
     SetWheelCollision(Vehicle4W, PhysicsControl);
 
-    TArray<FWheelSetup> NewWheelSetups = Vehicle4W->WheelSetups;
+    TArray<FChaosWheelSetup> NewWheelSetups = Vehicle4W->WheelSetups;
 
     for (int32 i = 0; i < PhysicsWheelsNum; ++i)
     {
-      UVehicleWheel *Wheel = NewWheelSetups[i].WheelClass.GetDefaultObject();
+      UChaosVehicleWheel *Wheel = NewWheelSetups[i].WheelClass.GetDefaultObject();
       check(Wheel != nullptr);
 
       // Assigning new tire config
@@ -687,7 +690,7 @@ void ACarlaWheeledVehicle::ApplyVehiclePhysicsControl(const FVehiclePhysicsContr
 
     ResetConstraints();
   } else {
-    UWheeledVehicleMovementComponentNW *VehicleNW = Cast<UWheeledVehicleMovementComponentNW>(
+      auto VehicleNW = Cast<UWheeledVehicleMovementComponentNW>(
           GetVehicleMovement());
 
     check(VehicleNW != nullptr);
@@ -744,11 +747,11 @@ void ACarlaWheeledVehicle::ApplyVehiclePhysicsControl(const FVehiclePhysicsContr
     // Change, if required, the collision mode for wheels
     SetWheelCollisionNW(VehicleNW, PhysicsControl);
 
-    TArray<FWheelSetup> NewWheelSetups = VehicleNW->WheelSetups;
+    TArray<FChaosWheelSetup> NewWheelSetups = VehicleNW->WheelSetups;
 
     for (int32 i = 0; i < PhysicsWheelsNum; ++i)
     {
-      UVehicleWheel *Wheel = NewWheelSetups[i].WheelClass.GetDefaultObject();
+      UChaosVehicleWheel *Wheel = NewWheelSetups[i].WheelClass.GetDefaultObject();
       check(Wheel != nullptr);
 
       // Assigning new tire config
@@ -817,13 +820,14 @@ void ACarlaWheeledVehicle::ShowDebugTelemetry(bool Enabled)
     if (hud) {
 
       // Set/Unset the car movement component in HUD to show the temetry
+        auto MovementComponent = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovementComponent());
       if (Enabled) {
-        hud->AddDebugVehicleForTelemetry(GetVehicleMovementComponent());
+        hud->AddDebugVehicleForTelemetry(MovementComponent);
       }
-      else{
-        if (hud->DebugVehicle == GetVehicleMovementComponent()) {
-          hud->AddDebugVehicleForTelemetry(nullptr);
-          GetVehicleMovementComponent()->StopTelemetry();
+      else {
+          if (hud->DebugVehicle == MovementComponent) {
+              hud->AddDebugVehicleForTelemetry(nullptr);
+              MovementComponent->StopTelemetry();
         }
       }
 
@@ -861,7 +865,7 @@ void ACarlaWheeledVehicle::SetWheelSteerDirection(EVehicleWheelLocation WheelLoc
   if (bPhysicsEnabled == false)
   {
     check((uint8)WheelLocation >= 0)
-    UVehicleAnimInstance *VehicleAnim = Cast<UVehicleAnimInstance>(GetMesh()->GetAnimInstance());
+    UVehicleAnimationInstance *VehicleAnim = Cast<UVehicleAnimationInstance>(GetMesh()->GetAnimInstance());
     check(VehicleAnim != nullptr)
     VehicleAnim->SetWheelRotYaw((uint8)WheelLocation, AngleInDeg);
   }
@@ -876,7 +880,7 @@ float ACarlaWheeledVehicle::GetWheelSteerAngle(EVehicleWheelLocation WheelLocati
 
 #if 0 // @CARLA_UE5
   check((uint8)WheelLocation >= 0)
-  UVehicleAnimInstance *VehicleAnim = Cast<UVehicleAnimInstance>(GetMesh()->GetAnimInstance());
+  UVehicleAnimationInstance *VehicleAnim = Cast<UVehicleAnimationInstance>(GetMesh()->GetAnimInstance());
   check(VehicleAnim != nullptr)
   check(VehicleAnim->GetWheeledVehicleMovementComponent() != nullptr)
 
@@ -900,7 +904,7 @@ void ACarlaWheeledVehicle::SetSimulatePhysics(bool enabled) {
     return;
   }
 
-  UWheeledVehicleMovementComponent* Movement = GetVehicleMovement();
+  auto Movement = GetVehicleMovement();
   if (Movement)
   {
     check(Movement != nullptr);
@@ -913,7 +917,7 @@ void ACarlaWheeledVehicle::SetSimulatePhysics(bool enabled) {
     RootComponent->SetSimulatePhysics(enabled);
     RootComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-    UVehicleAnimInstance *VehicleAnim = Cast<UVehicleAnimInstance>(GetMesh()->GetAnimInstance());
+    UVehicleAnimationInstance *VehicleAnim = Cast<UVehicleAnimationInstance>(GetMesh()->GetAnimInstance());
     check(VehicleAnim != nullptr)
 
     GetWorld()->GetPhysicsScene()->GetPxScene()->lockWrite();

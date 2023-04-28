@@ -18,8 +18,10 @@
 #include "WheeledVehicleMovementComponentNW.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "MovementComponents/BaseCarlaMovementComponent.h"
-#include "ChaosVehicles/Public/WheeledVehiclePawn.h"
 
+#include "ChaosVehicles/Public/WheeledVehiclePawn.h"
+#include "ChaosVehicleMovementComponent.h"
+#include "ChaosWheeledVehicleMovementComponent.h"
 
 #include "FoliageInstancedStaticMeshComponent.h"
 #include "CoreMinimal.h"

@@ -141,7 +141,7 @@ class CARLA_API UWheeledVehicleMovementComponentNW : public UPawnMovementCompone
 protected:
 
 #if 0 // @CARLA_UE5
-	virtual const void* GetTireData(physx::PxVehicleWheels* Wheels, UVehicleWheel* Wheel);
+	virtual const void* GetTireData(physx::PxVehicleWheels* Wheels, UChaosVehicleWheel* Wheel);
 	virtual const int32 GetWheelShapeMapping(physx::PxVehicleWheels* Wheels, uint32 Wheel);
 	virtual const physx::PxVehicleWheelData GetWheelData(physx::PxVehicleWheels* Wheels, uint32 Wheel);
 #endif
