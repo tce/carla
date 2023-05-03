@@ -181,7 +181,8 @@ public class Carla : ModuleRules
         return "lib" + BaseName + ".a";
       }
     };
-
+        
+    bUseRTTI = true;
     // Link dependencies.
     if (IsWindows(Target))
     {
