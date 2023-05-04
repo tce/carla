@@ -81,10 +81,10 @@ done
 
 source $(dirname "$0")/Environment.sh
 
-if [ ! -d "${CARLA_UE_ROOT}" ]; then
-  fatal_error "CARLA_UE_ROOT is not defined, or points to a non-existant directory, please set this environment variable."
+if [ ! -d "${CARLA_UNREAL_ENGINE_ROOT}" ]; then
+  fatal_error "CARLA_UNREAL_ENGINE_ROOT is not defined, or points to a non-existant directory, please set this environment variable."
 else
-  log "Using Unreal Engine at '$CARLA_UE_ROOT'"
+  log "Using Unreal Engine at '$CARLA_UNREAL_ENGINE_ROOT'"
 fi
 
 if ! { ${REMOVE_INTERMEDIATE} || ${BUILD_CARLA_UNREAL} || ${LAUNCH_UNREAL_EDITOR}; }; then
@@ -173,7 +173,7 @@ if ${BUILD_CARLA_UNREAL} ; then
     # This command fails sometimes but normally we can continue anyway.
     set +e
     log "Generate Unreal project files."
-    ${CARLA_UE_ROOT}/GenerateProjectFiles.sh -project="${PWD}/CarlaUnreal.uproject" -game -engine -makefiles
+    ${CARLA_UNREAL_ENGINE_ROOT}/GenerateProjectFiles.sh -project="${PWD}/CarlaUnreal.uproject" -game -engine -makefiles
     set -e
 
   fi
@@ -195,7 +195,7 @@ fi
 if ${LAUNCH_UNREAL_EDITOR} ; then
 
   log "Launching UnrealEditor..."
-  ${GDB} ${CARLA_UE_ROOT}/Engine/Binaries/Linux/UnrealEditor "${PWD}/CarlaUnreal.uproject" ${RHI} ${EDITOR_FLAGS}
+  ${GDB} ${CARLA_UNREAL_ENGINE_ROOT}/Engine/Binaries/Linux/UnrealEditor "${PWD}/CarlaUnreal.uproject" ${RHI} ${EDITOR_FLAGS}
 
 else
 

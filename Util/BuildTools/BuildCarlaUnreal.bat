@@ -66,17 +66,17 @@ if %REMOVE_INTERMEDIATE% == false (
 )
 
 rem Get Unreal Engine root path
-if not defined CARLA_UE_ROOT (
+if not defined CARLA_UNREAL_ENGINE_ROOT (
     set KEY_NAME="HKEY_LOCAL_MACHINE\SOFTWARE\EpicGames\Unreal Engine"
     set VALUE_NAME=InstalledDirectory
     for /f "usebackq tokens=1,2,*" %%A in (`reg query !KEY_NAME! /s /reg:64`) do (
         if "%%A" == "!VALUE_NAME!" (
-            set CARLA_UE_ROOT=%%C
+            set CARLA_UNREAL_ENGINE_ROOT=%%C
         )
     )
-    if not defined CARLA_UE_ROOT goto error_unreal_no_found
+    if not defined CARLA_UNREAL_ENGINE_ROOT goto error_unreal_no_found
 )
-if not "%CARLA_UE_ROOT:~-1%"=="\" set CARLA_UE_ROOT=%CARLA_UE_ROOT%\
+if not "%CARLA_UNREAL_ENGINE_ROOT:~-1%"=="\" set CARLA_UNREAL_ENGINE_ROOT=%CARLA_UNREAL_ENGINE_ROOT%\
 
 rem Set the visual studio solution directory
 rem
@@ -142,7 +142,7 @@ echo %OPTIONAL_MODULES_TEXT% > "%ROOT_PATH%Unreal/CarlaUnreal/Config/OptionalMod
 if %BUILD_CARLA_UNREAL% == true (
     echo %FILE_N% Building Unreal Editor...
 
-    call "%CARLA_UE_ROOT%Engine\Build\BatchFiles\Build.bat"^
+    call "%CARLA_UNREAL_ENGINE_ROOT%Engine\Build\BatchFiles\Build.bat"^
         CarlaUnrealEditor^
         Win64^
         Development^
@@ -151,7 +151,7 @@ if %BUILD_CARLA_UNREAL% == true (
         "%ROOT_PATH%Unreal/CarlaUnreal/CarlaUnreal.uproject"
     if errorlevel 1 goto bad_exit
 
-    call "%CARLA_UE_ROOT%Engine\Build\BatchFiles\Build.bat"^
+    call "%CARLA_UNREAL_ENGINE_ROOT%Engine\Build\BatchFiles\Build.bat"^
         CarlaUnreal^
         Win64^
         Development^
@@ -165,7 +165,7 @@ rem Launch Carla Editor
 rem
 if %LAUNCH_UNREAL_EDITOR% == true (
     echo %FILE_N% Launching Unreal Editor...
-    call "%CARLA_UE_ROOT%\Engine\Binaries\Win64\UnrealEditor.exe"^
+    call "%CARLA_UNREAL_ENGINE_ROOT%\Engine\Binaries\Win64\UnrealEditor.exe"^
         "%CARLA_UNREAL_PROJECT_FOLDER%CarlaUnreal.uproject" %EDITOR_FLAGS%
     if %errorlevel% neq 0 goto error_build
 )

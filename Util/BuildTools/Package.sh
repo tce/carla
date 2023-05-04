@@ -56,8 +56,8 @@ done
 # ==============================================================================
 source $(dirname "$0")/Environment.sh
 
-if [ ! -d "${CARLA_UE_ROOT}" ]; then
-  fatal_error "CARLA_UE_ROOT is not defined, or points to a non-existent directory, please set this environment variable."
+if [ ! -d "${CARLA_UNREAL_ENGINE_ROOT}" ]; then
+  fatal_error "CARLA_UNREAL_ENGINE_ROOT is not defined, or points to a non-existent directory, please set this environment variable."
 fi
 
 if [ ! -n "${PACKAGES}" ] ; then
@@ -108,7 +108,7 @@ if ${DO_CARLA_RELEASE} ; then
   rm -Rf ${RELEASE_BUILD_FOLDER}
   mkdir -p ${RELEASE_BUILD_FOLDER}
 
-  ${CARLA_UE_ROOT}/Engine/Build/BatchFiles/RunUAT.sh BuildCookRun \
+  ${CARLA_UNREAL_ENGINE_ROOT}/Engine/Build/BatchFiles/RunUAT.sh BuildCookRun \
       -project="${PWD}/CarlaUnreal.uproject" \
       -nocompileeditor -nop4 -cook -stage -archive -package -iterate \
       -clientconfig=${PACKAGE_CONFIG} -ue4exe=UnrealEditor \
@@ -238,7 +238,7 @@ for PACKAGE_NAME in "${PACKAGES[@]}" ; do if [[ ${PACKAGE_NAME} != "Carla" ]] ; 
   pushd "${CARLA_UNREAL_ROOT_FOLDER}" > /dev/null
 
   # Prepare cooking of package
-  ${CARLA_UE_ROOT}/Engine/Binaries/Linux/UnrealEditor "${CARLA_UNREAL_ROOT_FOLDER}/CarlaUnreal.uproject" \
+  ${CARLA_UNREAL_ENGINE_ROOT}/Engine/Binaries/Linux/UnrealEditor "${CARLA_UNREAL_ROOT_FOLDER}/CarlaUnreal.uproject" \
       -run=PrepareAssetsForCooking -PackageName=${PACKAGE_NAME} -OnlyPrepareMaps=false
 
   PACKAGE_FILE=$(<${PACKAGE_PATH_FILE})
@@ -253,7 +253,7 @@ for PACKAGE_NAME in "${PACKAGES[@]}" ; do if [[ ${PACKAGE_NAME} != "Carla" ]] ; 
   for MAP in "${MAP_LIST[@]}"; do
     if (($(($TOTAL+${#MAP})) > $MAX_STRINGLENGTH)); then
       echo "Cooking $MAP_STRING"
-      ${CARLA_UE_ROOT}/Engine/Binaries/Linux/UnrealEditor "${CARLA_UNREAL_ROOT_FOLDER}/CarlaUnreal.uproject" \
+      ${CARLA_UNREAL_ENGINE_ROOT}/Engine/Binaries/Linux/UnrealEditor "${CARLA_UNREAL_ROOT_FOLDER}/CarlaUnreal.uproject" \
           -run=cook -map="${MAP_STRING}" -cooksinglepackage -targetplatform="LinuxNoEditor" \
           -OutputDir="${BUILD_FOLDER}" -iterate
       MAP_STRING=""
@@ -263,7 +263,7 @@ for PACKAGE_NAME in "${PACKAGES[@]}" ; do if [[ ${PACKAGE_NAME} != "Carla" ]] ; 
     TOTAL=$(($TOTAL+${#MAP}))
   done
   if (($TOTAL > 0)); then
-    ${CARLA_UE_ROOT}/Engine/Binaries/Linux/UnrealEditor "${CARLA_UNREAL_ROOT_FOLDER}/CarlaUnreal.uproject" \
+    ${CARLA_UNREAL_ENGINE_ROOT}/Engine/Binaries/Linux/UnrealEditor "${CARLA_UNREAL_ROOT_FOLDER}/CarlaUnreal.uproject" \
         -run=cook -map="${MAP_STRING}" -cooksinglepackage -targetplatform="LinuxNoEditor" \
         -OutputDir="${BUILD_FOLDER}" -iterate
   fi

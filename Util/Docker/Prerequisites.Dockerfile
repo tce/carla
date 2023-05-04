@@ -45,11 +45,11 @@ RUN useradd -m carla
 COPY --chown=carla:carla . /home/carla
 USER carla
 WORKDIR /home/carla
-ENV CARLA_UE_ROOT /home/carla/UE4.26
+ENV CARLA_UNREAL_ENGINE_ROOT /home/carla/UE4.26
 
-RUN git clone --depth 1 -b carla "https://${EPIC_USER}:${EPIC_PASS}@github.com/CarlaUnreal/UnrealEngine.git" ${CARLA_UE_ROOT}
+RUN git clone --depth 1 -b carla "https://${EPIC_USER}:${EPIC_PASS}@github.com/CarlaUnreal/UnrealEngine.git" ${CARLA_UNREAL_ENGINE_ROOT}
 
-RUN cd $CARLA_UE_ROOT && \
+RUN cd $CARLA_UNREAL_ENGINE_ROOT && \
   ./Setup.sh && \
   ./GenerateProjectFiles.sh && \
   make

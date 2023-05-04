@@ -35,7 +35,7 @@ pipeline
                     agent { label "ubuntu && build && ${JOB_ID}" }
                     environment
                     {
-                        CARLA_UE_ROOT = '/home/jenkins/UnrealEngine_4.26'
+                        CARLA_UNREAL_ENGINE_ROOT = '/home/jenkins/UnrealEngine_4.26'
                     }
                     stages
                     {
@@ -230,7 +230,7 @@ pipeline
                     agent { label "windows && build && ${JOB_ID}" }
                     environment
                     {
-                        CARLA_UE_ROOT = 'C:\\UE_4.26'
+                        CARLA_UNREAL_ENGINE_ROOT = 'C:\\UE_4.26'
                     }
                     stages
                     {
