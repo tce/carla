@@ -758,7 +758,6 @@ namespace SceneCaptureSensor_local_ns {
     ShowFlags.SetLumenGlobalTraces(true);
     ShowFlags.SetLumenFarFieldTraces(true);
     ShowFlags.SetLumenSecondaryBounces(true);
-    ShowFlags.SetLumenScreenSpaceDirectionalOcclusion(true);
     ShowFlags.SetAmbientOcclusion(false);
     ShowFlags.SetAntiAliasing(false);
     ShowFlags.SetVolumetricFog(false);

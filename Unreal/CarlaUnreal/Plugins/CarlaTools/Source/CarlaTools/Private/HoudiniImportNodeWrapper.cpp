@@ -3,7 +3,7 @@
 //
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
-
+#if 0
 #include "HoudiniImportNodeWrapper.h"
 #include "HoudiniAsset.h"
 
@@ -80,3 +80,4 @@ void UHoudiniImportNodeWrapper::HandleFailed(
   }
   RemoveFromRoot();
 }
+#endif

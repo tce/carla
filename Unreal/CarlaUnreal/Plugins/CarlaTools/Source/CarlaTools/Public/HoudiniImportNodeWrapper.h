@@ -9,6 +9,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 
+#if 0 // @CARLA_UE5
 #include "HoudiniPublicAPIProcessHDANode.h"
 #include "HoudiniImportNodeWrapper.generated.h"
 
@@ -68,3 +69,4 @@ private:
   UHoudiniPublicAPIProcessHDANode* HDANode;
 
 };
+#endif

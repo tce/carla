@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "4.26",
+	"EngineAssociation": "{BA2BC85B-4A0C-0B7D-2AB4-2CA951512345}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -110,14 +110,6 @@
 		},
 		{
 			"Name": "CarlaTools",
-			"Enabled": true
-		},
-		{
-			"Name": "HoudiniEngine",
-			"Enabled": true
-		},
-		{
-			"Name": "HDRIBackdrop",
 			"Enabled": true
 		},
 		{

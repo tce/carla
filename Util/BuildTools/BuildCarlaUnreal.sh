@@ -131,16 +131,16 @@ fi
 # -- Download Houdini Plugin for Unreal Engine ---------------------------------
 # ==============================================================================
 
-HOUDINI_PLUGIN_REPO=https://github.com/sideeffects/HoudiniEngineForUnreal.git
-HOUDINI_PLUGIN_PATH=Plugins/HoudiniEngine
-HOUDINI_PLUGIN_BRANCH=Houdini19.5-Unreal5.00
-HOUDINI_PATCH=${CARLA_UTIL_FOLDER}/Patches/houdini_patch.txt
-if [[ ! -d ${HOUDINI_PLUGIN_PATH} ]] ; then
-  git clone -b ${HOUDINI_PLUGIN_BRANCH} ${HOUDINI_PLUGIN_REPO} ${HOUDINI_PLUGIN_PATH}
-  pushd ${HOUDINI_PLUGIN_PATH} >/dev/null
-  git apply ${HOUDINI_PATCH}
-  popd >/dev/null
-fi
+# HOUDINI_PLUGIN_REPO=https://github.com/sideeffects/HoudiniEngineForUnreal.git
+# HOUDINI_PLUGIN_PATH=Plugins/HoudiniEngine
+# HOUDINI_PLUGIN_BRANCH=Houdini19.5-Unreal5.00
+# HOUDINI_PATCH=${CARLA_UTIL_FOLDER}/Patches/houdini_patch.txt
+# if [[ ! -d ${HOUDINI_PLUGIN_PATH} ]] ; then
+#   git clone -b ${HOUDINI_PLUGIN_BRANCH} ${HOUDINI_PLUGIN_REPO} ${HOUDINI_PLUGIN_PATH}
+#   pushd ${HOUDINI_PLUGIN_PATH} >/dev/null
+#   git apply ${HOUDINI_PATCH}
+#   popd >/dev/null
+# fi
 
 # ==============================================================================
 # -- Build CarlaUnreal ------------------------------------------------------------
