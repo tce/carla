@@ -51,3 +51,5 @@ struct CARLA_API FSkyParameters
 {
 	GENERATED_BODY()
 };
+
+FSkyParameters WeatherParametersToSkyParameters(const FWeatherParameters& WeatherParameters);

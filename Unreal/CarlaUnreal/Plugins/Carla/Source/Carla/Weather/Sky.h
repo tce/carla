@@ -77,24 +77,24 @@ public:
 
 
 
-private:
+protected:
 
-	UPROPERTY(Category = "Components")
+	UPROPERTY(BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UDirectionalLightComponent> DirectionalLight;
 
-	UPROPERTY(Category = "Components")
+	UPROPERTY(BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USkyLightComponent> SkyLight;
 
-	UPROPERTY(Category = "Components")
+	UPROPERTY(BlueprintReadWrite, Category = "Components")
 	TObjectPtr<USkyAtmosphereComponent> SkyAtmosphere;
 
-	UPROPERTY(Category = "Components")
+	UPROPERTY(BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UExponentialHeightFogComponent> ExponentialHeightFog;
 
-	UPROPERTY(Category = "Components")
+	UPROPERTY(BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UVolumetricCloudComponent> VolumetricCloud;
 
-	UPROPERTY(Category = "Components")
+	UPROPERTY(BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UPostProcessComponent> PostProcess;
 
 };

@@ -1,5 +1,6 @@
 #include "Sky.h"
 #include "SkyParameters.h"
+#include "WeatherParameters.h"
 #include "Components/DirectionalLightComponent.h"
 #include "Components/SkyLightComponent.h"
 #include "Components/SkyAtmosphereComponent.h"
@@ -18,11 +19,11 @@ ASky::ASky(const FObjectInitializer& ObjectInitializer) :
 	ExponentialHeightFog = CreateDefaultSubobject<UExponentialHeightFogComponent>(TEXT("ASky::ExponentialHeightFog"));
 }
 
-void ASky::UpdateParameters(const FSkyParameters& SkyParameters)
+void ASky::UpdateParameters(const FSkyParameters& Parameters)
 {
 }
 
-void ASky::UpdateParameters(const FWeatherParameters& WeatherParameters)
+void ASky::UpdateParameters(const FWeatherParameters& Parameters)
 {
 }
 
