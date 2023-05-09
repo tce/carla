@@ -1,4 +1,5 @@
 #pragma once
+#include "SkyParameters.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Sky.generated.h"
@@ -17,45 +18,19 @@ struct FWeatherParameters;
 
 
 UCLASS(BlueprintType)
-class CARLA_API ASky : public AActor
+class CARLA_API ASky :
+	public AActor
 {
 	GENERATED_BODY()
+
+	void Setup(const FSkyParameters& SkyParameters);
+
 public:
 
 	ASky(const FObjectInitializer& ObjectInitializer);
+	ASky(const FObjectInitializer& ObjectInitializer, const FSkyParameters& SkyParameters);
 
 	
-	
-	void UpdateParameters(const FSkyParameters& SkyParameters);
-	void UpdateParameters(const FWeatherParameters& WeatherParameters);
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateSkyParameters(const FSkyParameters& SkyParameters) { UpdateParameters(SkyParameters); }
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateWeatherParameters(const FWeatherParameters& WeatherParameters) { UpdateParameters(WeatherParameters); }
-
-
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateDirectionalLight();
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateSkyLight();
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateSkyAtmosphere();
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateExponentialHeightFog();
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateVolumetricCloud();
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdatePostProcess();
-
-
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDirectionalLightComponent* GetDirectionalLight() const { return DirectionalLight; }
@@ -75,26 +50,62 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UPostProcessComponent* GetPostProcess() const { return PostProcess; }
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	const FSkyParameters& GetActiveParameters() const { return Parameters; }
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static FSkyParameters DeriveSkyParametersFromWeatherParameters(const FWeatherParameters& WeatherParameters);
 
 
-protected:
 
-	UPROPERTY(BlueprintReadWrite, Category = "Components")
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void SetSkyParameters(const FSkyParameters& SkyParameters);
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void SetWeatherParameters(const FWeatherParameters& WeatherParameters);
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void UpdateDirectionalLight();
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void UpdateSkyLight();
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void UpdateSkyAtmosphere();
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void UpdateExponentialHeightFog();
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void UpdateVolumetricCloud();
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void UpdatePostProcess();
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void UpdateChildComponents();
+
+
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+	FSkyParameters Parameters;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
 	TObjectPtr<UDirectionalLightComponent> DirectionalLight;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Components")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
 	TObjectPtr<USkyLightComponent> SkyLight;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Components")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
 	TObjectPtr<USkyAtmosphereComponent> SkyAtmosphere;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Components")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
 	TObjectPtr<UExponentialHeightFogComponent> ExponentialHeightFog;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Components")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
 	TObjectPtr<UVolumetricCloudComponent> VolumetricCloud;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Components")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
 	TObjectPtr<UPostProcessComponent> PostProcess;
 
 };

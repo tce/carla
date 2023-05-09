@@ -1,9 +1,13 @@
 #include "SkyParameters.h"
-#include "WeatherParameters.h"
 
-FSkyParameters WeatherParametersToSkyParameters(const FWeatherParameters& WeatherParameters)
+FMiscellaneousParameters::FMiscellaneousParameters() :
+	Altitude(),
+	Azimuth(),
+	Clouds(),
+	Fog(),
+	Falloff(),
+	FogDistance(),
+	DenseFogColor(),
+	PostProcessSettings()
 {
-    FSkyParameters Result = {};
-
-    return Result;
 }
