@@ -1,6 +1,7 @@
 #pragma once
-#include "SkyParameters.h"
 #include "CoreMinimal.h"
+#include "SkyParameters.h"
+#include "WeatherReflectionRange.h"
 #include "GameFramework/Actor.h"
 #include "Sky.generated.h"
 
@@ -12,6 +13,7 @@ class USkyAtmosphereComponent;
 class UExponentialHeightFogComponent;
 class UVolumetricCloudComponent;
 class UPostProcessComponent;
+class ULevelStreamingDynamic;
 struct FSkyParameters;
 struct FWeatherParameters;
 
@@ -107,5 +109,15 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
 	TObjectPtr<UPostProcessComponent> PostProcess;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+	TArray<FWeatherReflectionRange> WeatherReflectionRanges;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+	TMap<FString, TObjectPtr<ULevelStreamingDynamic>> ReflectionSublevelMap;
+
+	FString CurrentLoadedLevel;
+
+	FString DefaultReflectionLevel;
 
 };

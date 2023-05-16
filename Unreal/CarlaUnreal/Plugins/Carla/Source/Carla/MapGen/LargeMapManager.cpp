@@ -6,14 +6,16 @@
 
 #include "Engine/WorldComposition.h"
 #include "Engine/EngineTypes.h"
+#include "Engine/ObjectLibrary.h"
 #include "Components/PrimitiveComponent.h"
 #include "Landscape.h"
 #include "LandscapeHeightfieldCollisionComponent.h"
 #include "LandscapeComponent.h"
-
+#include "Kismet/GameplayStatics.h"
 #include "UncenteredPivotPointMesh.h"
 
 #include "Walker/WalkerBase.h"
+#include "Carla/Game/CarlaStatics.h"
 #include "Carla/Game/Tagger.h"
 #include "Carla/Vehicle/CustomTerrainPhysicsComponent.h"
 

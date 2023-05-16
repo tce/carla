@@ -6,6 +6,7 @@
 #include "Components/VolumetricCloudComponent.h"
 #include "Components/PostProcessComponent.h"
 #include "Components/ExponentialHeightFogComponent.h"
+#include "Engine/LevelStreamingDynamic.h"
 
 void ASky::Setup(const FSkyParameters& SkyParameters)
 {
@@ -15,6 +16,7 @@ void ASky::Setup(const FSkyParameters& SkyParameters)
 	VolumetricCloud = CreateDefaultSubobject<UVolumetricCloudComponent>(TEXT("ASky::VolumetricCloud"));
 	PostProcess = CreateDefaultSubobject<UPostProcessComponent>(TEXT("ASky::PostProcess"));
 	ExponentialHeightFog = CreateDefaultSubobject<UExponentialHeightFogComponent>(TEXT("ASky::ExponentialHeightFog"));
+	UpdateChildComponents();
 }
 
 ASky::ASky(const FObjectInitializer& ObjectInitializer) :
@@ -59,6 +61,9 @@ void ASky::UpdateDirectionalLight()
 	DirectionalLight->SetTemperature(Params.Temperature);
 	DirectionalLight->SetEnableLightShaftOcclusion(Params.EnableLightShaftOcclusion);
 	DirectionalLight->SetEnableLightShaftBloom(Params.EnableLightShaftBloom);
+	DirectionalLight->SetVolumetricScatteringIntensity(Params.ScatteringIntensity);
+	DirectionalLight->SetDynamicShadowDistanceMovableLight(Parameters.Shadows.CascadeShadowDistance);
+	DirectionalLight->ContactShadowLength = Parameters.Shadows.ContactShadowLength;
 	DirectionalLight->Activate();
 }
 
@@ -68,17 +73,21 @@ void ASky::UpdateSkyLight()
 	SkyLight->Deactivate();
 	SkyLight->SetIntensity(Params.Intensity);
 	SkyLight->SetLightColor(Params.Color);
+	SkyLight->SetOcclusionContrast(Parameters.Shadows.DFAOContrast);
+	SkyLight->SetOcclusionExponent(Parameters.Shadows.DFAOExponent);
+	SkyLight->SetMinOcclusion(Parameters.Shadows.DFAOMinOcclusion);
+	SkyLight->SetOcclusionTint(Parameters.Shadows.DFAOTint);
 	SkyLight->Activate();
 }
 
 void ASky::UpdateSkyAtmosphere()
 {
 	const auto& Params = Parameters.SkyAtmosphere;
-	PostProcess->Deactivate();
-	// float AirParticlesDensity;
-	// float PollutionParticlesDensity;
-	// float ScatteringIntensity;
-	PostProcess->Activate();
+	SkyAtmosphere->Deactivate();
+	SkyAtmosphere->SetRayleighScatteringScale(Params.AirParticlesDensity);
+	SkyAtmosphere->SetMieScatteringScale(Params.PollutionParticlesDensity);
+	SkyAtmosphere->SetHeightFogContribution(Params.HeightFogContribution);
+	SkyAtmosphere->Activate();
 }
 
 void ASky::UpdateExponentialHeightFog()
@@ -86,8 +95,9 @@ void ASky::UpdateExponentialHeightFog()
 	const auto& Params = Parameters.ExponentialHeightFog;
 	ExponentialHeightFog->Deactivate();
 	ExponentialHeightFog->SetFogInscatteringColor(Params.Color);
-	// ExponentialHeightFog->SkyAtmosphereAmbientContributionColorScale(Params.Contribution);
 	ExponentialHeightFog->SetFogDensity(Params.Density);
+	ExponentialHeightFog->SetFogHeightFalloff(Params.Falloff);
+	ExponentialHeightFog->SetVolumetricFog(Params.VolumetricEnable);
 	ExponentialHeightFog->Activate();
 }
 

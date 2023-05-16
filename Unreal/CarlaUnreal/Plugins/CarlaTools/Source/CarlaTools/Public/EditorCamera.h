@@ -19,14 +19,14 @@ class CARLATOOLS_API AEditorCameraUtils :
 public:
 
     UFUNCTION(BlueprintCallable, CallInEditor)
-        void Get();
+    void Get();
 
     UFUNCTION(BlueprintCallable, CallInEditor)
-        void Set();
+    void Set();
 
 
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
-        FTransform CameraTransform;
+    FTransform CameraTransform;
 
 };
