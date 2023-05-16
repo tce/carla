@@ -27,8 +27,8 @@ ASensor::ASensor(const FObjectInitializer &ObjectInitializer)
 void ASensor::BeginPlay()
 {
   Super::BeginPlay();
-  UCarlaEpisode* Episode = UCarlaStatics::GetCurrentEpisode(GetWorld());
-  FSensorManager& SensorManager = Episode->GetSensorManager();
+  UCarlaEpisode* CurrentEpisode = UCarlaStatics::GetCurrentEpisode(GetWorld());
+  FSensorManager& SensorManager = CurrentEpisode->GetSensorManager();
   SensorManager.RegisterSensor(this);
 }
 
@@ -100,7 +100,7 @@ void ASensor::PostActorCreated()
 void ASensor::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
   Super::EndPlay(EndPlayReason);
-  
+
   // close all sessions associated to the sensor stream
   auto *GameInstance = UCarlaStatics::GetGameInstance(GetEpisode().GetWorld());
   auto &StreamingServer = GameInstance->GetServer().GetStreamingServer();
@@ -109,10 +109,10 @@ void ASensor::EndPlay(EEndPlayReason::Type EndPlayReason)
 
   Stream = FDataStream();
 
-  UCarlaEpisode* Episode = UCarlaStatics::GetCurrentEpisode(GetWorld());
-  if(Episode)
+  UCarlaEpisode* CurrentEpisode = UCarlaStatics::GetCurrentEpisode(GetWorld());
+  if(CurrentEpisode)
   {
-    FSensorManager& SensorManager = Episode->GetSensorManager();
+    FSensorManager& SensorManager = CurrentEpisode->GetSensorManager();
     SensorManager.DeRegisterSensor(this);
   }
 }
