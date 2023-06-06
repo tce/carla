@@ -23,16 +23,16 @@ void ASoilTypeManager::Tick(float DeltaTime)
 #if WITH_EDITOR // Only for debugging purposes. Requires to activate tick in contructor
   if((int)DeltaTime % 2000 == 0)
   {
-    ALargeMapManager* LargeMapManager = (ALargeMapManager*) UGameplayStatics::GetActorOfClass(GetWorld(), ALargeMapManager::StaticClass());
+    ALargeMapManager* Manager = (ALargeMapManager*) UGameplayStatics::GetActorOfClass(GetWorld(), ALargeMapManager::StaticClass());
     AActor* Car = UGameplayStatics::GetActorOfClass(GetWorld(), CarClass);
 
     if(Car != nullptr)
     {
       FVector CarPos = Car->GetActorLocation();
 
-      FVector GlobalCarPos = LargeMapManager->LocalToGlobalLocation(CarPos);
-      FIntVector TileVector = LargeMapManager->GetTileVectorID(GlobalCarPos);
-      uint64 TileIndex = LargeMapManager->GetTileID(GlobalCarPos);
+      FVector GlobalCarPos = Manager->LocalToGlobalLocation(CarPos);
+      FIntVector TileVector = Manager->GetTileVectorID(GlobalCarPos);
+      uint64 TileIndex = Manager->GetTileID(GlobalCarPos);
 
       FString TypeStr = GetTerrainPropertiesAtGlobalLocation(GlobalCarPos).ToString();
       

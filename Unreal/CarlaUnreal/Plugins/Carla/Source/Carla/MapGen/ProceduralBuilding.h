@@ -107,7 +107,7 @@ protected:
   TArray<UChildActorComponent*> ChildActorComps;
 
   UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Procedural Building")
-  UStaticMeshComponent* RootSMComp = nullptr;
+  TObjectPtr<UStaticMeshComponent> RootSMComp = nullptr;
 
   /**
    *  Base Parameters

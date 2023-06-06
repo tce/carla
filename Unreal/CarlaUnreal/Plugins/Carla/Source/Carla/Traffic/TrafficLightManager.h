@@ -98,7 +98,7 @@ private:
   TMap<FString, TSubclassOf<AActor>> SpeedLimitModels;
 
   UPROPERTY(Category = "Traffic Light Manager", VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  USceneComponent *SceneComponent;
+  TObjectPtr<USceneComponent> SceneComponent;
 
   UPROPERTY(EditAnywhere, Category= "Traffic Light Manager")
   bool TrafficLightsGenerated = false;

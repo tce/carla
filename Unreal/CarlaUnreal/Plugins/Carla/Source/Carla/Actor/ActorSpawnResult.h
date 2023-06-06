@@ -8,6 +8,8 @@
 
 #include "ActorSpawnResult.generated.h"
 
+class AActor;
+
 /// List of valid types for actor attributes.
 UENUM(BlueprintType)
 enum class EActorSpawnResultStatus : uint8
@@ -42,7 +44,7 @@ struct FActorSpawnResult
   }
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  AActor *Actor = nullptr;
+  TObjectPtr<AActor> Actor = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   EActorSpawnResultStatus Status = EActorSpawnResultStatus::UnknownError;

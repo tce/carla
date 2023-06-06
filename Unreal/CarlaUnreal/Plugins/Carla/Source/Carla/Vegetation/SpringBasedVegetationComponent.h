@@ -214,7 +214,7 @@ private:
 
 public:
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spring Based Vegetation Component")
-  USkeletalMeshComponent* SkeletalMesh;
+  TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spring Based Vegetation Component")
   TArray<UPrimitiveComponent*> BoneCapsules;

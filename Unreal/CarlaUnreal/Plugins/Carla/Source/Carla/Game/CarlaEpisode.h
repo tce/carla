@@ -371,18 +371,18 @@ private:
   FEpisodeSettings EpisodeSettings;
 
   UPROPERTY(VisibleAnywhere)
-  UActorDispatcher *ActorDispatcher = nullptr;
+  TObjectPtr<UActorDispatcher> ActorDispatcher = nullptr;
 
   UPROPERTY(VisibleAnywhere)
-  APawn *Spectator = nullptr;
+  TObjectPtr<APawn> Spectator = nullptr;
 
   UPROPERTY(VisibleAnywhere)
-  AWeather *Weather = nullptr;
+  TObjectPtr<AWeather> Weather = nullptr;
   
   UPROPERTY(VisibleAnywhere)
-  UMaterialParameterCollectionInstance *MaterialParameters = nullptr;
+  TObjectPtr<UMaterialParameterCollectionInstance> MaterialParameters = nullptr;
 
-  ACarlaRecorder *Recorder = nullptr;
+  TObjectPtr<ACarlaRecorder> Recorder = nullptr;
 
   carla::geom::GeoLocation MapGeoReference;
 

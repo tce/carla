@@ -1,5 +1,4 @@
 #pragma once
-#include "CoreMinimal.h"
 #include "SkyParameters.h"
 #include "WeatherReflectionRange.h"
 #include "GameFramework/Actor.h"
@@ -14,12 +13,13 @@ class UExponentialHeightFogComponent;
 class UVolumetricCloudComponent;
 class UPostProcessComponent;
 class ULevelStreamingDynamic;
+class UStaticMeshComponent;
 struct FSkyParameters;
 struct FWeatherParameters;
 
 
 
-UCLASS(BlueprintType)
+UCLASS(Abstract)
 class CARLA_API ASky :
 	public AActor
 {
@@ -34,6 +34,48 @@ public:
 
 	
 	
+	UFUNCTION(BlueprintCallable)
+	void SetDirectionalLight(UDirectionalLightComponent* InDirectionalLight);
+
+	UFUNCTION(BlueprintCallable)
+	void SetSkyLight(USkyLightComponent* InSkyLight);
+
+	UFUNCTION(BlueprintCallable)
+	void SetSkyAtmosphere(USkyAtmosphereComponent* InSkyAtmosphere);
+
+	UFUNCTION(BlueprintCallable)
+	void SetExponentialHeightFog(UExponentialHeightFogComponent* InExponentialHeightFog);
+
+	UFUNCTION(BlueprintCallable)
+	void SetVolumetricCloud(UVolumetricCloudComponent* InVolumetricCloud);
+
+	UFUNCTION(BlueprintCallable)
+	void SetPostProcess(UPostProcessComponent* InPostProcess);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetPlanetMesh(UStaticMeshComponent* InStaticMesh);
+
+
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float GetSolarTime() const { return SolarTime; }
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static FTimespan GetTimespanFromSolarTime(float SolarTime);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FTimespan GetTimeOfDay() const;
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static bool IsValidDateTime(FDateTime DateTime);
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsDaylightSavingTime(
+		FDateTime CurrentDate,
+		int32 StartMonth, int32 StartDay,
+		int32 EndMonth, int32 EndDay,
+		int32 SwitchHour) const;
+
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDirectionalLightComponent* GetDirectionalLight() const { return DirectionalLight; }
 
@@ -51,20 +93,29 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UPostProcessComponent* GetPostProcess() const { return PostProcess; }
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UStaticMeshComponent* GetPlanetMesh() const { return PlanetMesh; }
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	const FSkyParameters& GetActiveParameters() const { return Parameters; }
+	const FSkyParameters& GetSkyParameters() const { return Parameters; }
+	
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static FSkyParameters DeriveSkyParametersFromWeatherParameters(const FWeatherParameters& WeatherParameters);
-
-
-
+	
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void SetSunPosition(
+		float Latitude,
+		float Longitude,
+		float TimeZone,
+		bool IsDaylightSavingTime,
+		FDateTime DateTime,
+		float NorthOffset);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetSolarTime(float NewSolarTime);
+	
 	UFUNCTION(BlueprintCallable, CallInEditor)
 	void SetSkyParameters(const FSkyParameters& SkyParameters);
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void SetWeatherParameters(const FWeatherParameters& WeatherParameters);
 
 	UFUNCTION(BlueprintCallable, CallInEditor)
 	void UpdateDirectionalLight();
@@ -87,37 +138,50 @@ public:
 	UFUNCTION(BlueprintCallable, CallInEditor)
 	void UpdateChildComponents();
 
+	UFUNCTION(BlueprintCallable)
+	void SetSunRotationFromAltitudeAndAzimuth(float Altitude, float Azimuth);
+
 
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
 	FSkyParameters Parameters;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+protected:
+
+	UPROPERTY(EditAnywhere)
+	float SolarTime;
+
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UDirectionalLightComponent> DirectionalLight;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<USkyLightComponent> SkyLight;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<USkyAtmosphereComponent> SkyAtmosphere;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UExponentialHeightFogComponent> ExponentialHeightFog;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UVolumetricCloudComponent> VolumetricCloud;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UPostProcessComponent> PostProcess;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UStaticMeshComponent> PlanetMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FWeatherReflectionRange> WeatherReflectionRanges;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FString, TObjectPtr<ULevelStreamingDynamic>> ReflectionSublevelMap;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString CurrentLoadedLevel;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString DefaultReflectionLevel;
 
 };

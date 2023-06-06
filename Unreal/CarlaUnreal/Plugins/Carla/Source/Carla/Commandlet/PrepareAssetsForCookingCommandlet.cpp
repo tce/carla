@@ -216,15 +216,15 @@ TArray<AStaticMeshActor *> UPrepareAssetsForCookingCommandlet::SpawnMeshesToWorl
           // tag
           if (AssetName.Contains(SSTags::R_MARKING1) || AssetName.Contains(SSTags::R_MARKING2))
           {
-            for (int32 i = 0; i < MeshActor->GetStaticMeshComponent()->GetStaticMesh()->GetStaticMaterials().Num(); ++i)
+            for (int32 k = 0; k < MeshActor->GetStaticMeshComponent()->GetStaticMesh()->GetStaticMaterials().Num(); ++k)
             {
-              if (MeshActor->GetStaticMeshComponent()->GetStaticMesh()->GetStaticMaterials()[i].ImportedMaterialSlotName.ToString().Contains("Yellow"))
+              if (MeshActor->GetStaticMeshComponent()->GetStaticMesh()->GetStaticMaterials()[k].ImportedMaterialSlotName.ToString().Contains("Yellow"))
               {
-                MeshActor->GetStaticMeshComponent()->SetMaterial(i, MarkingNodeYellow);
+                MeshActor->GetStaticMeshComponent()->SetMaterial(k, MarkingNodeYellow);
               }
               else
               {
-                MeshActor->GetStaticMeshComponent()->SetMaterial(i, MarkingNodeWhite);
+                MeshActor->GetStaticMeshComponent()->SetMaterial(k, MarkingNodeWhite);
               }
             }
           }

@@ -45,8 +45,10 @@ void FPixelReader::WritePixelsToBuffer(
   // workaround to force RHI with Vulkan to refresh the fences state in the middle of frame:
   {
       static thread_local auto QueryPool = RHICreateRenderQueryPool(RQT_AbsoluteTime);
+
       auto Query = QueryPool->AllocateQuery();
       auto QueryPtr = Query.GetQuery();
+
       {
           TRACE_CPUPROFILER_EVENT_SCOPE_STR("create query");
           RHICmdList.EndRenderQuery(QueryPtr);
@@ -57,8 +59,8 @@ void FPixelReader::WritePixelsToBuffer(
       }
       {
           TRACE_CPUPROFILER_EVENT_SCOPE_STR("query result");
-          uint64 OldAbsTime = 0;
-          RHICmdList.GetRenderQueryResult(QueryPtr, OldAbsTime, true);
+          uint64 Unused = 0;
+          RHIGetRenderQueryResult(QueryPtr, Unused, true);
       }
   }
 

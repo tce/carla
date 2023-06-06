@@ -107,5 +107,5 @@ private:
   TArray<ATrafficLightBase *> GroupTrafficLights;
 
   UPROPERTY(Category = "Traffic Light", EditAnywhere)
-  UTrafficLightComponent * TrafficLightComponent = nullptr;
+  TObjectPtr<UTrafficLightComponent> TrafficLightComponent = nullptr;
 };

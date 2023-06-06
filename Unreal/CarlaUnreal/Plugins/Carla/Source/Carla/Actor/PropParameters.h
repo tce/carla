@@ -33,7 +33,7 @@ struct CARLA_API FPropParameters
   FString Name;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UStaticMesh *Mesh;
+  TObjectPtr<UStaticMesh> Mesh;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   EPropSize Size = EPropSize::INVALID;

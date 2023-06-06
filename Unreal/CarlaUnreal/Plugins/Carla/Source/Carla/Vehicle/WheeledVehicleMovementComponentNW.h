@@ -7,6 +7,7 @@
 #pragma once
 #include "Curves/CurveFloat.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "ChaosWheeledVehicleMovementComponent.h"
 #include "WheeledVehicleMovementComponentNW.generated.h"
 
 USTRUCT()
@@ -112,21 +113,22 @@ struct FVehicleNWTransmissionData
 };
 
 UCLASS(ClassGroup = (Physics), meta = (BlueprintSpawnableComponent), hidecategories = (PlanarMovement, "Components|Movement|Planar", Activation, "Components|Activation"))
-class CARLA_API UWheeledVehicleMovementComponentNW : public UPawnMovementComponent // @CARLA_UE5
+class CARLA_API UWheeledVehicleMovementComponentNW :
+	public UChaosWheeledVehicleMovementComponent
 {
 	GENERATED_UCLASS_BODY()
 
 		/** Engine */
 	UPROPERTY(EditAnywhere, Category = MechanicalSetup)
-	FVehicleNWEngineData EngineSetup;
+	FVehicleNWEngineData CarlaEngineSetup;
 
 	/** Differential */
 	UPROPERTY(EditAnywhere, Category = MechanicalSetup)
-	TArray<FVehicleNWWheelDifferentialData> DifferentialSetup;
+	TArray<FVehicleNWWheelDifferentialData> CarlaDifferentialSetup;
 
 	/** Transmission data */
 	UPROPERTY(EditAnywhere, Category = MechanicalSetup)
-	FVehicleNWTransmissionData TransmissionSetup;
+	FVehicleNWTransmissionData CarlaTransmissionSetup;
 
 	/** Maximum steering versus forward speed (km/h) */
 	UPROPERTY(EditAnywhere, Category = SteeringSetup)
@@ -140,14 +142,8 @@ class CARLA_API UWheeledVehicleMovementComponentNW : public UPawnMovementCompone
 
 protected:
 
-#if 0 // @CARLA_UE5
-	virtual const void* GetTireData(physx::PxVehicleWheels* Wheels, UChaosVehicleWheel* Wheel);
-	virtual const int32 GetWheelShapeMapping(physx::PxVehicleWheels* Wheels, uint32 Wheel);
-	virtual const physx::PxVehicleWheelData GetWheelData(physx::PxVehicleWheels* Wheels, uint32 Wheel);
-#endif
-
-	/** Allocate and setup the PhysX vehicle */
-	void SetupVehicle();
+	/** Allocate and setup the Chaos vehicle */
+	void SetupVehicle(TUniquePtr<Chaos::FSimpleWheeledVehicle>& PVehicle) override;
 
 	virtual int32 GetCustomGearBoxNumForwardGears() const;
 

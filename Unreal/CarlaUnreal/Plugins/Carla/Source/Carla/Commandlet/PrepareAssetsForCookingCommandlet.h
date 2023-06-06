@@ -149,44 +149,44 @@ private:
   /// Used for loading maps in object library. Loaded Data is stored in
   /// AssetDatas.
   UPROPERTY()
-  UObjectLibrary *MapObjectLibrary;
+  TObjectPtr<UObjectLibrary> MapObjectLibrary;
 
   /// Used for loading assets in object library. Loaded Data is stored in
   /// AssetDatas.
   UPROPERTY()
-  UObjectLibrary *AssetsObjectLibrary;
+  TObjectPtr<UObjectLibrary> AssetsObjectLibrary;
 
   /// Base map world loaded from Carla Content
   UPROPERTY()
-  UWorld *World;
+  TObjectPtr<UWorld> World;
 
   /// Workaround material for the RoadNode mesh
   UPROPERTY()
-  UMaterialInstance *RoadNodeMaterial;
+  TObjectPtr<UMaterialInstance> RoadNodeMaterial;
 
   /// Material to apply to curbs on the road
   UPROPERTY()
-  UMaterialInstance *CurbNodeMaterialInstance;
+  TObjectPtr<UMaterialInstance> CurbNodeMaterialInstance;
 
   /// Material to apply to gutters on the road
   UPROPERTY()
-  UMaterialInstance *GutterNodeMaterialInstance;
+  TObjectPtr<UMaterialInstance> GutterNodeMaterialInstance;
 
   /// Workaround material for the center lane markings
   UPROPERTY()
-  UMaterialInstance *MarkingNodeYellow;
+  TObjectPtr<UMaterialInstance> MarkingNodeYellow;
 
   /// Workaround material for exterior lane markings
   UPROPERTY()
-  UMaterialInstance *MarkingNodeWhite;
+  TObjectPtr<UMaterialInstance> MarkingNodeWhite;
 
   /// Workaround material for the TerrainNodes
   UPROPERTY()
-  UMaterialInstance *TerrainNodeMaterialInstance;
+  TObjectPtr<UMaterialInstance> TerrainNodeMaterialInstance;
 
   /// Workaround material for the SidewalkNodes
   UPROPERTY()
-  UMaterialInstance *SidewalkNodeMaterialInstance;
+  TObjectPtr<UMaterialInstance> SidewalkNodeMaterialInstance;
 
   /// Saves @a Package in .umap format in path @a PackagePath inside Unreal
   /// Content folder

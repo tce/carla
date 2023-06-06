@@ -59,7 +59,7 @@ struct FVehicleActorDefinition
 
   /// Assign a static mesh into the actor.
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
-  UStaticMesh* mesh;
+  TObjectPtr<UStaticMesh> mesh;
 
   /// Colors represent the avaliable colors for each actor
   UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -73,7 +73,7 @@ public:
   float Friction = 0.0f;
 
   UPROPERTY(EditAnywhere)
-  UBoxComponent *TriggerVolume;
+  TObjectPtr<UBoxComponent> TriggerVolume;
 
-  const UCarlaEpisode *Episode = nullptr;
+  TObjectPtr<const UCarlaEpisode> Episode = nullptr;
 };

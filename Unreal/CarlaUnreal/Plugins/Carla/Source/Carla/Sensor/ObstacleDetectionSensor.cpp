@@ -134,10 +134,10 @@ void AObstacleDetectionSensor::OnObstacleDetectionEvent(
 {
   if ((Actor != nullptr) && (OtherActor != nullptr))
   {
-    const auto &Episode = GetEpisode();
+    const auto &CurrentEpisode = GetEpisode();
     GetDataStream(*this).Send(*this,
-        Episode.SerializeActor(Actor),
-        Episode.SerializeActor(OtherActor),
+        CurrentEpisode.SerializeActor(Actor),
+        CurrentEpisode.SerializeActor(OtherActor),
         HitDistance/100.0f);
   }
 }

@@ -78,7 +78,6 @@ static auto FWorldObserver_GetActorState(const FCarlaActor &View, const FActorRe
   }
   else if (AType::TrafficLight == View.GetActorType())
   {
-#if 0 // @CARLA_UE5
     auto TrafficLight = Cast<ATrafficLightBase>(View.GetActor());
     if (TrafficLight != nullptr)
     {
@@ -135,7 +134,6 @@ static auto FWorldObserver_GetActorState(const FCarlaActor &View, const FActorRe
         }
       }
     }
-#endif
   }
   else if (AType::TrafficSign == View.GetActorType())
   {
@@ -172,16 +170,15 @@ static auto FWorldObserver_GetDormantActorState(const FCarlaActor &View, const F
 
   if (AType::Vehicle == View.GetActorType())
   {
-      const FVehicleData* ActorData = nullptr; // View.GetActorData<FVehicleData>();
-      state.vehicle_data.control = carla::rpc::VehicleControl{ActorData->Control};
+      auto VehicleData = View.GetActorData<FVehicleData>();
+      state.vehicle_data.control = carla::rpc::VehicleControl{VehicleData->Control};
       using TLS = carla::rpc::TrafficLightState;
       state.vehicle_data.traffic_light_state = TLS::Green;
-      state.vehicle_data.speed_limit = ActorData->SpeedLimit;
+      state.vehicle_data.speed_limit = VehicleData->SpeedLimit;
       state.vehicle_data.has_traffic_light = false;
   }
   else if (AType::Walker == View.GetActorType())
   {
-#if 1 // @CARLA_UE5
     const FWalkerData* ActorData = View.GetActorData<FWalkerData>();
     auto Walker = Cast<APawn>(View.GetActor());
     auto Controller = Walker != nullptr ? Cast<AWalkerController>(Walker->GetController()) : nullptr;
@@ -190,11 +187,9 @@ static auto FWorldObserver_GetDormantActorState(const FCarlaActor &View, const F
       state.walker_control = carla::rpc::WalkerControl{Controller->GetWalkerControl()};
     }
     state.walker_control = ActorData->WalkerControl;
-#endif
   }
   else if (AType::TrafficLight == View.GetActorType())
   {
-#if 0 // @CARLA_UE5
     const FTrafficLightData* ActorData = View.GetActorData<FTrafficLightData>();
     const UTrafficLightController* Controller = ActorData->Controller;
     if(Controller)
@@ -227,13 +222,11 @@ static auto FWorldObserver_GetDormantActorState(const FCarlaActor &View, const F
         state.traffic_light_data.pole_index = ActorData->PoleIndex;
       }
     }
-#endif
   }
   else if (AType::TrafficSign == View.GetActorType())
   {
-#if 0 // @CARLA_UE5
-    const FTrafficSignData* ActorData = View.GetActorData<FTrafficSignData>();
-    const FString fstring_sign_id = ActorData->SignId;
+    auto ActorData = View.GetActorData<FTrafficSignData>();
+    auto fstring_sign_id = ActorData->SignId;
     const std::string sign_id = carla::rpc::FromFString(fstring_sign_id);
     constexpr size_t max_size = sizeof(state.traffic_sign_data.sign_id);
     size_t sign_id_length = sign_id.length();
@@ -244,7 +237,6 @@ static auto FWorldObserver_GetDormantActorState(const FCarlaActor &View, const F
     }
     std::memset(state.traffic_light_data.sign_id, '\0', max_size);
     std::memcpy(state.traffic_sign_data.sign_id, sign_id.c_str(), sign_id_length);
-#endif
   }
   return state;
 }

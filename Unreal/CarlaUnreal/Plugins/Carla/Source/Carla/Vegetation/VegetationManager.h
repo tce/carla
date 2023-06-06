@@ -33,8 +33,8 @@ USTRUCT()
 struct FTileData
 {
   GENERATED_BODY()
-  AInstancedFoliageActor* InstancedFoliageActor {nullptr};
-  AProceduralFoliageVolume* ProceduralFoliageVolume {nullptr};
+  TObjectPtr<AInstancedFoliageActor> InstancedFoliageActor {nullptr};
+  TObjectPtr<AProceduralFoliageVolume> ProceduralFoliageVolume {nullptr};
   TArray<std::shared_ptr<FTileMeshComponent>> TileMeshesCache {};
   TArray<UMaterialInstanceDynamic*> MaterialInstanceDynamicCache {};
 
@@ -62,7 +62,7 @@ struct FPooledActor
   GENERATED_BODY()
   bool InUse { false };
   bool IsActive { false };
-  AActor* Actor { nullptr };
+  TObjectPtr<AActor> Actor { nullptr };
   FTransform GlobalTransform {FTransform()};
   int32 Index {-1};
   std::shared_ptr<FTileMeshComponent> TileMeshComponent {nullptr};
@@ -172,8 +172,8 @@ private:
   float PoolTranslationTimer {30.0f};
   FTransform InactivePoolTransform { FQuat(1.0f, 1.0f, 1.0f, 1.0f), FVector(1.0f, 1.0f, 1.0f), FVector(1.0f, 1.0f, 1.0f)};
   //Actors
-  ALargeMapManager* LargeMap {nullptr};
-  ACarlaWheeledVehicle* HeroVehicle {nullptr};
+  TObjectPtr<ALargeMapManager> LargeMap{ nullptr };
+  TObjectPtr<ACarlaWheeledVehicle> HeroVehicle {nullptr};
   //Caches
   TMap<FString, FFoliageBlueprint> FoliageBlueprintCache {};
   TMap<FString, FTileData> TileCache {};

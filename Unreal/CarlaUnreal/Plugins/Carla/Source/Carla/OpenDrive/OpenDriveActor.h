@@ -26,10 +26,10 @@ class CARLA_API AOpenDriveActor : public AActor
 protected:
 
   /// A UBillboardComponent to hold Icon sprite
-  UBillboardComponent *SpriteComponent;
+  TObjectPtr<UBillboardComponent> SpriteComponent;
 
   /// Sprite for the Billboard Component
-  UTexture2D *SpriteTexture;
+  TObjectPtr<UTexture2D> SpriteTexture;
 
 private:
 

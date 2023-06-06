@@ -74,5 +74,5 @@ private:
   /// Used for loading assets in object library. Loaded Data is stored in
   /// AssetDatas.
   UPROPERTY()
-  UObjectLibrary *AssetsObjectLibrary;
+  TObjectPtr<UObjectLibrary> AssetsObjectLibrary;
 };

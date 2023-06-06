@@ -15,9 +15,11 @@ class CARLA_API AEmptyActor : public APawn
   GENERATED_BODY()
 
 public:
+
   AEmptyActor(const FObjectInitializer &ObjectInitializer);
 
 private:
+
   UPROPERTY(Category="Empty Actor", VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  USceneComponent* RootSceneComponent;
+  TObjectPtr<USceneComponent> RootSceneComponent;
 };

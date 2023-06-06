@@ -5,46 +5,15 @@
 
 
 USTRUCT(BlueprintType)
-struct CARLA_API FSkyParametersMiscellaneous
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Altitude = 1.0F;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Azimuth = 1.0F;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Clouds = 1.0F;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Fog = 1.0F;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Falloff = 1.0F;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FogDistance = 1.0F;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FLinearColor DenseFogColor = FLinearColor(0.4F, 0.4F, 0.4F, 1.0F);
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FPostProcessSettings PostProcessSettings;
-
-	FSkyParametersMiscellaneous();
-	FSkyParametersMiscellaneous(const FSkyParametersMiscellaneous&) = default;
-	FSkyParametersMiscellaneous& operator=(const FSkyParametersMiscellaneous&) = default;
-	~FSkyParametersMiscellaneous() = default;
-};
-
-
-
-USTRUCT(BlueprintType)
 struct CARLA_API FSkyParametersDirectionalLight
 {
 	GENERATED_BODY()
+		
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SunAltitude = 45.0F;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SunAzimuth = 360.0F;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLinearColor Color = FLinearColor::White;
@@ -63,6 +32,7 @@ struct CARLA_API FSkyParametersDirectionalLight
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool EnableLightShaftBloom = true;
+	
 };
 
 
@@ -77,6 +47,7 @@ struct CARLA_API FSkyParametersSkyLight
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Intensity = 1.0F;
+	
 };
 
 
@@ -105,15 +76,19 @@ struct CARLA_API FSkyParametersExponentialHeightFog
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLinearColor Color = FLinearColor(0.296875F, 0.296875F, 0.296875F, 1.0F);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Falloff = 0.02F;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Falloff = 0.2F;
-
+	float Density = 0.2F;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Density = 0.01F;
+	float FogDistance = 0.75F;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool VolumetricEnable = true;
+	
 };
 
 
@@ -123,6 +98,7 @@ struct CARLA_API FSkyParametersVolumetricCloud
 {
 	GENERATED_BODY()
 };
+
 
 
 USTRUCT(BlueprintType)
@@ -150,13 +126,11 @@ struct CARLA_API FSkyParametersShadows
 };
 
 
+
 USTRUCT(BlueprintType)
 struct CARLA_API FSkyParameters
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FSkyParametersMiscellaneous Miscellaneous;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FSkyParametersDirectionalLight DirectionalLight;
@@ -175,4 +149,41 @@ struct CARLA_API FSkyParameters
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FSkyParametersShadows Shadows;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FPostProcessSettings PostProcessSettings;
+
+};
+
+
+
+USTRUCT(BlueprintType)
+struct CARLA_API FSkySunParameters
+{
+	GENERATED_BODY()
+		
+	/** Sun Elevation */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sun Position")
+	float Elevation;
+
+	/** Sun Elevation, corrected for atmospheric diffraction */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sun Position")
+	float CorrectedElevation;
+
+	/** Sun azimuth */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sun Position")
+	float Azimuth;
+
+	/** Sunrise time */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sun Position")
+	FTimespan SunriseTime;
+
+	/** Sunset time */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sun Position")
+	FTimespan SunsetTime;
+
+	/** Solar noon */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sun Position")
+	FTimespan SolarNoon;
+
 };

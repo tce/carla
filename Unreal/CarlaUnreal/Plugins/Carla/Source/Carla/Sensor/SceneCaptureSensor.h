@@ -437,11 +437,11 @@ protected:
 
   /// Render target necessary for scene capture.
   UPROPERTY(EditAnywhere)
-  UTextureRenderTarget2D *CaptureRenderTarget = nullptr;
+  TObjectPtr<UTextureRenderTarget2D> CaptureRenderTarget = nullptr;
 
   /// Scene capture component.
   UPROPERTY(EditAnywhere)
-  USceneCaptureComponent2D_CARLA *CaptureComponent2D = nullptr;
+  TObjectPtr<USceneCaptureComponent2D_CARLA> CaptureComponent2D = nullptr;
 
   UPROPERTY(EditAnywhere)
   float TargetGamma = 2.4f;

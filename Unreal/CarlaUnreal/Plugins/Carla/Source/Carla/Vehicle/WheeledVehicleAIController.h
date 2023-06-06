@@ -213,13 +213,13 @@ public:
 private:
 
   UPROPERTY()
-  ACarlaWheeledVehicle *Vehicle = nullptr;
+  TObjectPtr<ACarlaWheeledVehicle> Vehicle = nullptr;
 
   UPROPERTY()
-  URoadMap *RoadMap = nullptr;
+  TObjectPtr<URoadMap> RoadMap = nullptr;
 
   UPROPERTY()
-  URandomEngine *RandomEngine = nullptr;
+  TObjectPtr<URandomEngine> RandomEngine = nullptr;
 
   UPROPERTY(VisibleAnywhere)
   bool bAutopilotEnabled = false;
@@ -237,7 +237,7 @@ private:
   float MaximumSteerAngle = -1.0f;
 
   UPROPERTY()
-  ATrafficLightBase *TrafficLight;
+  TObjectPtr<ATrafficLightBase> TrafficLight;
 
   std::queue<FVector> TargetLocations;
 };

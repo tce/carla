@@ -55,7 +55,7 @@ private:
   friend ATrafficLightManager;
 
   UPROPERTY(Category = "Traffic Group", VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  USceneComponent *SceneComponent;
+  TObjectPtr<USceneComponent> SceneComponent;
 
   UPROPERTY(Category = "Traffic Group", EditAnywhere)
   TArray<UTrafficLightController*> Controllers;

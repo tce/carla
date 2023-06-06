@@ -332,7 +332,7 @@ private:
   ECarlaWheeledVehicleState State = ECarlaWheeledVehicleState::UNKNOWN;
 
   UPROPERTY(Category = "CARLA Wheeled Vehicle", EditAnywhere)
-  UVehicleVelocityControl* VelocityControl;
+  TObjectPtr<UVehicleVelocityControl> VelocityControl;
 
   struct
   {
@@ -363,7 +363,7 @@ public:
   FBox FoliageBoundingBox;
 
   UPROPERTY(Category = "CARLA Wheeled Vehicle", EditAnywhere)
-  UBoxComponent *VehicleBounds;
+  TObjectPtr<UBoxComponent> VehicleBounds;
 
   UFUNCTION()
   FBox GetDetectionBox() const;
@@ -428,7 +428,7 @@ private:
 
   // Small workarround to allow optional CarSim plugin usage
   UPROPERTY(Category="CARLA Wheeled Vehicle", VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  UBaseCarlaMovementComponent * BaseMovementComponent = nullptr;
+  TObjectPtr<UBaseCarlaMovementComponent> BaseMovementComponent = nullptr;
 
   UPROPERTY(Category="CARLA Wheeled Vehicle", VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
   TArray<UPhysicsConstraintComponent*> ConstraintsComponents;

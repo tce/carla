@@ -102,11 +102,11 @@ private:
 
   FWorldObserver WorldObserver;
 
-  UCarlaEpisode *CurrentEpisode = nullptr;
+  TObjectPtr<UCarlaEpisode> CurrentEpisode = nullptr;
 
   FEpisodeSettings CurrentSettings;
 
-  ACarlaRecorder *Recorder = nullptr;
+  TObjectPtr<ACarlaRecorder> Recorder = nullptr;
 
   FDelegateHandle OnPreTickHandle;
 

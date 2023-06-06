@@ -88,7 +88,7 @@ private:
   // ATrafficLightGroup *TrafficLightGroup = nullptr;
 
   UPROPERTY(Category = "Traffic Light", VisibleAnywhere)
-  UTrafficLightController *TrafficLightController = nullptr;
+  TObjectPtr<UTrafficLightController> TrafficLightController = nullptr;
 
   // Vehicles that have entered the trigger box of the traffic light
   UPROPERTY()

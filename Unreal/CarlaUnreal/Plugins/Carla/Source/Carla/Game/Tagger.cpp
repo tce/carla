@@ -17,6 +17,8 @@
 
 namespace crp = carla::rpc;
 
+class ACarlaWheeledVehicle;
+
 template <typename T>
 static auto CastEnum(T label)
 {

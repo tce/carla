@@ -2,6 +2,7 @@
 #include "TaggedComponent.h"
 #include "RHIDefinitions.h"
 #include "Rendering/SkeletalMeshRenderData.h"
+#include "UObject/ConstructorHelpers.h"
 #include "SkeletalRenderPublic.h"
 
 //
@@ -135,7 +136,7 @@ FPrimitiveSceneProxy * UTaggedComponent::CreateSceneProxy(USkeletalMeshComponent
 
 	// Only create a scene proxy for rendering if properly initialized
 	if (SkelMeshRenderData &&
-		SkelMeshRenderData->LODRenderData.IsValidIndex(SkeletalMeshComponent->PredictedLODLevel) &&
+		SkelMeshRenderData->LODRenderData.IsValidIndex(SkeletalMeshComponent->GetPredictedLODLevel()) &&
 		!SkeletalMeshComponent->bHideSkin &&
 		SkeletalMeshComponent->MeshObject)
 	{
@@ -288,7 +289,7 @@ FPrimitiveViewRelevance FTaggedInstancedStaticMeshSceneProxy::GetViewRelevance(c
 {
   FPrimitiveViewRelevance ViewRelevance = FInstancedStaticMeshSceneProxy::GetViewRelevance(View);
 
-  ViewRelevance.bDrawRelevance = ViewRelevance.bDrawRelevance && !View->Family->EngineShowFlags.NotDrawTaggedComponents;
+  ViewRelevance.bDrawRelevance = ViewRelevance.bDrawRelevance != 0 && View->Family->EngineShowFlags.NotDrawTaggedComponents == 0;
   ViewRelevance.bShadowRelevance = false;
 
   return ViewRelevance;
@@ -313,10 +314,8 @@ FTaggedHierarchicalStaticMeshSceneProxy::FTaggedHierarchicalStaticMeshSceneProxy
 
 FPrimitiveViewRelevance FTaggedHierarchicalStaticMeshSceneProxy::GetViewRelevance(const FSceneView * View) const
 {
-  FPrimitiveViewRelevance ViewRelevance = FHierarchicalStaticMeshSceneProxy::GetViewRelevance(View);
-
-  ViewRelevance.bDrawRelevance = ViewRelevance.bDrawRelevance && !View->Family->EngineShowFlags.NotDrawTaggedComponents;
-  ViewRelevance.bShadowRelevance = false;
-
-  return ViewRelevance;
+  FPrimitiveViewRelevance Relevance = FHierarchicalStaticMeshSceneProxy::GetViewRelevance(View);
+  Relevance.bDrawRelevance = Relevance.bDrawRelevance != 0 && View->Family->EngineShowFlags.NotDrawTaggedComponents == 0;
+  Relevance.bShadowRelevance = false;
+  return Relevance;
 }

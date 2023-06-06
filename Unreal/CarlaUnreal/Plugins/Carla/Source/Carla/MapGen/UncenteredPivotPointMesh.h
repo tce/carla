@@ -25,6 +25,6 @@ public:
 
 private:
   UPROPERTY(EditAnywhere, Category="Uncenceterd PP Mesh")
-  UStaticMeshComponent* SMComp = nullptr;
+  TObjectPtr<UStaticMeshComponent> SMComp = nullptr;
 
 };

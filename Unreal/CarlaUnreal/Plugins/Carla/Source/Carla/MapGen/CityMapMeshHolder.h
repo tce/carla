@@ -104,7 +104,7 @@ private:
 
 
   UPROPERTY()
-  USceneComponent *SceneRootComponent;
+  TObjectPtr<USceneComponent> SceneRootComponent;
 
   UPROPERTY(Category = "Map Generation", VisibleAnywhere)
   float MapScale = 1.0f;

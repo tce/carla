@@ -83,7 +83,7 @@ private:
   /// Currently applied quality level after level is restarted.
   static EQualityLevel AppliedLowPostResetQualityLevel;
 
-  UCarlaSettings *CarlaSettings = nullptr;
+  TObjectPtr<UCarlaSettings> CarlaSettings = nullptr;
 
   FOnActorSpawned::FDelegate ActorSpawnedDelegate;
 };

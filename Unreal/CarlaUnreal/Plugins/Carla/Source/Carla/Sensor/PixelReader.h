@@ -136,9 +136,9 @@ void FPixelReader::SendPixelsInRenderThread(TSensor &Sensor, bool use16BitFormat
               Size = Converted.Num() * Converted.GetTypeSize();
             }
     
-            auto Stream = Sensor.GetDataStream(Sensor);
-            Stream.SetFrameNumber(Frame);
-            auto Buffer = Stream.PopBufferFromPool();
+            auto DataStream = Sensor.GetDataStream(Sensor);
+            DataStream.SetFrameNumber(Frame);
+            auto Buffer = DataStream.PopBufferFromPool();
             
             uint32 CurrentRowBytes = ExpectedRowBytes;
 
@@ -180,7 +180,7 @@ void FPixelReader::SendPixelsInRenderThread(TSensor &Sensor, bool use16BitFormat
               {
                 SCOPE_CYCLE_COUNTER(STAT_CarlaSensorStreamSend);
                 TRACE_CPUPROFILER_EVENT_SCOPE_STR("Stream Send");
-                Stream.Send(Sensor, std::move(Buffer));
+                DataStream.Send(Sensor, std::move(Buffer));
               }
             }
           };

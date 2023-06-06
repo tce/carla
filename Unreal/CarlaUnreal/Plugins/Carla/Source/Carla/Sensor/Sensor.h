@@ -120,7 +120,7 @@ private:
 
   FDelegateHandle OnPostTickDelegate;
 
-  const UCarlaEpisode *Episode = nullptr;
+  TObjectPtr<const UCarlaEpisode> Episode = nullptr;
 
   /// Allows the sensor to tick with the tick rate from UE.
   bool ReadyToTick = false;

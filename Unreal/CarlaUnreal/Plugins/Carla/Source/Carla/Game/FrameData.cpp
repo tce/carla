@@ -139,9 +139,9 @@ void FFrameData::PlayFrameData(
 
   for (const CarlaRecorderAnimWheels &AnimWheel : Wheels.GetVehicleWheels())
   {
-    CarlaRecorderAnimWheels Wheels = AnimWheel;
-    Wheels.DatabaseId = MappedId[Wheels.DatabaseId];
-    ProcessReplayerAnimVehicleWheels(Wheels);
+    CarlaRecorderAnimWheels W = AnimWheel;
+    W.DatabaseId = MappedId[W.DatabaseId];
+    ProcessReplayerAnimVehicleWheels(W);
   }
 
   for (const CarlaRecorderAnimWalker &AnimWalker : Walkers.GetWalkers())
@@ -617,9 +617,9 @@ void FFrameData::AddCollision(AActor *Actor1, AActor *Actor2)
   // if (FoundActor1 != nullptr) {
   //   if (FoundActor1->GetActorInfo() != nullptr)
   //   {
-  //     auto Role = FoundActor1->GetActorInfo()->Description.Variations.Find("role_name");
-  //     if (Role != nullptr)
-  //       Collision.IsActor1Hero = (Role->Value == "hero");
+  //     auto FoundActorRole = FoundActor1->GetActorInfo()->Description.Variations.Find("role_name");
+  //     if (FoundActorRole != nullptr)
+  //       Collision.IsActor1Hero = (FoundActorRole->Value == "hero");
   //   }
   //   Collision.DatabaseId1 = FoundActor1->GetActorId();
   // }
@@ -632,9 +632,9 @@ void FFrameData::AddCollision(AActor *Actor1, AActor *Actor2)
   // if (FoundActor2 != nullptr) {
   //   if (FoundActor2->GetActorInfo() != nullptr)
   //   {
-  //     auto Role = FoundActor2->GetActorInfo()->Description.Variations.Find("role_name");
-  //     if (Role != nullptr)
-  //       Collision.IsActor2Hero = (Role->Value == "hero");
+  //     auto FoundActorRole = FoundActor2->GetActorInfo()->Description.Variations.Find("role_name");
+  //     if (FoundActorRole != nullptr)
+  //       Collision.IsActor2Hero = (FoundActorRole->Value == "hero");
   //   }
   //   Collision.DatabaseId2 = FoundActor2->GetActorId();
   // }

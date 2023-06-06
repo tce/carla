@@ -628,7 +628,7 @@ void FCarlaServer::FPimpl::BindActions()
     {
       RESPOND_ERROR("internal error: unable to find weather");
     }
-    return Weather->GetCurrentWeather();
+    return Weather->GetWeatherParameters();
   };
 
   BIND_SYNC(set_weather_parameters) << [this](

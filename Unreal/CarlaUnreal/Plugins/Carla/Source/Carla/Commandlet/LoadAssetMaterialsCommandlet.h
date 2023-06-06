@@ -77,10 +77,10 @@ private:
   TArray<FAssetData> AssetDatas;
 
   UPROPERTY()
-  UWorld *World;
+  TObjectPtr<UWorld> World;
 
   UPROPERTY()
-  UWorld *NewWorldToLoad;
+  TObjectPtr<UWorld> NewWorldToLoad;
 
   /// Used for loading maps in object library. Loaded Data is stored in
   /// AssetDatas.

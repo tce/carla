@@ -25,8 +25,8 @@ ASensor::ASensor(const FObjectInitializer &ObjectInitializer)
 void ASensor::BeginPlay()
 {
   Super::BeginPlay();
-  UCarlaEpisode* Episode = UCarlaStatics::GetCurrentEpisode(GetWorld());
-  FSensorManager& SensorManager = Episode->GetSensorManager();
+  UCarlaEpisode* CurrentEpisode = UCarlaStatics::GetCurrentEpisode(GetWorld());
+  FSensorManager& SensorManager = CurrentEpisode->GetSensorManager();
   SensorManager.RegisterSensor(this);
 }
 
@@ -107,10 +107,10 @@ void ASensor::EndPlay(EEndPlayReason::Type EndPlayReason)
 
   Stream = FDataStream();
 
-  UCarlaEpisode* Episode = UCarlaStatics::GetCurrentEpisode(GetWorld());
+  UCarlaEpisode* CurrentEpisode = UCarlaStatics::GetCurrentEpisode(GetWorld());
   if(Episode)
   {
-    FSensorManager& SensorManager = Episode->GetSensorManager();
+    FSensorManager& SensorManager = CurrentEpisode->GetSensorManager();
     SensorManager.DeRegisterSensor(this);
   }
 }

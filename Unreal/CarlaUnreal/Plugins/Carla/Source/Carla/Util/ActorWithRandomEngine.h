@@ -58,5 +58,5 @@ private:
   int32 Seed = 123456789;
 
   UPROPERTY()
-  URandomEngine *RandomEngine;
+  TObjectPtr<URandomEngine> RandomEngine;
 };

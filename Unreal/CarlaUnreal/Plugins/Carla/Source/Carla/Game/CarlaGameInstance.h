@@ -116,12 +116,12 @@ public:
 private:
 
   UPROPERTY(Category = "CARLA Settings", EditAnywhere)
-  UCarlaSettings *CarlaSettings = nullptr;
+  TObjectPtr<UCarlaSettings> CarlaSettings = nullptr;
 
   FCarlaEngine CarlaEngine;
 
   UPROPERTY()
-  ACarlaRecorder *Recorder = nullptr;
+  TObjectPtr<ACarlaRecorder> Recorder = nullptr;
 
   carla::rpc::OpendriveGenerationParameters GenerationParameters;
 

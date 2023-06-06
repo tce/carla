@@ -11,67 +11,110 @@
 
 #include "Weather.generated.h"
 
+class ASky;
 class ASensor;
 class ASceneCaptureCamera;
+
+class UDirectionalLightComponent;
+class USkyLightComponent;
+class UExponentialHeightFogComponent;
+class UStaticMeshComponent;
+
+
 
 UCLASS(Abstract)
 class CARLA_API AWeather : public AActor
 {
-  GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
 
-  AWeather(const FObjectInitializer& ObjectInitializer);
+    AWeather(const FObjectInitializer& ObjectInitializer);
 
-  /// Update the weather parameters and notifies it to the blueprint's event
-  UFUNCTION(BlueprintCallable)
-  void ApplyWeather(const FWeatherParameters &WeatherParameters);
+    /// Update the weather parameters and notifies it to the blueprint's event
+    UFUNCTION(BlueprintCallable)
+    void ApplyWeather(const FWeatherParameters& WeatherParameters);
 
-  /// Notifing the weather to the blueprint's event
-  void NotifyWeather(ASensor* Sensor = nullptr);
+    /// Notifing the weather to the blueprint's event
+    void NotifyWeather(ASensor* Sensor = nullptr);
 
-  /// Update the weather parameters without notifing it to the blueprint's event
-  UFUNCTION(BlueprintCallable)
-  void SetWeather(const FWeatherParameters &WeatherParameters);
+    /// Update the weather parameters without notifing it to the blueprint's event
+    UFUNCTION(BlueprintCallable)
+    void SetWeatherParameters(const FWeatherParameters& WeatherParameters);
 
-  /// Returns the current WeatherParameters
-  UFUNCTION(BlueprintCallable)
-  const FWeatherParameters &GetCurrentWeather() const
-  {
-    return Weather;
-  }
+    /// Returns the current WeatherParameters
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    const FWeatherParameters& GetWeatherParameters() const;
 
-  /// Returns whether the day night cycle is active (automatic on/off switch when changin to night mode)
-  UFUNCTION(BlueprintCallable)
-  const bool &GetDayNightCycle() const
-  {
-    return DayNightCycle;
-  }
+    /// Returns whether the day night cycle is active (automatic on/off switch when changin to night mode)
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    const bool& GetDayNightCycle() const;
 
-  /// Update the day night cycle
-  void SetDayNightCycle(const bool &active);
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    UDirectionalLightComponent* GetSunDirectionalLight() const;
+    
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    USkyLightComponent* GetSkyLight() const;
+    
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    UExponentialHeightFogComponent* GetExponentialHeightFog() const;
+    
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    UStaticMeshComponent* GetPlanetMesh() const;
 
+    /// Update the day night cycle
+    void SetDayNightCycle(const bool& active);
+    
 protected:
 
-  UFUNCTION(BlueprintImplementableEvent)
-  void RefreshWeather(const FWeatherParameters &WeatherParameters);
+    UFUNCTION(BlueprintImplementableEvent)
+    void RefreshWeather(const FWeatherParameters& WeatherParameters);
+    
+    UFUNCTION(BlueprintCallable)
+    void UpdateSunDirectionalLight();
+    
+    UFUNCTION(BlueprintCallable)
+    void ValidateCurrentWeatherParameters();
+
+    UFUNCTION(BlueprintCallable)
+    void SetSkyComponents(ASky* InSky);
+
+    UFUNCTION(BlueprintCallable)
+    void SetSunDirectionalLight(UDirectionalLightComponent* InDirectionalLight);
+
+    UFUNCTION(BlueprintCallable)
+    void SetSkyLight(USkyLightComponent* InSkyLight);
+
+    UFUNCTION(BlueprintCallable)
+    void SetExponentialHeightFog(UExponentialHeightFogComponent* InExponentialHeightFog);
+
+    UFUNCTION(BlueprintCallable)
+    void SetPlanetMesh(UStaticMeshComponent* InPlanetMesh);
+    
+    UFUNCTION(BlueprintCallable, BlueprintPure)
+    float GetSunIntensityCurveTime() const;
 
 private:
 
-  void CheckWeatherPostProcessEffects();
+    void CheckWeatherPostProcessEffects();
 
-  UPROPERTY(VisibleAnywhere)
-  FWeatherParameters Weather;
+    UPROPERTY(VisibleAnywhere)
+    FWeatherParameters CurrentWeather;
 
-  UMaterial* PrecipitationPostProcessMaterial;
+    UPROPERTY(VisibleAnywhere)
+    TArray<ASceneCaptureCamera*> SceneCaptureCameras;
 
-  UMaterial* DustStormPostProcessMaterial;
+    TMap<UMaterial*, float> ActiveBlendables;
 
-  TMap<UMaterial*, float> ActiveBlendables;
+    TObjectPtr<UMaterial> PrecipitationPostProcessMaterial;
 
-  UPROPERTY(VisibleAnywhere)
-  TArray<ASceneCaptureCamera*> Sensors;
+    TObjectPtr<UMaterial> DustStormPostProcessMaterial;
 
-  UPROPERTY(EditAnywhere, Category = "Weather")
-  bool DayNightCycle = true;
+    TObjectPtr<UDirectionalLightComponent> DirectionalLight;
+    TObjectPtr<USkyLightComponent> SkyLight;
+    TObjectPtr<UExponentialHeightFogComponent> ExponentialHeightFog;
+    TObjectPtr<UStaticMeshComponent> PlanetMesh;
+
+    UPROPERTY(EditAnywhere, Category = "Weather")
+    bool DayNightCycle = true;
 };

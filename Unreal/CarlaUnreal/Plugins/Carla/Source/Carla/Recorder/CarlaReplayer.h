@@ -102,7 +102,7 @@ private:
 
   bool Enabled;
   bool bReplaySensors = false;
-  UCarlaEpisode *Episode = nullptr;
+  TObjectPtr<UCarlaEpisode> Episode = nullptr;
   // binary file reader
   std::ifstream File;
   Header Header;

@@ -26,7 +26,7 @@ public:
   AProceduralMeshActor();
 
   UPROPERTY(Category = "Procedural Mesh Actor", VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-  UProceduralMeshComponent* MeshComponent;
+  TObjectPtr<UProceduralMeshComponent> MeshComponent;
 };
 
 UCLASS()

@@ -34,7 +34,7 @@ ULoadAssetMaterialsCommandlet::ULoadAssetMaterialsCommandlet()
   static ConstructorHelpers::FObjectFinder<UBlueprint> RoadPainterBlueprint(TEXT(
     "Blueprint'/Game/Carla/Blueprints/LevelDesign/RoadPainterPreset.RoadPainterPreset'"));
 
-  RoadPainterSubclass = (UClass*)RoadPainterBlueprint.Object->GeneratedClass;
+    RoadPainterSubclass = (UClass*)RoadPainterBlueprint.Object->GeneratedClass;
 
   // Dirt
   DecalNamesMap.Add("dirt1", "MaterialInstanceConstant'/Game/Carla/Static/Decals/Road/RoadDirt/DI_RoadDirt_01.DI_RoadDirt_01'");

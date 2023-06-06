@@ -160,7 +160,7 @@ private:
   TArray<FCarlaActor *> TrafficLightCarlaActors;
 
   UPROPERTY(Category = "Traffic Controller", VisibleAnywhere)
-  ATrafficLightGroup* TrafficLightGroup;
+  TObjectPtr<ATrafficLightGroup> TrafficLightGroup;
 
   // Sequence within junction (unused for now)
   UPROPERTY(Category = "Traffic Controller", EditAnywhere)

@@ -57,8 +57,8 @@ void AGnssSensor::PostPhysTick(UWorld *World, ELevelTick TickType, float DeltaSe
 
   {
     TRACE_CPUPROFILER_EVENT_SCOPE_STR("AGnssSensor Stream Send");
-    auto Stream = GetDataStream(*this);
-    Stream.Send(*this, carla::geom::GeoLocation{Latitude, Longitude, Altitude});
+    auto DataStream = GetDataStream(*this);
+    DataStream.Send(*this, carla::geom::GeoLocation{Latitude, Longitude, Altitude});
   }
 }
 

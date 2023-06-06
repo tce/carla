@@ -46,19 +46,19 @@ void ACollisionSensor::OnCollisionEvent(
 {
   if ((Actor != nullptr) && (OtherActor != nullptr))
   {
-    const auto &Episode = GetEpisode();
+    const auto &CurrentEpisode = GetEpisode();
     constexpr float TO_METERS = 1e-2;
     NormalImpulse *= TO_METERS;
     GetDataStream(*this).Send(
         *this,
-        Episode.SerializeActor(Actor),
-        Episode.SerializeActor(OtherActor),
+        CurrentEpisode.SerializeActor(Actor),
+        CurrentEpisode.SerializeActor(OtherActor),
         carla::geom::Vector3D(
             (float)NormalImpulse.X,
             (float)NormalImpulse.Y,
             (float)NormalImpulse.Z));
     // record the collision event
-    if (Episode.GetRecorder()->IsEnabled())
-      Episode.GetRecorder()->AddCollision(Actor, OtherActor);
+    if (CurrentEpisode.GetRecorder()->IsEnabled())
+        CurrentEpisode.GetRecorder()->AddCollision(Actor, OtherActor);
   }
 }

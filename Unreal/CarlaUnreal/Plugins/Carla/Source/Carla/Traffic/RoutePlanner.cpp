@@ -122,7 +122,7 @@ void ARoutePlanner::CleanRoute()
 
 void ARoutePlanner::AssignRandomRoute(AWheeledVehicleAIController &Controller) const
 {
-  if (!Controller.IsPendingKill() && (Controller.GetRandomEngine() != nullptr))
+  if (Controller.IsPendingKill() && (Controller.GetRandomEngine() != nullptr))
   {
     auto *RandomEngine = Controller.GetRandomEngine();
     auto *Route = PickARoute(*RandomEngine, Routes, Probabilities);

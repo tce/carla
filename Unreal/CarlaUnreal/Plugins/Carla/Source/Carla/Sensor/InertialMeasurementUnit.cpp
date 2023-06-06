@@ -45,9 +45,9 @@ void AInertialMeasurementUnit::Set(const FActorDescription &ActorDescription)
   UActorBlueprintFunctionLibrary::SetIMU(ActorDescription, this);
 }
 
-void AInertialMeasurementUnit::SetOwner(AActor *Owner)
+void AInertialMeasurementUnit::SetOwner(AActor *InOwner)
 {
-  Super::SetOwner(Owner);
+  Super::SetOwner(InOwner);
 }
 
 // Returns the angular velocity of Actor, expressed in the frame of Actor
@@ -184,8 +184,8 @@ float AInertialMeasurementUnit::ComputeCompass()
 void AInertialMeasurementUnit::PostPhysTick(UWorld *World, ELevelTick TickType, float DeltaTime)
 {
   TRACE_CPUPROFILER_EVENT_SCOPE(AInertialMeasurementUnit::PostPhysTick);
-  auto Stream = GetDataStream(*this);
-  Stream.Send(
+  auto DataStream = GetDataStream(*this);
+  DataStream.Send(
       *this,
       ComputeAccelerometer(DeltaTime),
       ComputeGyroscope(),

@@ -1534,7 +1534,7 @@ void UActorBlueprintFunctionLibrary::SetCamera(
       RetrieveActorAttributeToInt("image_size_y", Description.Variations, 600));
   Camera->SetFOVAngle(
       RetrieveActorAttributeToFloat("fov", Description.Variations, 90.0f));
-#if 1 // @CARLA_UE5
+
   if (Description.Variations.Contains("enable_postprocess_effects"))
   {
     Camera->EnablePostProcessingEffects(
@@ -1614,7 +1614,6 @@ void UActorBlueprintFunctionLibrary::SetCamera(
     Camera->SetChromAberrOffset(
         RetrieveActorAttributeToFloat("chromatic_aberration_offset", Description.Variations, 0.0f));
   }
-#endif
 }
 
 void UActorBlueprintFunctionLibrary::SetCamera(

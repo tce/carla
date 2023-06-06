@@ -437,7 +437,7 @@ private:
 
   friend class FActorRegistry;
 
-  AActor *TheActor = nullptr;
+  TObjectPtr<AActor> TheActor = nullptr;
 
   TSharedPtr<const FActorInfo> Info = nullptr;
 
@@ -457,7 +457,7 @@ protected:
 
   TSharedPtr<FActorData> ActorData = nullptr;
 
-  UWorld *World = nullptr;
+  TObjectPtr<UWorld> World = nullptr;
 
 };
 

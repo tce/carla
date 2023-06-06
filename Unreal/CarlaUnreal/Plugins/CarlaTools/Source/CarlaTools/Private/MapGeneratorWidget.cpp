@@ -28,6 +28,7 @@
 #include "ProceduralFoliageVolume.h"
 #include "Runtime/Engine/Classes/Engine/ObjectLibrary.h"
 #include "Runtime/Engine/Public/DrawDebugHelpers.h"
+#include "UObject/SavePackage.h"
 
 #include "EditorAssetLibrary.h"
 #include "EngineUtils.h"
@@ -434,11 +435,22 @@ UWorld* UMapGeneratorWidget::DuplicateWorld(FString BaseWorldPath, FString Targe
 
   DuplicateWorld = CastChecked<UWorld>(StaticDuplicateObjectEx(Parameters));
 
-  const FString PackageFileName = FPackageName::LongPackageNameToFilename(
-          PackageName, 
-          FPackageName::GetMapPackageExtension());
-      UPackage::SavePackage(WorldPackage, DuplicateWorld, EObjectFlags::RF_Public | EObjectFlags::RF_Standalone,
-          *PackageFileName, GError, nullptr, true, true, SAVE_NoError);
+  auto PackageFileName = FPackageName::LongPackageNameToFilename(
+      PackageName,
+      FPackageName::GetMapPackageExtension());
+
+  // FSavePackageArgs SavePackageArgs = {};
+
+  UPackage::SavePackage(
+      WorldPackage,
+      DuplicateWorld,
+      EObjectFlags::RF_Public | EObjectFlags::RF_Standalone,
+      *PackageFileName,
+      GError,
+      nullptr,
+      true,
+      true,
+      SAVE_NoError);
 
   return DuplicateWorld;
 }
@@ -1214,7 +1226,6 @@ bool UMapGeneratorWidget::CookVegetationToWorld(
     {
       FoliageComponent->RemoveProceduralContent(false);
 
-#if 1 // @CARLA_UE5
       FFoliagePaintingGeometryFilter OverrideGeometryFilter;
       OverrideGeometryFilter.bAllowStaticMesh = FoliageComponent->bAllowStaticMesh;
       OverrideGeometryFilter.bAllowBSP = FoliageComponent->bAllowBSP;
@@ -1223,7 +1234,6 @@ bool UMapGeneratorWidget::CookVegetationToWorld(
       OverrideGeometryFilter.bAllowTranslucent = FoliageComponent->bAllowTranslucent;
 
       FEdModeFoliage::AddInstances(World, FoliageInstances, OverrideGeometryFilter, true);
-#endif
     }
     else
     {

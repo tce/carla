@@ -47,6 +47,7 @@
 #include "Engine/World.h"
 #include "Math/UnrealMathUtility.h"
 #include "GenericPlatform/GenericPlatformFile.h"
+#include "Carla/Actor/ActorBlueprintFunctionLibrary.h"
 #include "Engine/Texture2D.h"
 #include "Engine/Texture.h"
 #include "Rendering/Texture2DResource.h"
@@ -61,6 +62,7 @@
 #include "EngineUtils.h"
 #include <algorithm>
 #include <fstream>
+#undef CreateDirectory
 
 #include <thread>
 #include <chrono>
@@ -177,12 +179,12 @@ FDenseTile& FDenseTile::operator=(FDenseTile&& Origin)
   
 void FDenseTile::InitializeTile(uint32_t TextureSize, float AffectedRadius, float ParticleSize, float Depth, 
     FDVector TileOrigin, FDVector TileEnd, 
-    const FString& SavePath, const FHeightMapData &HeightMap)
+    const FString& OutSavePath, const FHeightMapData &HeightMap)
 {
 
   TileSize = (TileEnd.X - TileOrigin.X );
   PartialHeightMapSize = TileSize * TextureSize / (2*AffectedRadius);
-  std::string FileName = std::string(TCHAR_TO_UTF8(*( SavePath + TileOrigin.ToString() + ".tile" ) ) );
+  std::string FileName = std::string(TCHAR_TO_UTF8(*(OutSavePath + TileOrigin.ToString() + ".tile" ) ) );
   
   //UE_LOG(LogCarla, Log, TEXT("Tile origin %s"), *TileOrigin.ToString() );
   if( FPaths::FileExists(FString(FileName.c_str())) )
@@ -920,7 +922,7 @@ void UCustomTerrainPhysicsComponent::UpdateTexture()
     region.Width = Texture->GetSizeX();
     region.Height = Texture->GetSizeY();
 
-    FTexture2DResource* resource = (FTexture2DResource*)Texture->Resource;
+    FTexture2DResource* resource = (FTexture2DResource*)Texture->GetResource();
     RHIUpdateTexture2D(
         resource->GetTexture2DRHI(), 0, region, region.Width * sizeof(uint8_t), &NewData[0]); 
   });
@@ -1014,7 +1016,7 @@ void UCustomTerrainPhysicsComponent::UpdateLargeTexture()
     region.Width = Texture->GetSizeX();
     region.Height = Texture->GetSizeY();
 
-    FTexture2DResource* resource = (FTexture2DResource*)Texture->Resource;
+    FTexture2DResource* resource = (FTexture2DResource*)Texture->GetResource();
     RHIUpdateTexture2D(
         resource->GetTexture2DRHI(), 0, region, region.Width * sizeof(uint8_t), &NewData[0]); 
   });
@@ -2284,13 +2286,13 @@ void UCustomTerrainPhysicsComponent::AddForceToSingleWheel( USkeletalMeshCompone
 {
   FVector WheelBottomLocation = WheelPosition - FVector(0,0, 0.337);
   float OriginalHeight = SparseMap.GetHeight(WheelPosition);
-  float FloorHeight = OriginalHeight - UEFrameToSI(TerrainDepth);
+  float GroundHeight = OriginalHeight - UEFrameToSI(TerrainDepth);
   
   if( WheelNormalForce.Size() == 0 ){
     WheelNormalForce = FVector::UpVector;
   }
 
-  float ForceFactor = ( WheelBottomLocation.Z - OriginalHeight ) / ( FloorHeight - OriginalHeight );
+  float ForceFactor = ( WheelBottomLocation.Z - OriginalHeight ) / (GroundHeight - OriginalHeight );
   if( ForceFactor < 0){
     ForceFactor = 0;
   }
@@ -2423,28 +2425,27 @@ void UCustomTerrainPhysicsComponent::ApplyMeanAccelerationToVehicle(
   }
 }
 
-TArray<FVector> UCustomTerrainPhysicsComponent::GetParticlesInRadius(FVector Position, float Radius)
+TArray<FVector> UCustomTerrainPhysicsComponent::GetParticlesInRadius(FVector Position, float InRadius)
 {
-  std::vector<FParticle*> Particles = SparseMap.GetParticlesInRadius(UEFrameToSI(Position), Radius*CMToM);
-  TArray<FVector> ParticlePositions;
-  for(FParticle* Particle : Particles)
-  {
-    ParticlePositions.Add(SIToUEFrame(Particle->Position.ToFVector()));
-  }
-  return ParticlePositions;
+    std::vector<FParticle*> Particles = SparseMap.GetParticlesInRadius(UEFrameToSI(Position), InRadius * CMToM);
+    TArray<FVector> ParticlePositions;
+    for (FParticle* Particle : Particles)
+    {
+        ParticlePositions.Add(SIToUEFrame(Particle->Position.ToFVector()));
+    }
+    return ParticlePositions;
 }
 
-TArray<FVector> UCustomTerrainPhysicsComponent::GetParticlesInTileRadius(FVector Position, float Radius)
+TArray<FVector> UCustomTerrainPhysicsComponent::GetParticlesInTileRadius(FVector Position, float InRadius)
 {
-  std::vector<FParticle*> Particles = SparseMap.GetParticlesInTileRadius(UEFrameToSI(Position), Radius*CMToM);
-  TArray<FVector> ParticlePositions;
-  for(FParticle* Particle : Particles)
-  {
-    ParticlePositions.Add(SIToUEFrame(Particle->Position.ToFVector()));
-  }
-  return ParticlePositions;
+    std::vector<FParticle*> Particles = SparseMap.GetParticlesInTileRadius(UEFrameToSI(Position), InRadius * CMToM);
+    TArray<FVector> ParticlePositions;
+    for (FParticle* Particle : Particles)
+    {
+        ParticlePositions.Add(SIToUEFrame(Particle->Position.ToFVector()));
+    }
+    return ParticlePositions;
 }
-
 
 FVector UCustomTerrainPhysicsComponent::GetTileCenter(FVector Position)
 {

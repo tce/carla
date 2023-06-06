@@ -33,7 +33,7 @@ struct CARLA_API FEnvironmentObject
 {
   GENERATED_BODY()
 
-  AActor* Actor = nullptr;
+  TObjectPtr<AActor> Actor = nullptr;
 
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FString Name;

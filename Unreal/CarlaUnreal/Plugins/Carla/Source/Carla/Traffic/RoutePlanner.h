@@ -68,7 +68,7 @@ protected:
 public:
 
   UPROPERTY(EditAnywhere)
-  UBoxComponent *TriggerVolume;
+  TObjectPtr<UBoxComponent> TriggerVolume;
 
   UPROPERTY(BlueprintReadWrite, Category = "Traffic Routes", EditAnywhere)
   TArray<USplineComponent *> Routes;
