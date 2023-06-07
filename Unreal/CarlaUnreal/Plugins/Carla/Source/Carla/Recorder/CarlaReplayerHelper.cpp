@@ -26,6 +26,7 @@
 #include "Carla/Walker/WalkerController.h"
 #include "Components/BoxComponent.h"
 #include "Engine/StaticMeshActor.h"
+#include "VehicleAnimationInstance.h"
 
 #include <compiler/disable-ue4-macros.h>
 #include <carla/rpc/VehicleLightState.h>
@@ -321,27 +322,24 @@ bool CarlaReplayerHelper::ProcessReplayerPosition(CarlaRecorderPosition Pos1, Ca
 
 void CarlaReplayerHelper::ProcessReplayerAnimVehicleWheels(CarlaRecorderAnimWheels VehicleAnimWheels)
 {
-#if 0 // @CARLA_UE5
-  check(Episode != nullptr)
-  FCarlaActor *CarlaActor = Episode->FindCarlaActor(VehicleAnimWheels.DatabaseId);
-  if (CarlaActor == nullptr)
-    return;
-  if (CarlaActor->GetActorType() != FCarlaActor::ActorType::Vehicle)
-    return;
-  ACarlaWheeledVehicle* CarlaVehicle = Cast<ACarlaWheeledVehicle>(CarlaActor->GetActor());
-  check(CarlaVehicle != nullptr)
-  USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
-  check(SkeletalMesh != nullptr)
-  UVehicleAnimationInstance* VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
-  check(VehicleAnim != nullptr)
-
-  for (uint32_t i = 0; i < VehicleAnimWheels.WheelValues.size(); ++i)
-  {
-    const WheelInfo& Element = VehicleAnimWheels.WheelValues[i];
-    VehicleAnim->SetWheelRotYaw(static_cast<uint8>(Element.Location), Element.SteeringAngle);
-    VehicleAnim->SetWheelPitchAngle(static_cast<uint8>(Element.Location), Element.TireRotation);
-  }
-#endif
+    check(Episode != nullptr);
+    FCarlaActor* CarlaActor = Episode->FindCarlaActor(VehicleAnimWheels.DatabaseId);
+    if (CarlaActor == nullptr)
+        return;
+    if (CarlaActor->GetActorType() != FCarlaActor::ActorType::Vehicle)
+        return;
+    ACarlaWheeledVehicle* CarlaVehicle = Cast<ACarlaWheeledVehicle>(CarlaActor->GetActor());
+    check(CarlaVehicle != nullptr);
+    USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
+    check(SkeletalMesh != nullptr);
+    auto VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
+    check(VehicleAnim != nullptr);
+    for (uint32_t i = 0; i < VehicleAnimWheels.WheelValues.size(); ++i)
+    {
+        const WheelInfo& Element = VehicleAnimWheels.WheelValues[i];
+        // @TODO VehicleAnim->SetWheelRotYaw(static_cast<uint8>(Element.Location), Element.SteeringAngle);
+        // @TODO VehicleAnim->SetWheelPitchAngle(static_cast<uint8>(Element.Location), Element.TireRotation);
+    }
 }
 
 // reposition the camera

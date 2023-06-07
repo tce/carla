@@ -8,48 +8,47 @@
 
 void ACarlaHUD::DrawHUD()
 {
-  Super::DrawHUD();
+    Super::DrawHUD();
 
-  auto Player = GetOwningPlayerController();
-  if (Player == nullptr)
-  {
-    UE_LOG(LogCarla, Error, TEXT("Can't find player controller!"));
-    return;
-  }
-
-#if 0 // @CARLA_UE5
-  if(DebugVehicle) {
-    float YL = 1600.0f;
-    float Y0 = 0.0f;
-    DebugVehicle->DrawDebug(Canvas, YL, Y0);
-  }
-#endif
-
-  double Now = FPlatformTime::Seconds();
-  int i = 0;
-  while (i < StringList.Num())
-  {
-    // project position from camera
-    FVector2D Screen;
-    if (Player->ProjectWorldLocationToScreen(StringList[i].Location, Screen, true))
+    auto Player = GetOwningPlayerController();
+    if (Player == nullptr)
     {
-      // draw text
-      DrawText(StringList[i].Str, StringList[i].Color, Screen.X, Screen.Y);
+        UE_LOG(LogCarla, Error, TEXT("Can't find player controller!"));
+        return;
     }
 
-    // check to remove the string
-    if (Now >= StringList[i].TimeToDie)
+    if (DebugVehicle)
     {
-      StringList.RemoveAt(i);
+        float YL = 1600.0f;
+        float Y0 = 0.0f;
+        // @TODO DebugVehicle->DrawDebug(Canvas, YL, Y0);
     }
-    else
-      ++i;
-  }
+
+    double Now = FPlatformTime::Seconds();
+    int i = 0;
+    while (i < StringList.Num())
+    {
+        // project position from camera
+        FVector2D Screen;
+        if (Player->ProjectWorldLocationToScreen(StringList[i].Location, Screen, true))
+        {
+            // draw text
+            DrawText(StringList[i].Str, StringList[i].Color, Screen.X, Screen.Y);
+        }
+
+        // check to remove the string
+        if (Now >= StringList[i].TimeToDie)
+        {
+            StringList.RemoveAt(i);
+        }
+        else
+            ++i;
+    }
 }
 
 void ACarlaHUD::AddHUDString(const FString Str, const FVector Location, const FColor Color, double LifeTime)
 {
-  double Now = FPlatformTime::Seconds();
-  HUDString Obj { Str, Location, Color, Now + LifeTime };
-  StringList.Add(std::move(Obj));
+    double Now = FPlatformTime::Seconds();
+    HUDString Obj{ Str, Location, Color, Now + LifeTime };
+    StringList.Add(std::move(Obj));
 }

@@ -15,6 +15,7 @@
 
 #include "ChaosVehicleMovementComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
+#include "VehicleAnimationInstance.h"
 
 // #include "TireConfig.h"
 // #include "VehicleWheel.h"
@@ -50,7 +51,8 @@ ACarlaWheeledVehicle::ACarlaWheeledVehicle(const FObjectInitializer& ObjectIniti
 
 ACarlaWheeledVehicle::~ACarlaWheeledVehicle() {}
 
-void ACarlaWheeledVehicle::SetWheelCollision(UWheeledVehicleMovementComponent4W *Vehicle4W,
+void ACarlaWheeledVehicle::SetWheelCollision(
+    UChaosWheeledVehicleMovementComponent* Vehicle4W,
     const FVehiclePhysicsControl &PhysicsControl ) {
 
   #ifdef WHEEL_SWEEP_ENABLED
@@ -76,7 +78,8 @@ void ACarlaWheeledVehicle::SetWheelCollision(UWheeledVehicleMovementComponent4W 
 
 }
 
-void ACarlaWheeledVehicle::SetWheelCollisionNW(UWheeledVehicleMovementComponentNW *VehicleNW,
+void ACarlaWheeledVehicle::SetWheelCollisionNW(
+    UChaosWheeledVehicleMovementComponent* VehicleNW,
     const FVehiclePhysicsControl &PhysicsControl ) {
 
   #ifdef WHEEL_SWEEP_ENABLED
@@ -158,7 +161,7 @@ void ACarlaWheeledVehicle::BeginPlay()
 
   float FrictionScale = 3.5f;
 
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   auto MovementComponent = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovementComponent());
 
   if (MovementComponent)
@@ -308,12 +311,12 @@ FVector ACarlaWheeledVehicle::GetVehicleBoundingBoxExtent() const
 
 float ACarlaWheeledVehicle::GetMaximumSteerAngle() const
 {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   const auto &Wheels = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovementComponent())->Wheels;
   check(Wheels.Num() > 0);
   auto FrontWheel = Wheels[0];
   check(FrontWheel != nullptr);
-  return FrontWheel->SteerAngle;
+  return FrontWheel->GetSteerAngle();
 #else
     return 0.0f;
 #endif
@@ -373,752 +376,704 @@ void ACarlaWheeledVehicle::SetHandbrakeInput(const bool Value)
 
 TArray<float> ACarlaWheeledVehicle::GetWheelsFrictionScale()
 {
-#if 0 // @CARLA_UE5
-  auto Movement = GetVehicleMovement();
-  if (Movement)
-  {
-    check(Movement != nullptr);
+    TArray<float> WheelsFrictionScale;
 
-    for (auto &Wheel : Movement->Wheels)
+    auto Movement = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
+
+    if (Movement)
     {
-      WheelsFrictionScale.Add(Wheel->TireConfig->GetFrictionScale());
+        for (auto& Wheel : Movement->Wheels)
+        {
+            auto Friction = Wheel->FrictionForceMultiplier;
+            // auto Friction = Wheel->TireConfig->GetFrictionScale()
+            WheelsFrictionScale.Add(Friction);
+        }
     }
-  }
-#else
-  return {};
-#endif
+
+    return WheelsFrictionScale;
 }
 
-void ACarlaWheeledVehicle::SetWheelsFrictionScale(TArray<float> &WheelsFrictionScale)
+void ACarlaWheeledVehicle::SetWheelsFrictionScale(TArray<float>& WheelsFrictionScale)
 {
-#if 0 // @CARLA_UE5
-    auto Movement = GetVehicleMovement();
-  if (Movement)
-  {
-    check(Movement != nullptr);
-    check(Movement->Wheels.Num() == WheelsFrictionScale.Num());
+    auto Movement = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
 
-    for (int32 i = 0; i < Movement->Wheels.Num(); ++i)
+    if (Movement)
     {
-      Movement->Wheels[i]->TireConfig->SetFrictionScale(WheelsFrictionScale[i]);
+        check(Movement->Wheels.Num() == WheelsFrictionScale.Num());
+
+        for (int32 i = 0; i < Movement->Wheels.Num(); ++i)
+        {
+            Movement->Wheels[i]->FrictionForceMultiplier = WheelsFrictionScale[i];
+        }
     }
-  }
-#endif
 }
 
 FVehiclePhysicsControl ACarlaWheeledVehicle::GetVehiclePhysicsControl() const
 {
-  FVehiclePhysicsControl PhysicsControl;
-#if 0 // @CARLA_UE5
-  if (!bIsNWVehicle) {
-      auto Vehicle4W = Cast<UWheeledVehicleMovementComponent4W>(
-          GetVehicleMovement());
-    check(Vehicle4W != nullptr);
+    FVehiclePhysicsControl PhysicsControl;
 
-    // Engine Setup
-    PhysicsControl.TorqueCurve = Vehicle4W->EngineSetup.TorqueCurve.EditorCurveData;
-    PhysicsControl.MaxRPM = Vehicle4W->EngineSetup.MaxRPM;
-    PhysicsControl.MOI = Vehicle4W->EngineSetup.MOI;
-    PhysicsControl.DampingRateFullThrottle = Vehicle4W->EngineSetup.DampingRateFullThrottle;
-    PhysicsControl.DampingRateZeroThrottleClutchEngaged =
-        Vehicle4W->EngineSetup.DampingRateZeroThrottleClutchEngaged;
-    PhysicsControl.DampingRateZeroThrottleClutchDisengaged =
-        Vehicle4W->EngineSetup.DampingRateZeroThrottleClutchDisengaged;
-
-    // Transmission Setup
-    PhysicsControl.bUseGearAutoBox = Vehicle4W->TransmissionSetup.bUseGearAutoBox;
-    PhysicsControl.GearSwitchTime = Vehicle4W->TransmissionSetup.GearSwitchTime;
-    PhysicsControl.ClutchStrength = Vehicle4W->TransmissionSetup.ClutchStrength;
-    PhysicsControl.FinalRatio = Vehicle4W->TransmissionSetup.FinalRatio;
-
-    TArray<FGearPhysicsControl> ForwardGears;
-
-    for (const auto &Gear : Vehicle4W->TransmissionSetup.ForwardGears)
+    if (!bIsNWVehicle)
     {
-      FGearPhysicsControl GearPhysicsControl;
+        auto Vehicle4W = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
+        check(Vehicle4W != nullptr);
 
-      GearPhysicsControl.Ratio = Gear.Ratio;
-      GearPhysicsControl.UpRatio = Gear.UpRatio;
-      GearPhysicsControl.DownRatio = Gear.DownRatio;
+        // Engine Setup
+        PhysicsControl.TorqueCurve = Vehicle4W->EngineSetup.TorqueCurve.EditorCurveData;
+        PhysicsControl.MaxRPM = Vehicle4W->EngineSetup.MaxRPM;
+        PhysicsControl.MOI = Vehicle4W->EngineSetup.EngineRevUpMOI;
+        // @TODO PhysicsControl.DampingRateFullThrottle = Vehicle4W->EngineSetup.DampingRateFullThrottle;
+        // @TODO PhysicsControl.DampingRateZeroThrottleClutchEngaged = Vehicle4W->EngineSetup.DampingRateZeroThrottleClutchEngaged;
+        // @TODO PhysicsControl.DampingRateZeroThrottleClutchDisengaged = Vehicle4W->EngineSetup.DampingRateZeroThrottleClutchDisengaged;
 
-      ForwardGears.Add(GearPhysicsControl);
+        // Transmission Setup
+        PhysicsControl.bUseGearAutoBox = Vehicle4W->TransmissionSetup.bUseAutomaticGears;
+        PhysicsControl.GearSwitchTime = Vehicle4W->TransmissionSetup.GearChangeTime;
+        // @TODO PhysicsControl.ClutchStrength = Vehicle4W->TransmissionSetup.ClutchStrength;
+        PhysicsControl.FinalRatio = Vehicle4W->TransmissionSetup.FinalRatio;
+
+        TArray<FGearPhysicsControl> ForwardGears;
+
+        for (int32 i = 0; i != Vehicle4W->TransmissionSetup.ForwardGearRatios.Num(); ++i)
+        {
+            FGearPhysicsControl GearPhysicsControl;
+
+            GearPhysicsControl.Ratio = Vehicle4W->TransmissionSetup.GetGearRatio(i);
+            GearPhysicsControl.UpRatio = Vehicle4W->TransmissionSetup.ForwardGearRatios[i];
+            GearPhysicsControl.DownRatio = Vehicle4W->TransmissionSetup.ReverseGearRatios[i];
+
+            ForwardGears.Add(GearPhysicsControl);
+        }
+
+        PhysicsControl.ForwardGears = ForwardGears;
+
+        // Vehicle Setup
+        PhysicsControl.Mass = Vehicle4W->Mass;
+        PhysicsControl.DragCoefficient = Vehicle4W->DragCoefficient;
+
+        // Center of mass offset (Center of mass is always zero vector in local
+        // position)
+        UPrimitiveComponent* UpdatedPrimitive = Cast<UPrimitiveComponent>(Vehicle4W->UpdatedComponent);
+        check(UpdatedPrimitive != nullptr);
+
+        PhysicsControl.CenterOfMass = UpdatedPrimitive->BodyInstance.COMNudge;
+
+        // Transmission Setup
+        PhysicsControl.SteeringCurve = Vehicle4W->SteeringSetup.SteeringCurve.EditorCurveData;
+
+        // Wheels Setup
+        TArray<FWheelPhysicsControl> Wheels;
+
+        for (int32 i = 0; i < Vehicle4W->WheelSetups.Num(); ++i)
+        {
+            FWheelPhysicsControl PhysicsWheel;
+            // @TODO PxVehicleWheelData PWheelData = Vehicle4W->PVehicle->mWheelsSimData.getWheelData(i);
+            // @TODO PhysicsWheel.DampingRate = Cm2ToM2(PWheelData.mDampingRate);
+            // @TODO PhysicsWheel.MaxSteerAngle = FMath::RadiansToDegrees(PWheelData.mMaxSteer);
+            // @TODO PhysicsWheel.Radius = PWheelData.mRadius;
+            // @TODO PhysicsWheel.MaxBrakeTorque = Cm2ToM2(PWheelData.mMaxBrakeTorque);
+            // @TODO PhysicsWheel.MaxHandBrakeTorque = Cm2ToM2(PWheelData.mMaxHandBrakeTorque);
+            // @TODO PxVehicleTireData PTireData = Vehicle4W->PVehicle->mWheelsSimData.getTireData(i);
+            // @TODO PhysicsWheel.LatStiffMaxLoad = PTireData.mLatStiffX;
+            // @TODO PhysicsWheel.LatStiffValue = PTireData.mLatStiffY;
+            // @TODO PhysicsWheel.LongStiffValue = PTireData.mLongitudinalStiffnessPerUnitGravity;
+            // @TODO PhysicsWheel.TireFriction = Vehicle4W->Wheels[i]->TireConfig->GetFrictionScale();
+            // @TODO PhysicsWheel.Position = Vehicle4W->Wheels[i]->Location;
+            Wheels.Add(PhysicsWheel);
+        }
+
+        PhysicsControl.Wheels = Wheels;
+
+    }
+    else {
+        auto VehicleNW = Cast<UChaosWheeledVehicleMovementComponent>(
+            GetVehicleMovement());
+
+        check(VehicleNW != nullptr);
+
+        // Engine Setup
+        PhysicsControl.TorqueCurve = VehicleNW->EngineSetup.TorqueCurve.EditorCurveData;
+        PhysicsControl.MaxRPM = VehicleNW->EngineSetup.MaxRPM;
+        PhysicsControl.MOI = VehicleNW->EngineSetup.EngineRevUpMOI;
+        // @TODO PhysicsControl.DampingRateFullThrottle = VehicleNW->EngineSetup.DampingRateFullThrottle;
+        // @TODO PhysicsControl.DampingRateZeroThrottleClutchEngaged = VehicleNW->EngineSetup.DampingRateZeroThrottleClutchEngaged;
+        // @TODO PhysicsControl.DampingRateZeroThrottleClutchDisengaged = VehicleNW->EngineSetup.DampingRateZeroThrottleClutchDisengaged;
+
+        // Transmission Setup
+        PhysicsControl.bUseGearAutoBox = VehicleNW->TransmissionSetup.bUseAutomaticGears;
+        PhysicsControl.GearSwitchTime = VehicleNW->TransmissionSetup.GearChangeTime;
+        // @TODO PhysicsControl.ClutchStrength = VehicleNW->TransmissionSetup.ClutchStrength;
+        PhysicsControl.FinalRatio = VehicleNW->TransmissionSetup.FinalRatio;
+
+        TArray<FGearPhysicsControl> ForwardGears;
+
+        for (int32 i = 0; i != VehicleNW->TransmissionSetup.ForwardGearRatios.Num(); ++i)
+        {
+            FGearPhysicsControl GearPhysicsControl;
+            GearPhysicsControl.Ratio = VehicleNW->TransmissionSetup.GetGearRatio(i);
+            GearPhysicsControl.UpRatio = VehicleNW->TransmissionSetup.ForwardGearRatios[i];
+            GearPhysicsControl.DownRatio = VehicleNW->TransmissionSetup.ReverseGearRatios[i];
+            ForwardGears.Add(GearPhysicsControl);
+        }
+
+        PhysicsControl.ForwardGears = ForwardGears;
+
+        // VehicleNW Setup
+        PhysicsControl.Mass = VehicleNW->Mass;
+        PhysicsControl.DragCoefficient = VehicleNW->DragCoefficient;
+
+        // Center of mass offset (Center of mass is always zero vector in local
+        // position)
+        UPrimitiveComponent* UpdatedPrimitive = Cast<UPrimitiveComponent>(VehicleNW->UpdatedComponent);
+        check(UpdatedPrimitive != nullptr);
+
+        PhysicsControl.CenterOfMass = UpdatedPrimitive->BodyInstance.COMNudge;
+
+        // Transmission Setup
+        PhysicsControl.SteeringCurve = VehicleNW->SteeringSetup.SteeringCurve.EditorCurveData;
+
+        // Wheels Setup
+        TArray<FWheelPhysicsControl> Wheels;
+
+        for (int32 i = 0; i < VehicleNW->WheelSetups.Num(); ++i)
+        {
+            FWheelPhysicsControl PhysicsWheel;
+            // @TODO PxVehicleWheelData PWheelData = VehicleNW->PVehicle->mWheelsSimData.getWheelData(i);
+            // @TODO PhysicsWheel.DampingRate = Cm2ToM2(PWheelData.mDampingRate);
+            // @TODO PhysicsWheel.MaxSteerAngle = FMath::RadiansToDegrees(PWheelData.mMaxSteer);
+            // @TODO PhysicsWheel.Radius = PWheelData.mRadius;
+            // @TODO PhysicsWheel.MaxBrakeTorque = Cm2ToM2(PWheelData.mMaxBrakeTorque);
+            // @TODO PhysicsWheel.MaxHandBrakeTorque = Cm2ToM2(PWheelData.mMaxHandBrakeTorque);
+            // @TODO PxVehicleTireData PTireData = VehicleNW->PVehicle->mWheelsSimData.getTireData(i);
+            // @TODO PhysicsWheel.LatStiffMaxLoad = PTireData.mLatStiffX;
+            // @TODO PhysicsWheel.LatStiffValue = PTireData.mLatStiffY;
+            // @TODO PhysicsWheel.LongStiffValue = PTireData.mLongitudinalStiffnessPerUnitGravity;
+            // @TODO PhysicsWheel.TireFriction = VehicleNW->Wheels[i]->TireConfig->GetFrictionScale();
+            // @TODO PhysicsWheel.Position = VehicleNW->Wheels[i]->Location;
+            Wheels.Add(PhysicsWheel);
+        }
+
+        PhysicsControl.Wheels = Wheels;
+
     }
 
-    PhysicsControl.ForwardGears = ForwardGears;
-
-    // Vehicle Setup
-    PhysicsControl.Mass = Vehicle4W->Mass;
-    PhysicsControl.DragCoefficient = Vehicle4W->DragCoefficient;
-
-    // Center of mass offset (Center of mass is always zero vector in local
-    // position)
-    UPrimitiveComponent *UpdatedPrimitive = Cast<UPrimitiveComponent>(Vehicle4W->UpdatedComponent);
-    check(UpdatedPrimitive != nullptr);
-
-    PhysicsControl.CenterOfMass = UpdatedPrimitive->BodyInstance.COMNudge;
-
-    // Transmission Setup
-    PhysicsControl.SteeringCurve = Vehicle4W->SteeringCurve.EditorCurveData;
-
-    // Wheels Setup
-    TArray<FWheelPhysicsControl> Wheels;
-
-    for (int32 i = 0; i < Vehicle4W->WheelSetups.Num(); ++i)
-    {
-      FWheelPhysicsControl PhysicsWheel;
-
-      PxVehicleWheelData PWheelData = Vehicle4W->PVehicle->mWheelsSimData.getWheelData(i);
-      PhysicsWheel.DampingRate = Cm2ToM2(PWheelData.mDampingRate);
-      PhysicsWheel.MaxSteerAngle = FMath::RadiansToDegrees(PWheelData.mMaxSteer);
-      PhysicsWheel.Radius = PWheelData.mRadius;
-      PhysicsWheel.MaxBrakeTorque = Cm2ToM2(PWheelData.mMaxBrakeTorque);
-      PhysicsWheel.MaxHandBrakeTorque = Cm2ToM2(PWheelData.mMaxHandBrakeTorque);
-
-      PxVehicleTireData PTireData = Vehicle4W->PVehicle->mWheelsSimData.getTireData(i);
-      PhysicsWheel.LatStiffMaxLoad = PTireData.mLatStiffX;
-      PhysicsWheel.LatStiffValue = PTireData.mLatStiffY;
-      PhysicsWheel.LongStiffValue = PTireData.mLongitudinalStiffnessPerUnitGravity;
-
-      PhysicsWheel.TireFriction = Vehicle4W->Wheels[i]->TireConfig->GetFrictionScale();
-      PhysicsWheel.Position = Vehicle4W->Wheels[i]->Location;
-
-      Wheels.Add(PhysicsWheel);
-    }
-
-    PhysicsControl.Wheels = Wheels;
-
-  } else {
-      auto VehicleNW = Cast<UWheeledVehicleMovementComponentNW>(
-      GetVehicleMovement());
-
-    check(VehicleNW != nullptr);
-
-    // Engine Setup
-    PhysicsControl.TorqueCurve = VehicleNW->EngineSetup.TorqueCurve.EditorCurveData;
-    PhysicsControl.MaxRPM = VehicleNW->EngineSetup.MaxRPM;
-    PhysicsControl.MOI = VehicleNW->EngineSetup.MOI;
-    PhysicsControl.DampingRateFullThrottle = VehicleNW->EngineSetup.DampingRateFullThrottle;
-    PhysicsControl.DampingRateZeroThrottleClutchEngaged =
-        VehicleNW->EngineSetup.DampingRateZeroThrottleClutchEngaged;
-    PhysicsControl.DampingRateZeroThrottleClutchDisengaged =
-        VehicleNW->EngineSetup.DampingRateZeroThrottleClutchDisengaged;
-
-    // Transmission Setup
-    PhysicsControl.bUseGearAutoBox = VehicleNW->TransmissionSetup.bUseGearAutoBox;
-    PhysicsControl.GearSwitchTime = VehicleNW->TransmissionSetup.GearSwitchTime;
-    PhysicsControl.ClutchStrength = VehicleNW->TransmissionSetup.ClutchStrength;
-    PhysicsControl.FinalRatio = VehicleNW->TransmissionSetup.FinalRatio;
-
-    TArray<FGearPhysicsControl> ForwardGears;
-
-    for (const auto &Gear : VehicleNW->TransmissionSetup.ForwardGears)
-    {
-      FGearPhysicsControl GearPhysicsControl;
-
-      GearPhysicsControl.Ratio = Gear.Ratio;
-      GearPhysicsControl.UpRatio = Gear.UpRatio;
-      GearPhysicsControl.DownRatio = Gear.DownRatio;
-
-      ForwardGears.Add(GearPhysicsControl);
-    }
-
-    PhysicsControl.ForwardGears = ForwardGears;
-
-    // VehicleNW Setup
-    PhysicsControl.Mass = VehicleNW->Mass;
-    PhysicsControl.DragCoefficient = VehicleNW->DragCoefficient;
-
-    // Center of mass offset (Center of mass is always zero vector in local
-    // position)
-    UPrimitiveComponent *UpdatedPrimitive = Cast<UPrimitiveComponent>(VehicleNW->UpdatedComponent);
-    check(UpdatedPrimitive != nullptr);
-
-    PhysicsControl.CenterOfMass = UpdatedPrimitive->BodyInstance.COMNudge;
-
-    // Transmission Setup
-    PhysicsControl.SteeringCurve = VehicleNW->SteeringCurve.EditorCurveData;
-
-    // Wheels Setup
-    TArray<FWheelPhysicsControl> Wheels;
-
-    for (int32 i = 0; i < VehicleNW->WheelSetups.Num(); ++i)
-    {
-      FWheelPhysicsControl PhysicsWheel;
-
-      PxVehicleWheelData PWheelData = VehicleNW->PVehicle->mWheelsSimData.getWheelData(i);
-      PhysicsWheel.DampingRate = Cm2ToM2(PWheelData.mDampingRate);
-      PhysicsWheel.MaxSteerAngle = FMath::RadiansToDegrees(PWheelData.mMaxSteer);
-      PhysicsWheel.Radius = PWheelData.mRadius;
-      PhysicsWheel.MaxBrakeTorque = Cm2ToM2(PWheelData.mMaxBrakeTorque);
-      PhysicsWheel.MaxHandBrakeTorque = Cm2ToM2(PWheelData.mMaxHandBrakeTorque);
-
-      PxVehicleTireData PTireData = VehicleNW->PVehicle->mWheelsSimData.getTireData(i);
-      PhysicsWheel.LatStiffMaxLoad = PTireData.mLatStiffX;
-      PhysicsWheel.LatStiffValue = PTireData.mLatStiffY;
-      PhysicsWheel.LongStiffValue = PTireData.mLongitudinalStiffnessPerUnitGravity;
-
-      PhysicsWheel.TireFriction = VehicleNW->Wheels[i]->TireConfig->GetFrictionScale();
-      PhysicsWheel.Position = VehicleNW->Wheels[i]->Location;
-
-      Wheels.Add(PhysicsWheel);
-    }
-
-    PhysicsControl.Wheels = Wheels;
-
-  }
-#endif
-
-  return PhysicsControl;
+    return PhysicsControl;
 }
 
 FVehicleLightState ACarlaWheeledVehicle::GetVehicleLightState() const
 {
-  return InputControl.LightState;
+    return InputControl.LightState;
 }
 
 void ACarlaWheeledVehicle::RestoreVehiclePhysicsControl()
 {
-  ApplyVehiclePhysicsControl(LastPhysicsControl);
+    ApplyVehiclePhysicsControl(LastPhysicsControl);
 }
 
-void ACarlaWheeledVehicle::ApplyVehiclePhysicsControl(const FVehiclePhysicsControl &PhysicsControl)
+void ACarlaWheeledVehicle::ApplyVehiclePhysicsControl(const FVehiclePhysicsControl& PhysicsControl)
 {
-#if 0 // @CARLA_UE5
-  LastPhysicsControl = PhysicsControl;
-  if (!bIsNWVehicle) {
-      auto Vehicle4W = Cast<UWheeledVehicleMovementComponent4W>(
-          GetVehicleMovement());
-    check(Vehicle4W != nullptr);
+    LastPhysicsControl = PhysicsControl;
 
-    
-
-    // Engine Setup
-    Vehicle4W->EngineSetup.TorqueCurve.EditorCurveData = PhysicsControl.TorqueCurve;
-    Vehicle4W->EngineSetup.MaxRPM = PhysicsControl.MaxRPM;
-
-    Vehicle4W->EngineSetup.MOI = PhysicsControl.MOI;
-
-    Vehicle4W->EngineSetup.DampingRateFullThrottle = PhysicsControl.DampingRateFullThrottle;
-    Vehicle4W->EngineSetup.DampingRateZeroThrottleClutchEngaged =
-        PhysicsControl.DampingRateZeroThrottleClutchEngaged;
-    Vehicle4W->EngineSetup.DampingRateZeroThrottleClutchDisengaged =
-        PhysicsControl.DampingRateZeroThrottleClutchDisengaged;
-
-    // Transmission Setup
-    Vehicle4W->TransmissionSetup.bUseGearAutoBox = PhysicsControl.bUseGearAutoBox;
-    Vehicle4W->TransmissionSetup.GearSwitchTime = PhysicsControl.GearSwitchTime;
-    Vehicle4W->TransmissionSetup.ClutchStrength = PhysicsControl.ClutchStrength;
-    Vehicle4W->TransmissionSetup.FinalRatio = PhysicsControl.FinalRatio;
-
-    TArray<FVehicleGearData> ForwardGears;
-
-    for (const auto &Gear : PhysicsControl.ForwardGears)
+    if (!bIsNWVehicle)
     {
-      FVehicleGearData GearData;
+        auto Vehicle4W = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
+        check(Vehicle4W != nullptr);
 
-      GearData.Ratio = Gear.Ratio;
-      GearData.UpRatio = Gear.UpRatio;
-      GearData.DownRatio = Gear.DownRatio;
+        // Engine Setup
+        Vehicle4W->EngineSetup.TorqueCurve.EditorCurveData = PhysicsControl.TorqueCurve;
+        Vehicle4W->EngineSetup.MaxRPM = PhysicsControl.MaxRPM;
+        Vehicle4W->EngineSetup.EngineRevUpMOI = PhysicsControl.MOI;
 
-      ForwardGears.Add(GearData);
+        // @TODO Vehicle4W->EngineSetup.DampingRateFullThrottle = PhysicsControl.DampingRateFullThrottle;
+        // @TODO Vehicle4W->EngineSetup.DampingRateZeroThrottleClutchEngaged = PhysicsControl.DampingRateZeroThrottleClutchEngaged;
+        // @TODO Vehicle4W->EngineSetup.DampingRateZeroThrottleClutchDisengaged = PhysicsControl.DampingRateZeroThrottleClutchDisengaged;
+
+        // Transmission Setup
+        Vehicle4W->TransmissionSetup.bUseAutomaticGears = PhysicsControl.bUseGearAutoBox;
+        Vehicle4W->TransmissionSetup.GearChangeTime = PhysicsControl.GearSwitchTime;
+        // @TODO Vehicle4W->TransmissionSetup.ClutchStrength = PhysicsControl.ClutchStrength;
+        Vehicle4W->TransmissionSetup.FinalRatio = PhysicsControl.FinalRatio;
+
+        Vehicle4W->TransmissionSetup.ForwardGearRatios.SetNum(std::max(
+            Vehicle4W->TransmissionSetup.ForwardGearRatios.Num(),
+            PhysicsControl.ForwardGears.Num()));
+
+        Vehicle4W->TransmissionSetup.ReverseGearRatios.SetNum(std::max(
+            Vehicle4W->TransmissionSetup.ReverseGearRatios.Num(),
+            PhysicsControl.ForwardGears.Num()));
+
+        for (int32 i = 0; i != PhysicsControl.ForwardGears.Num(); ++i)
+        {
+            auto& Gear = PhysicsControl.ForwardGears[i];
+            Vehicle4W->TransmissionSetup.ForwardGearRatios[i] = Gear.UpRatio;
+            Vehicle4W->TransmissionSetup.ReverseGearRatios[i] = Gear.DownRatio;
+        }
+
+        // Vehicle Setup
+        Vehicle4W->Mass = PhysicsControl.Mass;
+        Vehicle4W->DragCoefficient = PhysicsControl.DragCoefficient;
+
+        // Center of mass
+        UPrimitiveComponent* UpdatedPrimitive = Cast<UPrimitiveComponent>(Vehicle4W->UpdatedComponent);
+        check(UpdatedPrimitive != nullptr);
+
+        UpdatedPrimitive->BodyInstance.COMNudge = PhysicsControl.CenterOfMass;
+
+        // Transmission Setup
+        Vehicle4W->SteeringSetup.SteeringCurve.EditorCurveData = PhysicsControl.SteeringCurve;
+
+        // Wheels Setup
+        const int PhysicsWheelsNum = PhysicsControl.Wheels.Num();
+        if (PhysicsWheelsNum != 4)
+        {
+            UE_LOG(LogCarla, Error, TEXT("Number of WheelPhysicsControl is not 4."));
+            return;
+        }
+
+        // Change, if required, the collision mode for wheels
+        SetWheelCollision(Vehicle4W, PhysicsControl);
+
+        TArray<FChaosWheelSetup> NewWheelSetups = Vehicle4W->WheelSetups;
+
+        for (int32 i = 0; i < PhysicsWheelsNum; ++i)
+        {
+            UChaosVehicleWheel* Wheel = NewWheelSetups[i].WheelClass.GetDefaultObject();
+            check(Wheel != nullptr);
+
+            // @TODO Wheel->TireConfig = DuplicateObject<UTireConfig>(Wheel->TireConfig, nullptr);
+            // @TODO Wheel->TireConfig->SetFrictionScale(PhysicsControl.Wheels[i].TireFriction);
+        }
+
+        Vehicle4W->WheelSetups = NewWheelSetups;
+
+        // Recreate Physics State for vehicle setup
+        // GetWorld()->GetPhysicsScene()->GetPxScene()->lockWrite();
+        Vehicle4W->RecreatePhysicsState();
+        // GetWorld()->GetPhysicsScene()->GetPxScene()->unlockWrite();
+
+        for (int32 i = 0; i < PhysicsWheelsNum; ++i)
+        {
+            // @TODO PxVehicleWheelData PWheelData = Vehicle4W->PVehicle->mWheelsSimData.getWheelData(i);
+            // @TODO PWheelData.mRadius = PhysicsControl.Wheels[i].Radius;
+            // @TODO PWheelData.mMaxSteer = FMath::DegreesToRadians(PhysicsControl.Wheels[i].MaxSteerAngle);
+            // @TODO PWheelData.mDampingRate = M2ToCm2(PhysicsControl.Wheels[i].DampingRate);
+            // @TODO PWheelData.mMaxBrakeTorque = M2ToCm2(PhysicsControl.Wheels[i].MaxBrakeTorque);
+            // @TODO PWheelData.mMaxHandBrakeTorque = M2ToCm2(PhysicsControl.Wheels[i].MaxHandBrakeTorque);
+            // @TODO Vehicle4W->PVehicle->mWheelsSimData.setWheelData(i, PWheelData);
+            // @TODO PxVehicleTireData PTireData = Vehicle4W->PVehicle->mWheelsSimData.getTireData(i);
+            // @TODO PTireData.mLatStiffX = PhysicsControl.Wheels[i].LatStiffMaxLoad;
+            // @TODO PTireData.mLatStiffY = PhysicsControl.Wheels[i].LatStiffValue;
+            // @TODO PTireData.mLongitudinalStiffnessPerUnitGravity = PhysicsControl.Wheels[i].LongStiffValue;
+            // @TODO Vehicle4W->PVehicle->mWheelsSimData.setTireData(i, PTireData);
+        }
+
+        ResetConstraints();
+    }
+    else {
+        auto VehicleNW = Cast<UChaosWheeledVehicleMovementComponent>(
+            GetVehicleMovement());
+
+        check(VehicleNW != nullptr);
+
+        // Engine Setup
+        VehicleNW->EngineSetup.TorqueCurve.EditorCurveData = PhysicsControl.TorqueCurve;
+        VehicleNW->EngineSetup.MaxRPM = PhysicsControl.MaxRPM;
+
+        VehicleNW->EngineSetup.EngineRevUpMOI = PhysicsControl.MOI;
+
+        // @TODO VehicleNW->EngineSetup.DampingRateFullThrottle = PhysicsControl.DampingRateFullThrottle;
+        // @TODO VehicleNW->EngineSetup.DampingRateZeroThrottleClutchEngaged = PhysicsControl.DampingRateZeroThrottleClutchEngaged;
+        // @TODO VehicleNW->EngineSetup.DampingRateZeroThrottleClutchDisengaged = PhysicsControl.DampingRateZeroThrottleClutchDisengaged;
+
+        // Transmission Setup
+        VehicleNW->TransmissionSetup.bUseAutomaticGears = PhysicsControl.bUseGearAutoBox;
+        VehicleNW->TransmissionSetup.GearChangeTime = PhysicsControl.GearSwitchTime;
+        // @TODO VehicleNW->TransmissionSetup.ClutchStrength = PhysicsControl.ClutchStrength;
+        VehicleNW->TransmissionSetup.FinalRatio = PhysicsControl.FinalRatio;
+
+        for (int32 i = 0; i != PhysicsControl.ForwardGears.Num(); ++i)
+        {
+            auto& Gear = PhysicsControl.ForwardGears[i];
+            VehicleNW->TransmissionSetup.ForwardGearRatios[i] = Gear.UpRatio;
+            VehicleNW->TransmissionSetup.ReverseGearRatios[i] = Gear.DownRatio;
+        }
+
+        // VehicleNW Setup
+        VehicleNW->Mass = PhysicsControl.Mass;
+        VehicleNW->DragCoefficient = PhysicsControl.DragCoefficient;
+
+        // Center of mass
+        UPrimitiveComponent* UpdatedPrimitive = Cast<UPrimitiveComponent>(VehicleNW->UpdatedComponent);
+        check(UpdatedPrimitive != nullptr);
+
+        UpdatedPrimitive->BodyInstance.COMNudge = PhysicsControl.CenterOfMass;
+
+        // Transmission Setup
+        VehicleNW->SteeringSetup.SteeringCurve.EditorCurveData = PhysicsControl.SteeringCurve;
+
+        // Wheels Setup
+        const int PhysicsWheelsNum = PhysicsControl.Wheels.Num();
+
+        // Change, if required, the collision mode for wheels
+        SetWheelCollisionNW(VehicleNW, PhysicsControl);
+
+        TArray<FChaosWheelSetup> NewWheelSetups = VehicleNW->WheelSetups;
+
+        for (int32 i = 0; i < PhysicsWheelsNum; ++i)
+        {
+            UChaosVehicleWheel* Wheel = NewWheelSetups[i].WheelClass.GetDefaultObject();
+            check(Wheel != nullptr);
+
+            // @TODO Wheel->TireConfig = DuplicateObject<UTireConfig>(Wheel->TireConfig, nullptr);
+            // @TODO Wheel->TireConfig->SetFrictionScale(PhysicsControl.Wheels[i].TireFriction);
+        }
+
+        VehicleNW->WheelSetups = NewWheelSetups;
+
+        // Recreate Physics State for vehicle setup
+        // GetWorld()->GetPhysicsScene()->GetPxScene()->lockWrite();
+        VehicleNW->RecreatePhysicsState();
+        // GetWorld()->GetPhysicsScene()->GetPxScene()->unlockWrite();
+
+        for (int32 i = 0; i < PhysicsWheelsNum; ++i)
+        {
+            // @TODO PxVehicleWheelData PWheelData = VehicleNW->PVehicle->mWheelsSimData.getWheelData(i);
+            // @TODO PWheelData.mRadius = PhysicsControl.Wheels[i].Radius;
+            // @TODO PWheelData.mMaxSteer = FMath::DegreesToRadians(PhysicsControl.Wheels[i].MaxSteerAngle);
+            // @TODO PWheelData.mDampingRate = M2ToCm2(PhysicsControl.Wheels[i].DampingRate);
+            // @TODO PWheelData.mMaxBrakeTorque = M2ToCm2(PhysicsControl.Wheels[i].MaxBrakeTorque);
+            // @TODO PWheelData.mMaxHandBrakeTorque = M2ToCm2(PhysicsControl.Wheels[i].MaxHandBrakeTorque);
+            // @TODO VehicleNW->PVehicle->mWheelsSimData.setWheelData(i, PWheelData);
+            // @TODO PxVehicleTireData PTireData = VehicleNW->PVehicle->mWheelsSimData.getTireData(i);
+            // @TODO PTireData.mLatStiffX = PhysicsControl.Wheels[i].LatStiffMaxLoad;
+            // @TODO PTireData.mLatStiffY = PhysicsControl.Wheels[i].LatStiffValue;
+            // @TODO PTireData.mLongitudinalStiffnessPerUnitGravity = PhysicsControl.Wheels[i].LongStiffValue;
+            // @TODO VehicleNW->PVehicle->mWheelsSimData.setTireData(i, PTireData);
+        }
+
+        ResetConstraints();
+
     }
 
-    Vehicle4W->TransmissionSetup.ForwardGears = ForwardGears;
-
-    // Vehicle Setup
-    Vehicle4W->Mass = PhysicsControl.Mass;
-    Vehicle4W->DragCoefficient = PhysicsControl.DragCoefficient;
-
-    // Center of mass
-    UPrimitiveComponent *UpdatedPrimitive = Cast<UPrimitiveComponent>(Vehicle4W->UpdatedComponent);
-    check(UpdatedPrimitive != nullptr);
-
-    UpdatedPrimitive->BodyInstance.COMNudge = PhysicsControl.CenterOfMass;
-
-    // Transmission Setup
-    Vehicle4W->SteeringCurve.EditorCurveData = PhysicsControl.SteeringCurve;
-
-    // Wheels Setup
-    const int PhysicsWheelsNum = PhysicsControl.Wheels.Num();
-    if (PhysicsWheelsNum != 4)
+    auto* Recorder = UCarlaStatics::GetRecorder(GetWorld());
+    if (Recorder && Recorder->IsEnabled())
     {
-      UE_LOG(LogCarla, Error, TEXT("Number of WheelPhysicsControl is not 4."));
-      return;
+        Recorder->AddPhysicsControl(*this);
     }
 
-    // Change, if required, the collision mode for wheels
-    SetWheelCollision(Vehicle4W, PhysicsControl);
-
-    TArray<FChaosWheelSetup> NewWheelSetups = Vehicle4W->WheelSetups;
-
-    for (int32 i = 0; i < PhysicsWheelsNum; ++i)
-    {
-      UChaosVehicleWheel *Wheel = NewWheelSetups[i].WheelClass.GetDefaultObject();
-      check(Wheel != nullptr);
-
-      // Assigning new tire config
-      Wheel->TireConfig = DuplicateObject<UTireConfig>(Wheel->TireConfig, nullptr);
-
-      // Setting a new value to friction
-      Wheel->TireConfig->SetFrictionScale(PhysicsControl.Wheels[i].TireFriction);
-    }
-
-    Vehicle4W->WheelSetups = NewWheelSetups;
-
-    // Recreate Physics State for vehicle setup
-    GetWorld()->GetPhysicsScene()->GetPxScene()->lockWrite();
-    Vehicle4W->RecreatePhysicsState();
-    GetWorld()->GetPhysicsScene()->GetPxScene()->unlockWrite();
-
-    for (int32 i = 0; i < PhysicsWheelsNum; ++i)
-    {
-      PxVehicleWheelData PWheelData = Vehicle4W->PVehicle->mWheelsSimData.getWheelData(i);
-
-      PWheelData.mRadius = PhysicsControl.Wheels[i].Radius;
-      PWheelData.mMaxSteer = FMath::DegreesToRadians(PhysicsControl.Wheels[i].MaxSteerAngle);
-      PWheelData.mDampingRate = M2ToCm2(PhysicsControl.Wheels[i].DampingRate);
-      PWheelData.mMaxBrakeTorque = M2ToCm2(PhysicsControl.Wheels[i].MaxBrakeTorque);
-      PWheelData.mMaxHandBrakeTorque = M2ToCm2(PhysicsControl.Wheels[i].MaxHandBrakeTorque);
-      Vehicle4W->PVehicle->mWheelsSimData.setWheelData(i, PWheelData);
-
-      PxVehicleTireData PTireData = Vehicle4W->PVehicle->mWheelsSimData.getTireData(i);
-      PTireData.mLatStiffX = PhysicsControl.Wheels[i].LatStiffMaxLoad;
-      PTireData.mLatStiffY = PhysicsControl.Wheels[i].LatStiffValue;
-      PTireData.mLongitudinalStiffnessPerUnitGravity = PhysicsControl.Wheels[i].LongStiffValue;
-      Vehicle4W->PVehicle->mWheelsSimData.setTireData(i, PTireData);
-    }
-
-    ResetConstraints();
-  } else {
-      auto VehicleNW = Cast<UWheeledVehicleMovementComponentNW>(
-          GetVehicleMovement());
-
-    check(VehicleNW != nullptr);
-
-    // Engine Setup
-    VehicleNW->EngineSetup.TorqueCurve.EditorCurveData = PhysicsControl.TorqueCurve;
-    VehicleNW->EngineSetup.MaxRPM = PhysicsControl.MaxRPM;
-
-    VehicleNW->EngineSetup.MOI = PhysicsControl.MOI;
-
-    VehicleNW->EngineSetup.DampingRateFullThrottle = PhysicsControl.DampingRateFullThrottle;
-    VehicleNW->EngineSetup.DampingRateZeroThrottleClutchEngaged =
-        PhysicsControl.DampingRateZeroThrottleClutchEngaged;
-    VehicleNW->EngineSetup.DampingRateZeroThrottleClutchDisengaged =
-        PhysicsControl.DampingRateZeroThrottleClutchDisengaged;
-
-    // Transmission Setup
-    VehicleNW->TransmissionSetup.bUseGearAutoBox = PhysicsControl.bUseGearAutoBox;
-    VehicleNW->TransmissionSetup.GearSwitchTime = PhysicsControl.GearSwitchTime;
-    VehicleNW->TransmissionSetup.ClutchStrength = PhysicsControl.ClutchStrength;
-    VehicleNW->TransmissionSetup.FinalRatio = PhysicsControl.FinalRatio;
-
-    TArray<FVehicleNWGearData> ForwardGears;
-
-    for (const auto &Gear : PhysicsControl.ForwardGears)
-    {
-      FVehicleNWGearData GearData;
-
-      GearData.Ratio = Gear.Ratio;
-      GearData.UpRatio = Gear.UpRatio;
-      GearData.DownRatio = Gear.DownRatio;
-
-      ForwardGears.Add(GearData);
-    }
-
-    VehicleNW->TransmissionSetup.ForwardGears = ForwardGears;
-
-    // VehicleNW Setup
-    VehicleNW->Mass = PhysicsControl.Mass;
-    VehicleNW->DragCoefficient = PhysicsControl.DragCoefficient;
-
-    // Center of mass
-    UPrimitiveComponent *UpdatedPrimitive = Cast<UPrimitiveComponent>(VehicleNW->UpdatedComponent);
-    check(UpdatedPrimitive != nullptr);
-
-    UpdatedPrimitive->BodyInstance.COMNudge = PhysicsControl.CenterOfMass;
-
-    // Transmission Setup
-    VehicleNW->SteeringCurve.EditorCurveData = PhysicsControl.SteeringCurve;
-
-    // Wheels Setup
-    const int PhysicsWheelsNum = PhysicsControl.Wheels.Num();
-
-    // Change, if required, the collision mode for wheels
-    SetWheelCollisionNW(VehicleNW, PhysicsControl);
-
-    TArray<FChaosWheelSetup> NewWheelSetups = VehicleNW->WheelSetups;
-
-    for (int32 i = 0; i < PhysicsWheelsNum; ++i)
-    {
-      UChaosVehicleWheel *Wheel = NewWheelSetups[i].WheelClass.GetDefaultObject();
-      check(Wheel != nullptr);
-
-      // Assigning new tire config
-      Wheel->TireConfig = DuplicateObject<UTireConfig>(Wheel->TireConfig, nullptr);
-
-      // Setting a new value to friction
-      Wheel->TireConfig->SetFrictionScale(PhysicsControl.Wheels[i].TireFriction);
-    }
-
-    VehicleNW->WheelSetups = NewWheelSetups;
-
-    // Recreate Physics State for vehicle setup
-    GetWorld()->GetPhysicsScene()->GetPxScene()->lockWrite();
-    VehicleNW->RecreatePhysicsState();
-    GetWorld()->GetPhysicsScene()->GetPxScene()->unlockWrite();
-
-    for (int32 i = 0; i < PhysicsWheelsNum; ++i)
-    {
-      PxVehicleWheelData PWheelData = VehicleNW->PVehicle->mWheelsSimData.getWheelData(i);
-
-      PWheelData.mRadius = PhysicsControl.Wheels[i].Radius;
-      PWheelData.mMaxSteer = FMath::DegreesToRadians(PhysicsControl.Wheels[i].MaxSteerAngle);
-      PWheelData.mDampingRate = M2ToCm2(PhysicsControl.Wheels[i].DampingRate);
-      PWheelData.mMaxBrakeTorque = M2ToCm2(PhysicsControl.Wheels[i].MaxBrakeTorque);
-      PWheelData.mMaxHandBrakeTorque = M2ToCm2(PhysicsControl.Wheels[i].MaxHandBrakeTorque);
-      VehicleNW->PVehicle->mWheelsSimData.setWheelData(i, PWheelData);
-
-      PxVehicleTireData PTireData = VehicleNW->PVehicle->mWheelsSimData.getTireData(i);
-      PTireData.mLatStiffX = PhysicsControl.Wheels[i].LatStiffMaxLoad;
-      PTireData.mLatStiffY = PhysicsControl.Wheels[i].LatStiffValue;
-      PTireData.mLongitudinalStiffnessPerUnitGravity = PhysicsControl.Wheels[i].LongStiffValue;
-      VehicleNW->PVehicle->mWheelsSimData.setTireData(i, PTireData);
-    }
-
-    ResetConstraints();
-
-  }
-
-  auto * Recorder = UCarlaStatics::GetRecorder(GetWorld());
-  if (Recorder && Recorder->IsEnabled())
-  {
-    Recorder->AddPhysicsControl(*this);
-  }
-
-  // Update physics in the Ackermann Controller
-  AckermannController.UpdateVehiclePhysics(this);
-#endif
+    // Update physics in the Ackermann Controller
+    AckermannController.UpdateVehiclePhysics(this);
 }
 
-void ACarlaWheeledVehicle::ActivateVelocityControl(const FVector &Velocity)
+void ACarlaWheeledVehicle::ActivateVelocityControl(const FVector& Velocity)
 {
-  VelocityControl->Activate(Velocity);
+    VelocityControl->Activate(Velocity);
 }
 
 void ACarlaWheeledVehicle::DeactivateVelocityControl()
 {
-  VelocityControl->Deactivate();
+    VelocityControl->Deactivate();
 }
 
 void ACarlaWheeledVehicle::ShowDebugTelemetry(bool Enabled)
 {
-#if 0 // @CARLA_UE5
-  if (GetWorld()->GetFirstPlayerController())
-  {
-    ACarlaHUD* hud = Cast<ACarlaHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-    if (hud) {
+    if (GetWorld()->GetFirstPlayerController())
+    {
+        ACarlaHUD* hud = Cast<ACarlaHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+        if (hud) {
 
-      // Set/Unset the car movement component in HUD to show the temetry
-        auto MovementComponent = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovementComponent());
-      if (Enabled) {
-        hud->AddDebugVehicleForTelemetry(MovementComponent);
-      }
-      else {
-          if (hud->DebugVehicle == MovementComponent) {
-              hud->AddDebugVehicleForTelemetry(nullptr);
-              MovementComponent->StopTelemetry();
+            // Set/Unset the car movement component in HUD to show the temetry
+            auto MovementComponent = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovementComponent());
+
+            if (Enabled)
+            {
+                hud->AddDebugVehicleForTelemetry(MovementComponent);
+            }
+            else
+            {
+                if (hud->DebugVehicle == MovementComponent)
+                {
+                    hud->AddDebugVehicleForTelemetry(nullptr);
+                    // MovementComponent->StopTelemetry();
+                }
+            }
+
         }
-      }
-
+        else {
+            UE_LOG(LogCarla, Warning, TEXT("ACarlaWheeledVehicle::ShowDebugTelemetry:: Cannot find HUD for debug info"));
+        }
     }
-    else {
-      UE_LOG(LogCarla, Warning, TEXT("ACarlaWheeledVehicle::ShowDebugTelemetry:: Cannot find HUD for debug info"));
-    }
-  }
-#endif
 }
 
-void ACarlaWheeledVehicle::SetVehicleLightState(const FVehicleLightState &LightState)
+void ACarlaWheeledVehicle::SetVehicleLightState(const FVehicleLightState& LightState)
 {
-  InputControl.LightState = LightState;
-  RefreshLightState(LightState);
+    InputControl.LightState = LightState;
+    RefreshLightState(LightState);
 }
 
-void ACarlaWheeledVehicle::SetFailureState(const carla::rpc::VehicleFailureState &InFailureState)
+void ACarlaWheeledVehicle::SetFailureState(const carla::rpc::VehicleFailureState& InFailureState)
 {
-  FailureState = InFailureState;
+    FailureState = InFailureState;
 }
 
 void ACarlaWheeledVehicle::SetCarlaMovementComponent(UBaseCarlaMovementComponent* MovementComponent)
 {
-  if (BaseMovementComponent)
-  {
-    BaseMovementComponent->DestroyComponent();
-  }
-  BaseMovementComponent = MovementComponent;
+    if (BaseMovementComponent)
+    {
+        BaseMovementComponent->DestroyComponent();
+    }
+    BaseMovementComponent = MovementComponent;
 }
 
 void ACarlaWheeledVehicle::SetWheelSteerDirection(EVehicleWheelLocation WheelLocation, float AngleInDeg) {
 
-#if 0 // @CARLA_UE5
-  if (bPhysicsEnabled == false)
-  {
-    check((uint8)WheelLocation >= 0)
-    UVehicleAnimationInstance *VehicleAnim = Cast<UVehicleAnimationInstance>(GetMesh()->GetAnimInstance());
-    check(VehicleAnim != nullptr)
-    VehicleAnim->SetWheelRotYaw((uint8)WheelLocation, AngleInDeg);
-  }
-  else
-  {
-    UE_LOG(LogTemp, Warning, TEXT("Cannot set wheel steer direction. Physics are enabled."))
-  }
-#endif
-}
-
-float ACarlaWheeledVehicle::GetWheelSteerAngle(EVehicleWheelLocation WheelLocation) {
-
-#if 0 // @CARLA_UE5
-  check((uint8)WheelLocation >= 0)
-  UVehicleAnimationInstance *VehicleAnim = Cast<UVehicleAnimationInstance>(GetMesh()->GetAnimInstance());
-  check(VehicleAnim != nullptr)
-  check(VehicleAnim->GetWheeledVehicleMovementComponent() != nullptr)
-
-  if (bPhysicsEnabled == true)
-  {
-    return VehicleAnim->GetWheeledVehicleMovementComponent()->Wheels[(uint8)WheelLocation]->GetSteerAngle();
-  }
-  else
-  {
-    return VehicleAnim->GetWheelRotAngle((uint8)WheelLocation);
-  }
-#else
-    return 0.0f;
-#endif
-}
-
-void ACarlaWheeledVehicle::SetSimulatePhysics(bool enabled) {
-#if 0 // @CARLA_UE5
-  if(!GetCarlaMovementComponent<UDefaultMovementComponent>())
-  {
-    return;
-  }
-
-  auto Movement = GetVehicleMovement();
-  if (Movement)
-  {
-    check(Movement != nullptr);
-
-    if(bPhysicsEnabled == enabled)
-      return;
-
-    SetActorEnableCollision(true);
-    auto RootComponent = Cast<UPrimitiveComponent>(GetRootComponent());
-    RootComponent->SetSimulatePhysics(enabled);
-    RootComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-    UVehicleAnimationInstance *VehicleAnim = Cast<UVehicleAnimationInstance>(GetMesh()->GetAnimInstance());
-    check(VehicleAnim != nullptr)
-
-    GetWorld()->GetPhysicsScene()->GetPxScene()->lockWrite();
-    if (enabled)
+    if (bPhysicsEnabled == false)
     {
-      Movement->RecreatePhysicsState();
-      VehicleAnim->ResetWheelCustomRotations();
+        check((uint8)WheelLocation >= 0);
+        UVehicleAnimationInstance* VehicleAnim = Cast<UVehicleAnimationInstance>(GetMesh()->GetAnimInstance());
+        check(VehicleAnim != nullptr);
+        // @TODO VehicleAnim->SetWheelRotYaw((uint8)WheelLocation, AngleInDeg);
     }
     else
     {
-      Movement->DestroyPhysicsState();
+        UE_LOG(LogTemp, Warning, TEXT("Cannot set wheel steer direction. Physics are enabled."))
+    }
+}
+
+float ACarlaWheeledVehicle::GetWheelSteerAngle(EVehicleWheelLocation WheelLocation)
+{
+    check((uint8)WheelLocation >= 0);
+    UVehicleAnimationInstance* VehicleAnim = Cast<UVehicleAnimationInstance>(GetMesh()->GetAnimInstance());
+    check(VehicleAnim != nullptr);
+    check(VehicleAnim->GetWheeledVehicleComponent() != nullptr);
+
+    if (bPhysicsEnabled == true)
+    {
+        return VehicleAnim->GetWheeledVehicleComponent()->Wheels[(uint8)WheelLocation]->GetSteerAngle();
+    }
+    else
+    {
+        // @TODO return VehicleAnim->GetWheelRotAngle((uint8)WheelLocation);
+        return 0.0F;
+    }
+}
+
+void ACarlaWheeledVehicle::SetSimulatePhysics(bool enabled)
+{
+    if (!GetCarlaMovementComponent<UDefaultMovementComponent>())
+    {
+        return;
     }
 
-    GetWorld()->GetPhysicsScene()->GetPxScene()->unlockWrite();
+    auto Movement = GetVehicleMovement();
+    if (Movement)
+    {
+        check(Movement != nullptr);
 
-    bPhysicsEnabled = enabled;
+        if (bPhysicsEnabled == enabled)
+            return;
 
-    ResetConstraints();
-  }
-#endif
+        SetActorEnableCollision(true);
+        auto RootComponent = Cast<UPrimitiveComponent>(GetRootComponent());
+        RootComponent->SetSimulatePhysics(enabled);
+        RootComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+        auto VehicleAnim = Cast<UVehicleAnimationInstance>(GetMesh()->GetAnimInstance());
+        check(VehicleAnim != nullptr);
+
+        // GetWorld()->GetPhysicsScene()->GetPxScene()->lockWrite();
+        if (enabled)
+        {
+            Movement->RecreatePhysicsState();
+            // @TODO VehicleAnim->ResetWheelCustomRotations();
+        }
+        else
+        {
+            Movement->DestroyPhysicsState();
+        }
+
+        // GetWorld()->GetPhysicsScene()->GetPxScene()->unlockWrite();
+
+        bPhysicsEnabled = enabled;
+
+        ResetConstraints();
+    }
 }
 
 void ACarlaWheeledVehicle::ResetConstraints()
 {
-  for (int i = 0; i < ConstraintsComponents.Num(); i++)
-  {
-    OpenDoorPhys(EVehicleDoor(i));
-  }
-  for (int i = 0; i < ConstraintsComponents.Num(); i++)
-  {
-    CloseDoorPhys(EVehicleDoor(i));
-  }
+    for (int i = 0; i < ConstraintsComponents.Num(); i++)
+    {
+        OpenDoorPhys(EVehicleDoor(i));
+    }
+    for (int i = 0; i < ConstraintsComponents.Num(); i++)
+    {
+        CloseDoorPhys(EVehicleDoor(i));
+    }
 }
 
 FVector ACarlaWheeledVehicle::GetVelocity() const
 {
-  return BaseMovementComponent->GetVelocity();
+    return BaseMovementComponent->GetVelocity();
 }
 
 void ACarlaWheeledVehicle::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-  ShowDebugTelemetry(false);
-  Super::EndPlay(EndPlayReason);
-  RemoveReferenceToManager();
+    ShowDebugTelemetry(false);
+    Super::EndPlay(EndPlayReason);
+    RemoveReferenceToManager();
 }
 
 void ACarlaWheeledVehicle::OpenDoor(const EVehicleDoor DoorIdx) {
-  if (int(DoorIdx) >= ConstraintsComponents.Num() && DoorIdx != EVehicleDoor::All) {
-    UE_LOG(LogTemp, Warning, TEXT("This door is not configured for this car."));
-    return;
-  }
-
-  if (DoorIdx == EVehicleDoor::All) {
-    for (int i = 0; i < ConstraintsComponents.Num(); i++)
-    {
-      OpenDoorPhys(EVehicleDoor(i));
+    if (int(DoorIdx) >= ConstraintsComponents.Num() && DoorIdx != EVehicleDoor::All) {
+        UE_LOG(LogTemp, Warning, TEXT("This door is not configured for this car."));
+        return;
     }
-    return;
-  }
 
-  OpenDoorPhys(DoorIdx);
+    if (DoorIdx == EVehicleDoor::All) {
+        for (int i = 0; i < ConstraintsComponents.Num(); i++)
+        {
+            OpenDoorPhys(EVehicleDoor(i));
+        }
+        return;
+    }
+
+    OpenDoorPhys(DoorIdx);
 }
 
 void ACarlaWheeledVehicle::CloseDoor(const EVehicleDoor DoorIdx) {
-  if (int(DoorIdx) >= ConstraintsComponents.Num() && DoorIdx != EVehicleDoor::All) {
-    UE_LOG(LogTemp, Warning, TEXT("This door is not configured for this car."));
-    return;
-  }
-
-  if (DoorIdx == EVehicleDoor::All) {
-    for (int i = 0; i < ConstraintsComponents.Num(); i++)
-    {
-      CloseDoorPhys(EVehicleDoor(i));
+    if (int(DoorIdx) >= ConstraintsComponents.Num() && DoorIdx != EVehicleDoor::All) {
+        UE_LOG(LogTemp, Warning, TEXT("This door is not configured for this car."));
+        return;
     }
-    return;
-  }
 
-  CloseDoorPhys(DoorIdx);
+    if (DoorIdx == EVehicleDoor::All) {
+        for (int i = 0; i < ConstraintsComponents.Num(); i++)
+        {
+            CloseDoorPhys(EVehicleDoor(i));
+        }
+        return;
+    }
+
+    CloseDoorPhys(DoorIdx);
 }
 
 void ACarlaWheeledVehicle::OpenDoorPhys(const EVehicleDoor DoorIdx)
 {
-  UPhysicsConstraintComponent* Constraint = ConstraintsComponents[static_cast<int>(DoorIdx)];
-  UPrimitiveComponent* DoorComponent = ConstraintDoor[Constraint];
-  DoorComponent->DetachFromComponent(
-      FDetachmentTransformRules(EDetachmentRule::KeepWorld, false));
-  FTransform DoorInitialTransform =
-      DoorComponentsTransform[DoorComponent] * GetActorTransform();
-  DoorComponent->SetWorldTransform(DoorInitialTransform);
-  DoorComponent->SetSimulatePhysics(true);
-  DoorComponent->SetCollisionProfileName(TEXT("BlockAll"));
-  float AngleLimit = Constraint->ConstraintInstance.GetAngularSwing1Limit();
-  FRotator AngularRotationOffset = Constraint->ConstraintInstance.AngularRotationOffset;
+    UPhysicsConstraintComponent* Constraint = ConstraintsComponents[static_cast<int>(DoorIdx)];
+    UPrimitiveComponent* DoorComponent = ConstraintDoor[Constraint];
+    DoorComponent->DetachFromComponent(
+        FDetachmentTransformRules(EDetachmentRule::KeepWorld, false));
+    FTransform DoorInitialTransform =
+        DoorComponentsTransform[DoorComponent] * GetActorTransform();
+    DoorComponent->SetWorldTransform(DoorInitialTransform);
+    DoorComponent->SetSimulatePhysics(true);
+    DoorComponent->SetCollisionProfileName(TEXT("BlockAll"));
+    float AngleLimit = Constraint->ConstraintInstance.GetAngularSwing1Limit();
+    FRotator AngularRotationOffset = Constraint->ConstraintInstance.AngularRotationOffset;
 
-  if (Constraint->ConstraintInstance.AngularRotationOffset.Yaw < 0.0f)
-  {
-    AngleLimit = -AngleLimit;
-  }
-  Constraint->SetAngularOrientationTarget(FRotator(0, AngleLimit, 0));
-  Constraint->SetAngularDriveParams(DoorOpenStrength, 1.0, 0.0);
+    if (Constraint->ConstraintInstance.AngularRotationOffset.Yaw < 0.0f)
+    {
+        AngleLimit = -AngleLimit;
+    }
+    Constraint->SetAngularOrientationTarget(FRotator(0, AngleLimit, 0));
+    Constraint->SetAngularDriveParams(DoorOpenStrength, 1.0, 0.0);
 
-  Constraint->InitComponentConstraint();
+    Constraint->InitComponentConstraint();
 
-  UPhysicsConstraintComponent** CollisionDisable =
-      CollisionDisableConstraints.Find(DoorComponent);
-  if (CollisionDisable)
-  {
-    (*CollisionDisable)->InitComponentConstraint();
-  }
+    UPhysicsConstraintComponent** CollisionDisable =
+        CollisionDisableConstraints.Find(DoorComponent);
+    if (CollisionDisable)
+    {
+        (*CollisionDisable)->InitComponentConstraint();
+    }
 }
 
 void ACarlaWheeledVehicle::CloseDoorPhys(const EVehicleDoor DoorIdx)
 {
-#if 0 // @CARLA_UE5
-  UPhysicsConstraintComponent* Constraint = ConstraintsComponents[static_cast<int>(DoorIdx)];
-  UPrimitiveComponent* DoorComponent = ConstraintDoor[Constraint];
-  FTransform DoorInitialTransform =
-      DoorComponentsTransform[DoorComponent] * GetActorTransform();
-  DoorComponent->SetSimulatePhysics(false);
-  DoorComponent->SetCollisionProfileName(TEXT("NoCollision"));
-  DoorComponent->SetWorldTransform(DoorInitialTransform);
-  DoorComponent->AttachToComponent(
-      GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
-#endif
+    UPhysicsConstraintComponent* Constraint = ConstraintsComponents[static_cast<int>(DoorIdx)];
+    UPrimitiveComponent* DoorComponent = ConstraintDoor[Constraint];
+    FTransform DoorInitialTransform =
+        DoorComponentsTransform[DoorComponent] * GetActorTransform();
+    DoorComponent->SetSimulatePhysics(false);
+    DoorComponent->SetCollisionProfileName(TEXT("NoCollision"));
+    DoorComponent->SetWorldTransform(DoorInitialTransform);
+    DoorComponent->AttachToComponent(
+        GetMesh(), FAttachmentTransformRules(EAttachmentRule::KeepWorld, true));
 }
 
 void ACarlaWheeledVehicle::ApplyRolloverBehavior()
 {
-  auto roll = GetVehicleTransform().Rotator().Roll;
+    auto roll = GetVehicleTransform().Rotator().Roll;
 
-  // The angular velocity reduction is applied in 4 stages, to improve its smoothness.
-  // Case 4 starts the timer to set the rollover flag, so users are notified.
-  switch (RolloverBehaviorTracker) {
+    // The angular velocity reduction is applied in 4 stages, to improve its smoothness.
+    // Case 4 starts the timer to set the rollover flag, so users are notified.
+    switch (RolloverBehaviorTracker) {
     case 0: CheckRollover(roll, std::make_pair(130.0, 230.0));      break;
     case 1: CheckRollover(roll, std::make_pair(140.0, 220.0));      break;
     case 2: CheckRollover(roll, std::make_pair(150.0, 210.0));      break;
     case 3: CheckRollover(roll, std::make_pair(160.0, 200.0));      break;
     case 4:
-      GetWorld()->GetTimerManager().SetTimer(TimerHandler, this, &ACarlaWheeledVehicle::SetRolloverFlag, RolloverFlagTime);
-      RolloverBehaviorTracker += 1;
-      break;
+        GetWorld()->GetTimerManager().SetTimer(TimerHandler, this, &ACarlaWheeledVehicle::SetRolloverFlag, RolloverFlagTime);
+        RolloverBehaviorTracker += 1;
+        break;
     case 5: break;
     default:
-      RolloverBehaviorTracker = 5;
-  }
+        RolloverBehaviorTracker = 5;
+    }
 
-  // In case the vehicle recovers, reset the rollover tracker
-  if (RolloverBehaviorTracker > 0 && -30 < roll && roll < 30){
-    RolloverBehaviorTracker = 0;
-    FailureState = carla::rpc::VehicleFailureState::None;
-  }
+    // In case the vehicle recovers, reset the rollover tracker
+    if (RolloverBehaviorTracker > 0 && -30 < roll && roll < 30) {
+        RolloverBehaviorTracker = 0;
+        FailureState = carla::rpc::VehicleFailureState::None;
+    }
 }
 
-void ACarlaWheeledVehicle::CheckRollover(const float roll, const std::pair<float, float> threshold_roll){
-#if 0 // @CARLA_UE5
-  if (threshold_roll.first < roll && roll < threshold_roll.second){
-    auto RootComponent = Cast<UPrimitiveComponent>(GetRootComponent());
-    auto angular_velocity = RootComponent->GetPhysicsAngularVelocityInDegrees();
-    RootComponent->SetPhysicsAngularVelocity((1 - RolloverBehaviorForce) * angular_velocity);
-    RolloverBehaviorTracker += 1;
-  }
-#endif
+void ACarlaWheeledVehicle::CheckRollover(const float roll, const std::pair<float, float> threshold_roll) {
+    if (threshold_roll.first < roll && roll < threshold_roll.second) {
+        auto RootComponent = Cast<UPrimitiveComponent>(GetRootComponent());
+        auto AngularVelocity = RootComponent->GetPhysicsAngularVelocityInDegrees();
+        RootComponent->SetPhysicsAngularVelocityInDegrees((1 - RolloverBehaviorForce) * AngularVelocity);
+        RolloverBehaviorTracker += 1;
+    }
 }
 
-void ACarlaWheeledVehicle::SetRolloverFlag(){
-  // Make sure the vehicle hasn't recovered since the timer started
-  if (RolloverBehaviorTracker >= 4) {
-    FailureState = carla::rpc::VehicleFailureState::Rollover;
-  }
+void ACarlaWheeledVehicle::SetRolloverFlag() {
+    // Make sure the vehicle hasn't recovered since the timer started
+    if (RolloverBehaviorTracker >= 4) {
+        FailureState = carla::rpc::VehicleFailureState::Rollover;
+    }
 }
 
-carla::rpc::VehicleFailureState ACarlaWheeledVehicle::GetFailureState() const{
-  return FailureState;
+carla::rpc::VehicleFailureState ACarlaWheeledVehicle::GetFailureState() const {
+    return FailureState;
 }
 
 void ACarlaWheeledVehicle::AddReferenceToManager()
 {
-  const UObject* World = GetWorld();
-  TArray<AActor*> ActorsInLevel;
-  UGameplayStatics::GetAllActorsOfClass(World, AActor::StaticClass(), ActorsInLevel);
-  for (AActor* Actor : ActorsInLevel)
-  {
-    AVegetationManager* Manager = Cast<AVegetationManager>(Actor);
-    if (!IsValid(Manager))
-      continue;
-    Manager->AddVehicle(this);
-    return;
-  }
+    const UObject* World = GetWorld();
+    TArray<AActor*> ActorsInLevel;
+    UGameplayStatics::GetAllActorsOfClass(World, AActor::StaticClass(), ActorsInLevel);
+    for (AActor* Actor : ActorsInLevel)
+    {
+        AVegetationManager* Manager = Cast<AVegetationManager>(Actor);
+        if (!IsValid(Manager))
+            continue;
+        Manager->AddVehicle(this);
+        return;
+    }
 }
 
 void ACarlaWheeledVehicle::RemoveReferenceToManager()
 {
-  const UObject* World = GetWorld();
-  TArray<AActor*> ActorsInLevel;
-  UGameplayStatics::GetAllActorsOfClass(World, AActor::StaticClass(), ActorsInLevel);
-  for (AActor* Actor : ActorsInLevel)
-  {
-    AVegetationManager* Manager = Cast<AVegetationManager>(Actor);
-    if (!IsValid(Manager))
-      continue;
-    Manager->RemoveVehicle(this);
-    return;
-  }
+    const UObject* World = GetWorld();
+    TArray<AActor*> ActorsInLevel;
+    UGameplayStatics::GetAllActorsOfClass(World, AActor::StaticClass(), ActorsInLevel);
+    for (AActor* Actor : ActorsInLevel)
+    {
+        AVegetationManager* Manager = Cast<AVegetationManager>(Actor);
+        if (!IsValid(Manager))
+            continue;
+        Manager->RemoveVehicle(this);
+        return;
+    }
 }

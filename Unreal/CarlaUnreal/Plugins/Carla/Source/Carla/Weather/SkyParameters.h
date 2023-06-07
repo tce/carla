@@ -33,6 +33,11 @@ struct CARLA_API FSkyParametersDirectionalLight
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool EnableLightShaftBloom = true;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CascadeShadowDistance = 10000.0F;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ContactShadowLength = 0.1F;
 };
 
 
@@ -48,6 +53,17 @@ struct CARLA_API FSkyParametersSkyLight
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Intensity = 1.0F;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FColor DFAOTint = FColor();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DFAOContrast = 1.0F;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DFAOExponent = 0.3F;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DFAOMinOcclusion = 0.0F;
 };
 
 
@@ -102,32 +118,6 @@ struct CARLA_API FSkyParametersVolumetricCloud
 
 
 USTRUCT(BlueprintType)
-struct CARLA_API FSkyParametersShadows
-{
-	GENERATED_BODY()
-		
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FColor DFAOTint = FColor();
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DFAOContrast = 1.0F;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DFAOExponent = 0.3F;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DFAOMinOcclusion = 0.0F;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CascadeShadowDistance = 10000.0F;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ContactShadowLength = 0.1F;
-};
-
-
-
-USTRUCT(BlueprintType)
 struct CARLA_API FSkyParameters
 {
 	GENERATED_BODY()
@@ -146,9 +136,6 @@ struct CARLA_API FSkyParameters
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FSkyParametersVolumetricCloud VolumetricCloud;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FSkyParametersShadows Shadows;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FPostProcessSettings PostProcessSettings;

@@ -114,9 +114,8 @@ void ARadar::SendLineTraces(float DeltaTime)
     Rays[i].Hitted = false;
   }
 
-#if 0 // @CARLA_UE5
   FCriticalSection Mutex;
-  GetWorld()->GetPhysicsScene()->GetPxScene()->lockRead();
+  // GetWorld()->GetPhysicsScene()->GetPxScene()->lockRead();
   {
     TRACE_CPUPROFILER_EVENT_SCOPE(ParallelFor);
     ParallelFor(NumPoints, [&](int32 idx) {
@@ -134,7 +133,7 @@ void ARadar::SendLineTraces(float DeltaTime)
         MaxRy * Radius * Sin
       });
 
-      const bool Hitted = GetWorld()->ParallelLineTraceSingleByChannel(
+      const bool Hitted = GetWorld()->LineTraceSingleByChannel(
         OutHit,
         RadarLocation,
         EndLocation,
@@ -143,7 +142,7 @@ void ARadar::SendLineTraces(float DeltaTime)
         FCollisionResponseParams::DefaultResponseParam
       );
 
-      const TWeakObjectPtr<AActor> HittedActor = OutHit.Actor;
+      const TWeakObjectPtr<AActor> HittedActor = OutHit.GetActor();
       if (Hitted && HittedActor.Get()) {
         Rays[idx].Hitted = true;
 
@@ -160,8 +159,7 @@ void ARadar::SendLineTraces(float DeltaTime)
       }
     });
   }
-  GetWorld()->GetPhysicsScene()->GetPxScene()->unlockRead();
-#endif
+  // GetWorld()->GetPhysicsScene()->GetPxScene()->unlockRead();
 
   // Write the detections in the output structure
   for (auto& ray : Rays) {

@@ -96,9 +96,6 @@ public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UStaticMeshComponent* GetPlanetMesh() const { return PlanetMesh; }
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	const FSkyParameters& GetSkyParameters() const { return Parameters; }
 	
 
 	
@@ -115,61 +112,55 @@ public:
 	void SetSolarTime(float NewSolarTime);
 	
 	UFUNCTION(BlueprintCallable, CallInEditor)
-	void SetSkyParameters(const FSkyParameters& SkyParameters);
+	void UpdateDirectionalLight(const FSkyParametersDirectionalLight& Parameters);
 
 	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateDirectionalLight();
+	void UpdateSkyLight(const FSkyParametersSkyLight& Parameters);
 
 	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateSkyLight();
+	void UpdateSkyAtmosphere(const FSkyParametersSkyAtmosphere& Parameters);
 
 	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateSkyAtmosphere();
+	void UpdateExponentialHeightFog(const FSkyParametersExponentialHeightFog& Parameters);
 
 	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateExponentialHeightFog();
+	void UpdateVolumetricCloud(const FSkyParametersVolumetricCloud& Parameters);
 
 	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateVolumetricCloud();
+	void UpdatePostProcess(const FPostProcessSettings& Parameters);
 
 	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdatePostProcess();
-
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void UpdateChildComponents();
+	void UpdateChildComponents(const FSkyParameters& Parameters);
 
 	UFUNCTION(BlueprintCallable)
 	void SetSunRotationFromAltitudeAndAzimuth(float Altitude, float Azimuth);
 
 
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
-	FSkyParameters Parameters;
+	UPROPERTY(EditAnywhere, Category = "Parameters")
+	float SolarTime;
 
 protected:
 
-	UPROPERTY(EditAnywhere)
-	float SolarTime;
-
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UDirectionalLightComponent> DirectionalLight;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<USkyLightComponent> SkyLight;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<USkyAtmosphereComponent> SkyAtmosphere;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UExponentialHeightFogComponent> ExponentialHeightFog;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UVolumetricCloudComponent> VolumetricCloud;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UPostProcessComponent> PostProcess;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UStaticMeshComponent> PlanetMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

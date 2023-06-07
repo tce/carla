@@ -302,82 +302,71 @@ void ASky::SetSolarTime(float NewSolarTime)
 	SolarTime = NewSolarTime;
 }
 
-void ASky::SetSkyParameters(const FSkyParameters& SkyParameters)
+void ASky::UpdateDirectionalLight(const FSkyParametersDirectionalLight& Parameters)
 {
-	Parameters = SkyParameters;
-	UpdateChildComponents();
-}
-
-void ASky::UpdateDirectionalLight()
-{
-	const auto& Params = Parameters.DirectionalLight;
 	if (IsValid(DirectionalLight))
 	{
 		DirectionalLight->Deactivate();
-		DirectionalLight->SetIntensity(Params.Intensity);
-		DirectionalLight->SetLightColor(Params.Color);
+		DirectionalLight->SetIntensity(Parameters.Intensity);
+		DirectionalLight->SetLightColor(Parameters.Color);
 		DirectionalLight->SetUseTemperature(true);
-		DirectionalLight->SetTemperature(Params.Temperature);
-		DirectionalLight->SetEnableLightShaftOcclusion(Params.EnableLightShaftOcclusion);
-		DirectionalLight->SetEnableLightShaftBloom(Params.EnableLightShaftBloom);
-		DirectionalLight->SetVolumetricScatteringIntensity(Params.ScatteringIntensity);
-		DirectionalLight->SetDynamicShadowDistanceMovableLight(Parameters.Shadows.CascadeShadowDistance);
-		DirectionalLight->ContactShadowLength = Parameters.Shadows.ContactShadowLength;
-		SetSunRotationFromAltitudeAndAzimuth(Params.SunAltitude, Params.SunAzimuth);
+		DirectionalLight->SetTemperature(Parameters.Temperature);
+		DirectionalLight->SetEnableLightShaftOcclusion(Parameters.EnableLightShaftOcclusion);
+		DirectionalLight->SetEnableLightShaftBloom(Parameters.EnableLightShaftBloom);
+		DirectionalLight->SetVolumetricScatteringIntensity(Parameters.ScatteringIntensity);
+		DirectionalLight->SetDynamicShadowDistanceMovableLight(Parameters.CascadeShadowDistance);
+		DirectionalLight->ContactShadowLength = Parameters.ContactShadowLength;
+		SetSunRotationFromAltitudeAndAzimuth(Parameters.SunAltitude, Parameters.SunAzimuth);
 		DirectionalLight->Activate();
 	}
 }
 
-void ASky::UpdateSkyLight()
+void ASky::UpdateSkyLight(const FSkyParametersSkyLight& Parameters)
 {
-	const auto& Params = Parameters.SkyLight;
 	if (IsValid(SkyLight))
 	{
 		SkyLight->Deactivate();
-		SkyLight->SetIntensity(Params.Intensity);
-		SkyLight->SetLightColor(Params.Color);
-		SkyLight->SetOcclusionContrast(Parameters.Shadows.DFAOContrast);
-		SkyLight->SetOcclusionExponent(Parameters.Shadows.DFAOExponent);
-		SkyLight->SetMinOcclusion(Parameters.Shadows.DFAOMinOcclusion);
-		SkyLight->SetOcclusionTint(Parameters.Shadows.DFAOTint);
+		SkyLight->SetIntensity(Parameters.Intensity);
+		SkyLight->SetLightColor(Parameters.Color);
+		SkyLight->SetOcclusionContrast(Parameters.DFAOContrast);
+		SkyLight->SetOcclusionExponent(Parameters.DFAOExponent);
+		SkyLight->SetMinOcclusion(Parameters.DFAOMinOcclusion);
+		SkyLight->SetOcclusionTint(Parameters.DFAOTint);
 		SkyLight->bRealTimeCapture = true;
 		SkyLight->Activate();
 	}
 }
 
-void ASky::UpdateSkyAtmosphere()
+void ASky::UpdateSkyAtmosphere(const FSkyParametersSkyAtmosphere& Parameters)
 {
-	const auto& Params = Parameters.SkyAtmosphere;
 	if (IsValid(SkyAtmosphere))
 	{
 		SkyAtmosphere->Deactivate();
-		SkyAtmosphere->SetRayleighScatteringScale(Params.AirParticlesDensity);
-		SkyAtmosphere->SetMieScatteringScale(Params.PollutionParticlesDensity);
-		SkyAtmosphere->SetHeightFogContribution(Params.HeightFogContribution);
+		SkyAtmosphere->SetRayleighScatteringScale(Parameters.AirParticlesDensity);
+		SkyAtmosphere->SetMieScatteringScale(Parameters.PollutionParticlesDensity);
+		SkyAtmosphere->SetHeightFogContribution(Parameters.HeightFogContribution);
 		SkyAtmosphere->Activate();
 	}
 }
 
-void ASky::UpdateExponentialHeightFog()
+void ASky::UpdateExponentialHeightFog(const FSkyParametersExponentialHeightFog& Parameters)
 {
-	const auto& Params = Parameters.ExponentialHeightFog;
 	if (IsValid(ExponentialHeightFog))
 	{
 #if 0
 		ExponentialHeightFog->Deactivate();
-		ExponentialHeightFog->SetFogInscatteringColor(Params.Color);
-		ExponentialHeightFog->SetFogDensity(Params.Density);
-		ExponentialHeightFog->SetFogHeightFalloff(Params.Falloff);
-		ExponentialHeightFog->SetVolumetricFog(Params.VolumetricEnable);
-		ExponentialHeightFog->SetVolumetricFogExtinctionScale(1.0F - Params.FogDistance / 100.0F);
+		ExponentialHeightFog->SetFogInscatteringColor(Parameters.Color);
+		ExponentialHeightFog->SetFogDensity(Parameters.Density);
+		ExponentialHeightFog->SetFogHeightFalloff(Parameters.Falloff);
+		ExponentialHeightFog->SetVolumetricFog(Parameters.VolumetricEnable);
+		ExponentialHeightFog->SetVolumetricFogExtinctionScale(1.0F - Parameters.FogDistance / 100.0F);
 		ExponentialHeightFog->Activate();
 #endif
 	}
 }
 
-void ASky::UpdateVolumetricCloud()
+void ASky::UpdateVolumetricCloud(const FSkyParametersVolumetricCloud& Parameters)
 {
-	const auto& Params = Parameters.VolumetricCloud;
 	if (IsValid(VolumetricCloud))
 	{
 		VolumetricCloud->Deactivate();
@@ -385,29 +374,29 @@ void ASky::UpdateVolumetricCloud()
 	}
 }
 
-void ASky::UpdatePostProcess()
+void ASky::UpdatePostProcess(const FPostProcessSettings& Parameters)
 {
 	if (IsValid(PostProcess))
 	{
 		PostProcess->Deactivate();
-		PostProcess->Settings = Parameters.PostProcessSettings;
+		PostProcess->Settings = Parameters;
 		PostProcess->Activate();
 	}
 }
 
-void ASky::UpdateChildComponents()
+void ASky::UpdateChildComponents(const FSkyParameters& Parameters)
 {
-	UpdateDirectionalLight();
-	UpdateSkyLight();
-	UpdateSkyAtmosphere();
-	UpdateExponentialHeightFog();
-	UpdateVolumetricCloud();
-	UpdatePostProcess();
+	UpdateDirectionalLight(Parameters.DirectionalLight);
+	UpdateSkyLight(Parameters.SkyLight);
+	UpdateSkyAtmosphere(Parameters.SkyAtmosphere);
+	UpdateExponentialHeightFog(Parameters.ExponentialHeightFog);
+	UpdateVolumetricCloud(Parameters.VolumetricCloud);
+	UpdatePostProcess(Parameters.PostProcessSettings);
 }
 
 void ASky::SetSunRotationFromAltitudeAndAzimuth(float Altitude, float Azimuth)
 {
-	auto Pitch = Altitude;
+	auto Pitch = Altitude - 90.0F;
 	auto Yaw = Azimuth;
 	DirectionalLight->SetWorldRotation(FRotator(Pitch, Yaw, 0.0));
 }

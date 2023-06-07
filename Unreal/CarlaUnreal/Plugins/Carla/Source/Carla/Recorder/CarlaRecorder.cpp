@@ -213,12 +213,12 @@ void ACarlaRecorder::AddVehicleWheelsAnimation(FCarlaActor *CarlaActor)
     return;
   ACarlaWheeledVehicle* CarlaVehicle = Cast<ACarlaWheeledVehicle>(CarlaActor->GetActor());
   check(CarlaVehicle != nullptr)
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
   check(SkeletalMesh != nullptr)
   auto VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
   check(VehicleAnim != nullptr)
-  auto WheeledVehicleMovementComponent = VehicleAnim->GetWheeledVehicleMovementComponent();
+  auto WheeledVehicleMovementComponent = VehicleAnim->GetWheeledVehicleComponent();
   check(WheeledVehicleMovementComponent != nullptr)
 
   CarlaRecorderAnimWheels Record;

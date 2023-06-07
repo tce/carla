@@ -55,6 +55,10 @@ struct FVehicleNWEngineData
 
 	/** Find the peak torque produced by the TorqueCurve */
 	float FindPeakTorque() const;
+
+	static FVehicleNWEngineData FromChaosConfig(FVehicleEngineConfig VehicleEngineConfig);
+
+	FVehicleEngineConfig ToChaosConfig() const;
 };
 
 USTRUCT()
@@ -110,6 +114,11 @@ struct FVehicleNWTransmissionData
 	/** Strength of clutch (Kgm^2/s)*/
 	UPROPERTY(EditAnywhere, Category = Setup, AdvancedDisplay, meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float ClutchStrength;
+
+
+	static FVehicleNWTransmissionData FromChaosConfig(FVehicleTransmissionConfig VehicleEngineConfig);
+
+	FVehicleTransmissionConfig ToChaosConfig() const;
 };
 
 UCLASS(ClassGroup = (Physics), meta = (BlueprintSpawnableComponent), hidecategories = (PlanarMovement, "Components|Movement|Planar", Activation, "Components|Activation"))
@@ -118,32 +127,24 @@ class CARLA_API UWheeledVehicleMovementComponentNW :
 {
 	GENERATED_UCLASS_BODY()
 
-		/** Engine */
-	UPROPERTY(EditAnywhere, Category = MechanicalSetup)
-	FVehicleNWEngineData CarlaEngineSetup;
-
-	/** Differential */
-	UPROPERTY(EditAnywhere, Category = MechanicalSetup)
-	TArray<FVehicleNWWheelDifferentialData> CarlaDifferentialSetup;
-
-	/** Transmission data */
-	UPROPERTY(EditAnywhere, Category = MechanicalSetup)
-	FVehicleNWTransmissionData CarlaTransmissionSetup;
-
 	/** Maximum steering versus forward speed (km/h) */
 	UPROPERTY(EditAnywhere, Category = SteeringSetup)
 	FRuntimeFloatCurve SteeringCurve;
 
 	virtual void Serialize(FArchive& Ar) override;
+
 	void ComputeConstants();
+
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 
+	FVehicleNWGearData GetGearData(int32 Index) const;
+
 protected:
 
 	/** Allocate and setup the Chaos vehicle */
-	void SetupVehicle(TUniquePtr<Chaos::FSimpleWheeledVehicle>& PVehicle) override;
+	virtual void SetupVehicle(TUniquePtr<Chaos::FSimpleWheeledVehicle>& PVehicle) override;
 
 	virtual int32 GetCustomGearBoxNumForwardGears() const;
 

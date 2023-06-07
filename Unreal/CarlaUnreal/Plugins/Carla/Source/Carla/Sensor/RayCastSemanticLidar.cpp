@@ -105,8 +105,7 @@ void ARayCastSemanticLidar::SimulateLidar(const float DeltaTime)
   ResetRecordedHits(ChannelCount, PointsToScanWithOneLaser);
   PreprocessRays(ChannelCount, PointsToScanWithOneLaser);
 
-#if 0 // @CARLA_UE5
-  GetWorld()->GetPhysicsScene()->GetPxScene()->lockRead();
+  // GetWorld()->GetPhysicsScene()->GetPxScene()->lockRead();
   {
     TRACE_CPUPROFILER_EVENT_SCOPE(ParallelFor);
     ParallelFor(ChannelCount, [&](int32 idxChannel) {
@@ -129,8 +128,7 @@ void ARayCastSemanticLidar::SimulateLidar(const float DeltaTime)
       };
     });
   }
-  GetWorld()->GetPhysicsScene()->GetPxScene()->unlockRead();
-#endif
+  // GetWorld()->GetPhysicsScene()->GetPxScene()->unlockRead();
 
   FTransform ActorTransf = GetTransform();
   ComputeAndSaveDetections(ActorTransf);

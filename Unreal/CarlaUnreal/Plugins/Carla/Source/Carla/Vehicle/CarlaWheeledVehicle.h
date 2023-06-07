@@ -38,7 +38,7 @@
 #include "CarlaWheeledVehicle.generated.h"
 
 class UBoxComponent;
-class UWheeledVehicleMovementComponent4W;
+class UChaosWheeledVehicleMovementComponent;
 
 UENUM()
 enum class EVehicleWheelLocation : uint8 {
@@ -186,9 +186,9 @@ public:
   UFUNCTION(Category = "CARLA Wheeled Vehicle", BlueprintCallable)
   void SetSimulatePhysics(bool enabled);
 
-  void SetWheelCollision(UWheeledVehicleMovementComponent4W *Vehicle4W, const FVehiclePhysicsControl &PhysicsControl);
+  void SetWheelCollision(UChaosWheeledVehicleMovementComponent* Vehicle4W, const FVehiclePhysicsControl &PhysicsControl);
 
-  void SetWheelCollisionNW(UWheeledVehicleMovementComponentNW *VehicleNW, const FVehiclePhysicsControl &PhysicsControl);
+  void SetWheelCollisionNW(UChaosWheeledVehicleMovementComponent* VehicleNW, const FVehiclePhysicsControl &PhysicsControl);
 
   void SetVehicleLightState(const FVehicleLightState &LightState);
 

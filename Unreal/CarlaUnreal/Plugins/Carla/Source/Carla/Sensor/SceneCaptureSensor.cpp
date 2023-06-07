@@ -7,6 +7,7 @@
 #include "Carla.h"
 #include "Carla/Sensor/SceneCaptureSensor.h"
 #include "Carla/Game/CarlaStatics.h"
+#include "ContentStreaming.h"
 
 #define USE_LUMEN
 
@@ -594,14 +595,12 @@ void ASceneCaptureSensor::PrePhysTick(float DeltaSeconds)
 {
   Super::PrePhysTick(DeltaSeconds);
 
-#if 0 // @CARLA_UE5
   // Add the view information every tick. It's only used for one tick and then
   // removed by the streamer.
   IStreamingManager::Get().AddViewInformation(
       CaptureComponent2D->GetComponentLocation(),
       ImageWidth,
       ImageWidth / FMath::Tan(CaptureComponent2D->FOVAngle));
-#endif
 }
 
 void ASceneCaptureSensor::PostPhysTick(UWorld *World, ELevelTick TickType, float DeltaTime)
@@ -890,9 +889,6 @@ namespace SceneCaptureSensor_local_ns {
     ShowFlags.SetVisualizeDOF(false);
     ShowFlags.SetVisualizeHDR(false);
     ShowFlags.SetVisualizeLightCulling(false);
-#if 0 // @CARLA_UE5
-    ShowFlags.SetVisualizeLPV(false);
-#endif
     ShowFlags.SetVisualizeMeshDistanceFields(false);
     ShowFlags.SetVisualizeMotionBlur(false);
     ShowFlags.SetVisualizeOutOfBoundsPixels(false);

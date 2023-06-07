@@ -9,6 +9,10 @@
 #include "Carla/Actor/CarlaActor.h"
 #include "Carla/Game/CarlaEngine.h"
 #include "Carla/Game/CarlaEpisode.h"
+#include "Carla/Traffic/TrafficLightController.h"
+// #include "carla/rpc/VehicleLightState.h"
+#include "VehicleAnimationInstance.h"
+
 
 
 void FFrameData::GetFrameData(UCarlaEpisode *ThisEpisode, bool bAdditionalData, bool bIncludeActorsAgain)
@@ -406,19 +410,19 @@ void FFrameData::AddVehicleAnimation(FCarlaActor *CarlaActor)
 
 void FFrameData::AddVehicleWheelsAnimation(FCarlaActor *CarlaActor)
 {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   check(CarlaActor != nullptr)
   if (IsValid(CarlaActor))
     return;
   if (CarlaActor->GetActorType() != FCarlaActor::ActorType::Vehicle)
     return;
-  ACarlaWheeledVehicle* CarlaVehicle = Cast<ACarlaWheeledVehicle>(CarlaActor->GetActor());
+  auto CarlaVehicle = Cast<ACarlaWheeledVehicle>(CarlaActor->GetActor());
   check(CarlaVehicle != nullptr)
-  USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
+  auto SkeletalMesh = CarlaVehicle->GetMesh();
   check(SkeletalMesh != nullptr)
-  UVehicleAnimationInstance* VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
+  auto VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
   check(VehicleAnim != nullptr)
-  const UWheeledVehicleMovementComponent* WheeledVehicleMovementComponent = VehicleAnim->GetWheeledVehicleMovementComponent();
+  auto WheeledVehicleMovementComponent = VehicleAnim->GetWheeledVehicleComponent();
   check(WheeledVehicleMovementComponent != nullptr)
 
   CarlaRecorderAnimWheels Record;
@@ -488,7 +492,7 @@ void FFrameData::AddTrafficLightState(FCarlaActor *CarlaActor)
   UTrafficLightController* Controller = CarlaActor->GetTrafficLightController();
   if (Controller)
   {
-    ATrafficLightGroup* Group = Controller->GetGroup();
+    auto Group = Controller->GetGroup();
     if (Group)
     {
       AddState(CarlaRecorderStateTrafficLight
@@ -1007,7 +1011,7 @@ void FFrameData::ProcessReplayerAnimVehicle(CarlaRecorderAnimVehicle Vehicle)
 
 void FFrameData::ProcessReplayerAnimVehicleWheels(CarlaRecorderAnimWheels VehicleAnimWheels)
 {
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
   check(Episode != nullptr)
   FCarlaActor *CarlaActor = Episode->FindCarlaActor(VehicleAnimWheels.DatabaseId);
   if (CarlaActor == nullptr)
@@ -1024,8 +1028,8 @@ void FFrameData::ProcessReplayerAnimVehicleWheels(CarlaRecorderAnimWheels Vehicl
   for (uint32_t i = 0; i < VehicleAnimWheels.WheelValues.size(); ++i)
   {
     const WheelInfo& Element = VehicleAnimWheels.WheelValues[i];
-    VehicleAnim->SetWheelRotYaw(static_cast<uint8>(Element.Location), Element.SteeringAngle);
-    VehicleAnim->SetWheelPitchAngle(static_cast<uint8>(Element.Location), Element.TireRotation);
+    // @TODO VehicleAnim->SetWheelRotYaw(static_cast<uint8>(Element.Location), Element.SteeringAngle);
+    // @TODO VehicleAnim->SetWheelPitchAngle(static_cast<uint8>(Element.Location), Element.TireRotation);
   }
 #endif
 }

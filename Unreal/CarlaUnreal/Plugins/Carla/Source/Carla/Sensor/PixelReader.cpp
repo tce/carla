@@ -80,7 +80,7 @@ void FPixelReader::WritePixelsToBuffer(
     auto LockedData = Readback->Lock(RowPitch, &BufferHeight);
     auto Size = (uint32)RowPitch * (uint32)BufferHeight;
 
-#if 0 // @CARLA_UE5
+#if 1 // @CARLA_UE5
     if (LockedData)
     {
         try

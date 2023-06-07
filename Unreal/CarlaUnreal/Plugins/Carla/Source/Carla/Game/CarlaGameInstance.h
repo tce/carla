@@ -31,8 +31,7 @@ class CARLA_API UCarlaGameInstance : public UGameInstance
 public:
 
   UCarlaGameInstance();
-
-  ~UCarlaGameInstance();
+  ~UCarlaGameInstance() = default;
 
   UCarlaSettings &GetCarlaSettings()
   {
@@ -116,17 +115,17 @@ public:
 private:
 
   UPROPERTY(Category = "CARLA Settings", EditAnywhere)
-  TObjectPtr<UCarlaSettings> CarlaSettings = nullptr;
+  TObjectPtr<UCarlaSettings> CarlaSettings;
 
   FCarlaEngine CarlaEngine;
 
   UPROPERTY()
-  TObjectPtr<ACarlaRecorder> Recorder = nullptr;
+  TObjectPtr<ACarlaRecorder> Recorder;
 
   carla::rpc::OpendriveGenerationParameters GenerationParameters;
 
   UPROPERTY(Category = "CARLA Game Instance", EditAnywhere)
-  int32 CurrentMapLayer = static_cast<int32>(carla::rpc::MapLayer::All);
+  int32 CurrentMapLayer;
 
   UPROPERTY()
   FString _MapPath;

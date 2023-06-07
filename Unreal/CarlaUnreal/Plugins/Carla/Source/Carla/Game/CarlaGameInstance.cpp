@@ -6,17 +6,20 @@
 
 #include "Carla.h"
 #include "Carla/Game/CarlaGameInstance.h"
-
 #include "Carla/Settings/CarlaSettings.h"
 
-UCarlaGameInstance::UCarlaGameInstance() {
-  CarlaSettings = CreateDefaultSubobject<UCarlaSettings>(TEXT("CarlaSettings"));
-  Recorder = CreateDefaultSubobject<ACarlaRecorder>(TEXT("Recorder"));
-  CarlaEngine.SetRecorder(Recorder);
 
+
+UCarlaGameInstance::UCarlaGameInstance() :
+	CarlaSettings(CreateDefaultSubobject<UCarlaSettings>(TEXT("CarlaSettings"))),
+	CarlaEngine(),
+	Recorder(CreateDefaultSubobject<ACarlaRecorder>(TEXT("Recorder"))),
+	GenerationParameters(),
+	CurrentMapLayer(static_cast<int32>(carla::rpc::MapLayer::All)),
+	_MapPath()
+{
+  CarlaEngine.SetRecorder(Recorder);
   check(CarlaSettings != nullptr);
   CarlaSettings->LoadSettings();
   CarlaSettings->LogSettings();
 }
-
-UCarlaGameInstance::~UCarlaGameInstance() = default;
