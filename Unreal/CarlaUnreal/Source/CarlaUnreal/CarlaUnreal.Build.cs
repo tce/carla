@@ -6,7 +6,8 @@ public class CarlaUnreal : ModuleRules
 {
 	public CarlaUnreal(ReadOnlyTargetRules Target) : base(Target)
 	{
-    PrivatePCHHeaderFile = "CarlaUnreal.h";
+    	PrivatePCHHeaderFile = "CarlaUnreal.h";
+    	bUseRTTI = true;
 
 		PublicDependencyModuleNames.AddRange(new string[]
 		{

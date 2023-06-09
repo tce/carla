@@ -51,5 +51,7 @@ public:
 private:
 
   class FPimpl;
-  TUniquePtr<FPimpl> Pimpl;
+
+  UPROPERTY()
+  TPimplPtr<FPimpl> Pimpl;
 };

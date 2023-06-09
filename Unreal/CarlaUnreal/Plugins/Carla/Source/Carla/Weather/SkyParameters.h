@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "Kismet/BlueprintFunctionLibrary.h"
 #include "SkyParameters.generated.h"
 
 
@@ -173,4 +174,16 @@ struct CARLA_API FSkySunParameters
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sun Position")
 	FTimespan SolarNoon;
 
+};
+
+UCLASS()
+class USkyParametersBlueprintFunctionLibrary :
+	public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+public:
+
+	static FSkyParameters WeatherParametersToSkyParameters(
+		const FWeatherParameters& WeatherParameters,
+		const FSkyParameters& Default);
 };

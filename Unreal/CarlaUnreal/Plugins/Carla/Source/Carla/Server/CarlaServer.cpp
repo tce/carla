@@ -120,7 +120,8 @@ public:
   
   std::shared_ptr<carla::multigpu::Router> SecondaryServer;
 
-  UCarlaEpisode *Episode = nullptr;
+  UPROPERTY()
+  TObjectPtr<UCarlaEpisode> Episode = nullptr;
 
   std::atomic_size_t TickCuesReceived { 0u };
 
@@ -2446,7 +2447,7 @@ FCarlaServer::~FCarlaServer() {
 
 FDataMultiStream FCarlaServer::Start(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort)
 {
-  Pimpl = MakeUnique<FPimpl>(RPCPort, StreamingPort, SecondaryPort);
+  Pimpl = MakePimpl<FPimpl>(RPCPort, StreamingPort, SecondaryPort);
   StreamingPort = Pimpl->StreamingServer.GetLocalEndpoint().port();
   SecondaryPort = Pimpl->SecondaryServer->GetLocalEndpoint().port();
 
@@ -2462,20 +2463,20 @@ FDataMultiStream FCarlaServer::Start(uint16_t RPCPort, uint16_t StreamingPort, u
 
 void FCarlaServer::NotifyBeginEpisode(UCarlaEpisode &Episode)
 {
-  check(Pimpl != nullptr);
+  check(Pimpl.IsValid());
   UE_LOG(LogCarlaServer, Log, TEXT("New episode '%s' started"), *Episode.GetMapName());
   Pimpl->Episode = &Episode;
 }
 
 void FCarlaServer::NotifyEndEpisode()
 {
-  check(Pimpl != nullptr);
+  check(Pimpl.IsValid());
   Pimpl->Episode = nullptr;
 }
 
 void FCarlaServer::AsyncRun(uint32 NumberOfWorkerThreads)
 {
-  check(Pimpl != nullptr);
+  check(Pimpl.IsValid());
   /// @todo Define better the number of threads each server gets.
   int ThreadsPerServer = std::max(2u, NumberOfWorkerThreads / 3u);
   int32_t RPCThreads;
@@ -2536,7 +2537,7 @@ void FCarlaServer::Stop()
 
 FDataStream FCarlaServer::OpenStream() const
 {
-  check(Pimpl != nullptr);
+  check(Pimpl.IsValid());
   return Pimpl->StreamingServer.MakeStream();
 }
 

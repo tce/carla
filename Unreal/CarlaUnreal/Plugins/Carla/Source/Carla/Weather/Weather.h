@@ -69,7 +69,7 @@ protected:
 
     UFUNCTION(BlueprintImplementableEvent)
     void RefreshWeather(const FWeatherParameters& WeatherParameters);
-    
+
     UFUNCTION(BlueprintCallable)
     void UpdateSunDirectionalLight();
     

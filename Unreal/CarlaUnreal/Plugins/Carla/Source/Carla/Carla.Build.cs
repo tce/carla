@@ -164,7 +164,8 @@ public class Carla : ModuleRules
   private void AddBoostLibs(string LibPath)
   {
     string [] files = Directory.GetFiles(LibPath, "*boost*.lib");
-    foreach (string file in files) PublicAdditionalLibraries.Add(file);
+    foreach (string file in files)
+      PublicAdditionalLibraries.Add(file);
   }
 
   private void AddCarlaServerDependency(ReadOnlyTargetRules Target)
@@ -334,6 +335,6 @@ public class Carla : ModuleRules
     PublicDefinitions.Add("LIBCARLA_NO_EXCEPTIONS");
     PublicDefinitions.Add("PUGIXML_NO_EXCEPTIONS");
     PublicDefinitions.Add("BOOST_DISABLE_ABI_HEADERS");
-    PublicDefinitions.Add("BOOST_TYPE_INDEX_FORCE_NO_RTTI_COMPATIBILITY");
+    // PublicDefinitions.Add("BOOST_TYPE_INDEX_FORCE_NO_RTTI_COMPATIBILITY");
   }
 }

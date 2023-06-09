@@ -125,8 +125,7 @@ void ACarlaGameModeBase::InitGame(
     UE_LOG(LogCarla, Error, TEXT("Missing CarlaSettingsDelegate!"));
   }
 
-  AActor* WeatherActor =
-      UGameplayStatics::GetActorOfClass(GetWorld(), AWeather::StaticClass());
+  auto WeatherActor = UGameplayStatics::GetActorOfClass(GetWorld(), AWeather::StaticClass());
   if (WeatherActor != nullptr) {
     UE_LOG(LogCarla, Log, TEXT("Existing weather actor. Doing nothing then!"));
     Episode->Weather = static_cast<AWeather*>(WeatherActor);

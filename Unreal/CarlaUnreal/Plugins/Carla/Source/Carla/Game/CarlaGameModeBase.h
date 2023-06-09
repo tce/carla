@@ -141,22 +141,22 @@ private:
   void OnEpisodeSettingsChanged(const FEpisodeSettings &Settings);
 
   UPROPERTY()
-  TObjectPtr<UCarlaGameInstance> GameInstance = nullptr;
+  UCarlaGameInstance* GameInstance;
 
   UPROPERTY()
-  TObjectPtr<UTaggerDelegate> TaggerDelegate = nullptr;
+  UTaggerDelegate* TaggerDelegate;
 
   UPROPERTY()
-  TObjectPtr<UCarlaSettingsDelegate> CarlaSettingsDelegate = nullptr;
+  UCarlaSettingsDelegate* CarlaSettingsDelegate;
 
   UPROPERTY()
-  TObjectPtr<UCarlaEpisode> Episode = nullptr;
+  UCarlaEpisode* Episode;
 
   UPROPERTY()
-  TObjectPtr<ACarlaRecorder> Recorder = nullptr;
+  ACarlaRecorder* Recorder;
 
   UPROPERTY()
-  TObjectPtr<UObjectRegister> ObjectRegister = nullptr;
+  UObjectRegister* ObjectRegister;
 
   /// The class of Weather to spawn.
   UPROPERTY(Category = "CARLA Game Mode", EditAnywhere)
@@ -174,9 +174,10 @@ private:
   TArray<ACarlaActorFactory*> ActorFactoryInstances;
 
   UPROPERTY()
-  TObjectPtr<ATrafficLightManager> TrafficLightManager = nullptr;
+  ATrafficLightManager* TrafficLightManager;
 
-  TObjectPtr<ALargeMapManager> LMManager = nullptr;
+  UPROPERTY()
+  ALargeMapManager* LMManager;
 
   FDelegateHandle OnEpisodeSettingsChangeHandle;
 

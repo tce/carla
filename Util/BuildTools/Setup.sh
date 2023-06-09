@@ -62,7 +62,7 @@ LLVM_LIBPATH="$CARLA_UNREAL_ENGINE_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/li
 # -- Get boost includes --------------------------------------------------------
 # ==============================================================================
 
-BOOST_VERSION=1.80.0
+BOOST_VERSION=1.82.0
 BOOST_BASENAME="boost-${BOOST_VERSION}-${CXX_TAG}"
 
 BOOST_INCLUDE=${PWD}/${BOOST_BASENAME}-install/include

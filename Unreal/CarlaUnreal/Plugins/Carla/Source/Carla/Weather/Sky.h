@@ -167,7 +167,7 @@ protected:
 	TArray<FWeatherReflectionRange> WeatherReflectionRanges;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<FString, TObjectPtr<ULevelStreamingDynamic>> ReflectionSublevelMap;
+	TMap<FString, ULevelStreamingDynamic*> ReflectionSublevelMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString CurrentLoadedLevel;
