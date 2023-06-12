@@ -35,7 +35,7 @@
 // =============================================================================
 
 // init static frame counter
-uint64_t FCarlaEngine::FrameCounter = 0;
+std::atomic_uint64_t FCarlaEngine::FrameCounter = 0;
 
 static uint32 FCarlaEngine_GetNumberOfThreadsForRPCServer()
 {

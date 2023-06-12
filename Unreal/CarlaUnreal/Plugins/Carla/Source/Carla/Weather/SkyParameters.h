@@ -9,7 +9,7 @@ USTRUCT(BlueprintType)
 struct CARLA_API FSkyParametersDirectionalLight
 {
 	GENERATED_BODY()
-		
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SunAltitude = 45.0F;
 
@@ -23,8 +23,9 @@ struct CARLA_API FSkyParametersDirectionalLight
 	float Intensity = 10.0F;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Temperature = 6500.0F;
+	float Temperature = 5000.0F;
 
+	// VolumetricScatteringIntensity
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ScatteringIntensity = 1.0F;
 
@@ -34,6 +35,7 @@ struct CARLA_API FSkyParametersDirectionalLight
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool EnableLightShaftBloom = true;
 	
+	// DynamicShadowDistanceMovableLight
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CascadeShadowDistance = 10000.0F;
 
@@ -122,7 +124,12 @@ USTRUCT(BlueprintType)
 struct CARLA_API FSkyParameters
 {
 	GENERATED_BODY()
-
+		
+	FSkyParameters();
+	FSkyParameters(const FSkyParameters&) = default;
+	FSkyParameters& operator=(const FSkyParameters&) = default;
+	~FSkyParameters() = default;
+		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FSkyParametersDirectionalLight DirectionalLight;
 
@@ -175,6 +182,10 @@ struct CARLA_API FSkySunParameters
 	FTimespan SolarNoon;
 
 };
+
+
+
+struct FWeatherParameters;
 
 UCLASS()
 class USkyParametersBlueprintFunctionLibrary :

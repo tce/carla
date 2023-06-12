@@ -2442,7 +2442,8 @@ void FCarlaServer::FPimpl::BindActions()
 FCarlaServer::FCarlaServer() : Pimpl(nullptr) {}
 
 FCarlaServer::~FCarlaServer() {
-  Stop();
+    if (Pimpl.IsValid() && Pimpl->Episode != nullptr)
+        Stop();
 }
 
 FDataMultiStream FCarlaServer::Start(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort)

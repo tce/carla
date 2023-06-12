@@ -22,6 +22,7 @@
 #include <compiler/enable-ue4-macros.h>
 
 #include <mutex>
+#include <atomic>
 
 class UCarlaSettings;
 class FFrameData;
@@ -31,7 +32,7 @@ class FCarlaEngine : private NonCopyable
 {
 public:
 
-  static uint64_t FrameCounter;
+  static std::atomic_uint64_t FrameCounter;
 
   ~FCarlaEngine();
 
@@ -63,18 +64,17 @@ public:
 
   static uint64_t GetFrameCounter()
   {
-    return FCarlaEngine::FrameCounter;
+    return FCarlaEngine::FrameCounter.load(std::memory_order_acquire);
   }
 
   static uint64_t UpdateFrameCounter()
   {
-    FCarlaEngine::FrameCounter += 1;
-    return FCarlaEngine::FrameCounter;
+    return FCarlaEngine::FrameCounter.fetch_add(1U, std::memory_order_acquire) + 1U;
   }
 
   static void ResetFrameCounter(uint64_t Value = 0)
   {
-    FCarlaEngine::FrameCounter = Value;
+      FCarlaEngine::FrameCounter.store(Value, std::memory_order_release);
   }
 
   std::shared_ptr<carla::multigpu::Router> GetSecondaryServer()

@@ -32,6 +32,13 @@ public:
 	ASky(const FObjectInitializer& ObjectInitializer);
 	ASky(const FObjectInitializer& ObjectInitializer, const FSkyParameters& SkyParameters);
 
+
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FSkyParameters NormalizeSkyParameters(
+		const FSkyParameters& SkyParameters,
+		bool NormalizePercentages) const;
+
 	
 	
 	UFUNCTION(BlueprintCallable)
@@ -54,27 +61,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetPlanetMesh(UStaticMeshComponent* InStaticMesh);
+	
 
-
-	
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	float GetSolarTime() const { return SolarTime; }
-	
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static FTimespan GetTimespanFromSolarTime(float SolarTime);
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	FTimespan GetTimeOfDay() const;
-	
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static bool IsValidDateTime(FDateTime DateTime);
-	
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool IsDaylightSavingTime(
-		FDateTime CurrentDate,
-		int32 StartMonth, int32 StartDay,
-		int32 EndMonth, int32 EndDay,
-		int32 SwitchHour) const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDirectionalLightComponent* GetDirectionalLight() const { return DirectionalLight; }
@@ -98,19 +86,7 @@ public:
 	UStaticMeshComponent* GetPlanetMesh() const { return PlanetMesh; }
 	
 
-	
-	UFUNCTION(BlueprintCallable, CallInEditor)
-	void SetSunPosition(
-		float Latitude,
-		float Longitude,
-		float TimeZone,
-		bool IsDaylightSavingTime,
-		FDateTime DateTime,
-		float NorthOffset);
-	
-	UFUNCTION(BlueprintCallable)
-	void SetSolarTime(float NewSolarTime);
-	
+
 	UFUNCTION(BlueprintCallable, CallInEditor)
 	void UpdateDirectionalLight(const FSkyParametersDirectionalLight& Parameters);
 
@@ -135,6 +111,39 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetSunRotationFromAltitudeAndAzimuth(float Altitude, float Azimuth);
 
+
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float GetSolarTime() const { return SolarTime; }
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static FTimespan GetTimespanFromSolarTime(float SolarTime);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FTimespan GetTimeOfDay() const;
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static bool IsValidDateTime(FDateTime DateTime);
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsDaylightSavingTime(
+		FDateTime CurrentDate,
+		int32 StartMonth, int32 StartDay,
+		int32 EndMonth, int32 EndDay,
+		int32 SwitchHour) const;
+
+	UFUNCTION(BlueprintCallable, CallInEditor)
+	void SetSunPosition(
+		float Latitude,
+		float Longitude,
+		float TimeZone,
+		bool IsDaylightSavingTime,
+		FDateTime DateTime,
+		float NorthOffset);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetSolarTime(float NewSolarTime);
+	
 
 
 	UPROPERTY(EditAnywhere, Category = "Parameters")
@@ -174,5 +183,20 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString DefaultReflectionLevel;
+
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	// TObjectPtr<UCurveFloat> SunIntensityCurve;
+		
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UCurveFloat> FogColorCurve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UCurveFloat> FogIntensity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UCurveFloat> SkyLightIntensity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UCurveFloat> SkyColor;
 
 };
