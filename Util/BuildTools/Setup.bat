@@ -54,6 +54,19 @@ if not "%1"=="" (
     goto :arg-parse
 )
 
+if not exist "%CARLA_DEPENDENCIES_FOLDER%" (
+    mkdir "%CARLA_DEPENDENCIES_FOLDER%"
+)
+if not exist "%CARLA_DEPENDENCIES_FOLDER%include" (
+    mkdir "%CARLA_DEPENDENCIES_FOLDER%include"
+)
+if not exist "%CARLA_DEPENDENCIES_FOLDER%lib" (
+    mkdir "%CARLA_DEPENDENCIES_FOLDER%lib"
+)
+if not exist "%CARLA_DEPENDENCIES_FOLDER%dll" (
+    mkdir "%CARLA_DEPENDENCIES_FOLDER%dll"
+)
+
 rem If not defined, use Visual Studio 2019 as tool set
 if "%TOOLSET%" == "" set TOOLSET=msvc-14.2
 
@@ -228,19 +241,6 @@ if %USE_CHRONO% == true (
     echo %FILE_N% Installing Chrono...
     call "%INSTALLERS_DIR%install_chrono.bat"^
      --build-dir "%INSTALLATION_DIR%"
-
-    if not exist "%CARLA_DEPENDENCIES_FOLDER%" (
-        mkdir "%CARLA_DEPENDENCIES_FOLDER%"
-    )
-    if not exist "%CARLA_DEPENDENCIES_FOLDER%include" (
-        mkdir "%CARLA_DEPENDENCIES_FOLDER%include"
-    )
-    if not exist "%CARLA_DEPENDENCIES_FOLDER%lib" (
-        mkdir "%CARLA_DEPENDENCIES_FOLDER%lib"
-    )
-    if not exist "%CARLA_DEPENDENCIES_FOLDER%dll" (
-        mkdir "%CARLA_DEPENDENCIES_FOLDER%dll"
-    )
     echo "%INSTALLATION_DIR%chrono-install\include\*" "%CARLA_DEPENDENCIES_FOLDER%include\*" > NUL
     xcopy /Y /S /I "%INSTALLATION_DIR%chrono-install\include\*" "%CARLA_DEPENDENCIES_FOLDER%include\*" > NUL
     copy "%INSTALLATION_DIR%chrono-install\lib\*.lib" "%CARLA_DEPENDENCIES_FOLDER%lib\*.lib" > NUL
@@ -290,7 +290,8 @@ set CMAKE_CONFIG_FILE=%INSTALLATION_DIR%CMakeLists.txt.in
 >>"%CMAKE_CONFIG_FILE%" echo.
 >>"%CMAKE_CONFIG_FILE%" echo if (CMAKE_BUILD_TYPE STREQUAL "Server")
 >>"%CMAKE_CONFIG_FILE%" echo   # Prevent exceptions
->>"%CMAKE_CONFIG_FILE%" echo   add_definitions(-DBOOST_TYPE_INDEX_FORCE_NO_RTTI_COMPATIBILITY)
+rem >>"%CMAKE_CONFIG_FILE%" echo   add_definitions(-DBOOST_TYPE_INDEX_FORCE_NO_RTTI_COMPATIBILITY)
+>>"%CMAKE_CONFIG_FILE%" echo   add_definitions(-DNOMINMAX)
 >>"%CMAKE_CONFIG_FILE%" echo   add_compile_options(/EHsc)
 >>"%CMAKE_CONFIG_FILE%" echo   add_definitions(-DASIO_NO_EXCEPTIONS)
 >>"%CMAKE_CONFIG_FILE%" echo   add_definitions(-DBOOST_NO_EXCEPTIONS)

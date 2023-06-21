@@ -15,8 +15,6 @@
 #include "Components/InstancedStaticMeshComponent.h"
 #include "PhysicsEngine/BodySetup.h"
 #include "PhysicsEngine/ConvexElem.h"
-#include "PxTriangleMesh.h"
-#include "PxVec3.h"
 #include "LevelEditor.h"
 #include "EngineUtils.h"
 
@@ -170,7 +168,7 @@ void FCarlaExporterModule::PluginButtonClicked()
             comp2->GetInstanceTransform(i, InstanceTransform, true);
             FVector InstanceLocation = InstanceTransform.GetTranslation();
 
-
+#if 0 // @TODO
             // through all convex elements
             for (const auto &mesh : body->TriMeshes)
             {
@@ -206,6 +204,7 @@ void FCarlaExporterModule::PluginButtonClicked()
               }
               offset += nbVerts;
             }
+#endif
           }
         }
         else
@@ -224,6 +223,7 @@ void FCarlaExporterModule::PluginButtonClicked()
           FTransform CompTransform = comp->GetComponentTransform();
           FVector CompLocation = CompTransform.GetTranslation();
 
+#if 0 // @TODO
           // through all convex elements
           for (const auto &mesh : body->TriMeshes)
           {
@@ -261,6 +261,7 @@ void FCarlaExporterModule::PluginButtonClicked()
             }
             offset += nbVerts;
           }
+#endif
         }
       }
     }

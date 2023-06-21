@@ -4,8 +4,6 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#include <PxScene.h>
-#include <cmath>
 #include "Carla.h"
 #include "Carla/Actor/ActorBlueprintFunctionLibrary.h"
 #include "Carla/Sensor/RayCastSemanticLidar.h"
@@ -18,6 +16,8 @@
 #include "Engine/CollisionProfile.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Runtime/Core/Public/Async/ParallelFor.h"
+
+#include <cmath>
 
 namespace crp = carla::rpc;
 
@@ -105,6 +105,7 @@ void ARayCastSemanticLidar::SimulateLidar(const float DeltaTime)
   ResetRecordedHits(ChannelCount, PointsToScanWithOneLaser);
   PreprocessRays(ChannelCount, PointsToScanWithOneLaser);
 
+#if 0 // @TODO
   GetWorld()->GetPhysicsScene()->GetPxScene()->lockRead();
   {
     TRACE_CPUPROFILER_EVENT_SCOPE(ParallelFor);
@@ -129,7 +130,7 @@ void ARayCastSemanticLidar::SimulateLidar(const float DeltaTime)
     });
   }
   GetWorld()->GetPhysicsScene()->GetPxScene()->unlockRead();
-
+#endif
   FTransform ActorTransf = GetTransform();
   ComputeAndSaveDetections(ActorTransf);
 
@@ -190,7 +191,7 @@ void ARayCastSemanticLidar::ComputeRawDetection(const FHitResult& HitInfo, const
 
     const FActorRegistry &Registry = GetEpisode().GetActorRegistry();
 
-    const AActor* actor = HitInfo.Actor.Get();
+    const AActor* actor = HitInfo.GetActor();
     Detection.object_idx = 0;
     Detection.object_tag = static_cast<uint32_t>(HitInfo.Component->CustomDepthStencilValue);
 
@@ -226,7 +227,7 @@ bool ARayCastSemanticLidar::ShootLaser(const float VerticalAngle, const float Ho
   const auto Range = Description.Range;
   FVector EndTrace = Range * UKismetMathLibrary::GetForwardVector(ResultRot) + LidarBodyLoc;
 
-  GetWorld()->ParallelLineTraceSingleByChannel(
+  GetWorld()->LineTraceSingleByChannel(
     HitInfo,
     LidarBodyLoc,
     EndTrace,

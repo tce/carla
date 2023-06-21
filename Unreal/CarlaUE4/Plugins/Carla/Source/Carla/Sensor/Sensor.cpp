@@ -100,7 +100,6 @@ void ASensor::PostActorCreated()
 void ASensor::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
   Super::EndPlay(EndPlayReason);
-  
   // close all sessions associated to the sensor stream
   auto *GameInstance = UCarlaStatics::GetGameInstance(GetEpisode().GetWorld());
   auto &StreamingServer = GameInstance->GetServer().GetStreamingServer();

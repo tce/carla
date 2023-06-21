@@ -8,6 +8,7 @@
 #include "Carla/Sensor/SceneCaptureSensor.h"
 #include "Carla/Game/CarlaStatics.h"
 #include "Actor/ActorBlueprintFunctionLibrary.h"
+#include "ContentStreaming.h"
 
 #include <mutex>
 #include <atomic>
@@ -453,6 +454,7 @@ void ASceneCaptureSensor::EnqueueRenderSceneImmediate() {
   CaptureSceneExtended();
 }
 
+/*
 constexpr const TCHAR* GBufferNames[] =
 {
   TEXT("SceneColor"),
@@ -479,9 +481,10 @@ static void CheckGBufferStream(T& GBufferStream, FGBufferRequest& GBuffer)
 }
 
 static uint64 Prior = 0;
-
+*/
 void ASceneCaptureSensor::CaptureSceneExtended()
 {
+/*
   auto GBufferPtr = MakeUnique<FGBufferRequest>();
   auto& GBuffer = *GBufferPtr;
 
@@ -501,8 +504,10 @@ void ASceneCaptureSensor::CaptureSceneExtended()
 
   if (GBufferPtr->DesiredTexturesMask == 0)
   {
+*/
     // Creates an snapshot of the scene, requieres bCaptureEveryFrame = false.
     CaptureComponent2D->CaptureScene();
+/*
     return;
   }
 
@@ -534,12 +539,15 @@ void ASceneCaptureSensor::CaptureSceneExtended()
   {
     SendGBufferTextures(*GBuffer);
   });
+*/
 }
 
+/*
 void ASceneCaptureSensor::SendGBufferTextures(FGBufferRequest& GBuffer)
 {
   SendGBufferTexturesInternal(*this, GBuffer);
 }
+*/
 
 void ASceneCaptureSensor::BeginPlay()
 {
@@ -839,7 +847,6 @@ namespace SceneCaptureSensor_local_ns {
     ShowFlags.SetVisualizeDOF(false);
     ShowFlags.SetVisualizeHDR(false);
     ShowFlags.SetVisualizeLightCulling(false);
-    ShowFlags.SetVisualizeLPV(false);
     ShowFlags.SetVisualizeMeshDistanceFields(false);
     ShowFlags.SetVisualizeMotionBlur(false);
     ShowFlags.SetVisualizeOutOfBoundsPixels(false);

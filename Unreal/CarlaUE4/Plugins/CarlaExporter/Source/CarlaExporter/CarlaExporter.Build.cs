@@ -46,7 +46,7 @@ public class CarlaExporter : ModuleRules
         "Engine",
         "Slate",
         "SlateCore",
-        "Physx",
+        "Chaos",
         "EditorStyle"
         // ... add private dependencies that you statically link with here ...
       }

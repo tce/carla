@@ -26,6 +26,7 @@
 #include "Carla/Walker/WalkerController.h"
 #include "Components/BoxComponent.h"
 #include "Engine/StaticMeshActor.h"
+#include "VehicleAnimationInstance.h"
 
 #include <compiler/disable-ue4-macros.h>
 #include <carla/rpc/VehicleLightState.h>
@@ -337,15 +338,17 @@ void CarlaReplayerHelper::ProcessReplayerAnimVehicleWheels(CarlaRecorderAnimWhee
   check(CarlaVehicle != nullptr)
   USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
   check(SkeletalMesh != nullptr)
-  UVehicleAnimInstance* VehicleAnim = Cast<UVehicleAnimInstance>(SkeletalMesh->GetAnimInstance());
+  UVehicleAnimationInstance* VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
   check(VehicleAnim != nullptr)
 
+#if 0 // @TODO
   for (uint32_t i = 0; i < VehicleAnimWheels.WheelValues.size(); ++i)
   {
     const WheelInfo& Element = VehicleAnimWheels.WheelValues[i];
     VehicleAnim->SetWheelRotYaw(static_cast<uint8>(Element.Location), Element.SteeringAngle);
     VehicleAnim->SetWheelPitchAngle(static_cast<uint8>(Element.Location), Element.TireRotation);
   }
+#endif
 }
 
 // reposition the camera

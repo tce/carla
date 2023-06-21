@@ -92,6 +92,7 @@ static FString EigenToFString(T& t)
   ss << t;
   return carla::rpc::ToFString(ss.str());
 }
+#if 0 // @TODO
 static Eigen::Matrix3d OuterProduct(const Eigen::Vector3d& V1, const Eigen::Vector3d& V2)
 {
   return V1 * V2.transpose();
@@ -136,7 +137,7 @@ static FRotator EigenVectorToRotator(const Eigen::Vector3d& Vector)
       -FMath::RadiansToDegrees(Vector(2)),
       FMath::RadiansToDegrees(Vector(0)));
 }
-
+#endif
 void FSkeletonHierarchy::Clear()
 {
   Joints.Empty();
@@ -432,6 +433,7 @@ void USpringBasedVegetationComponent::ComputePerJointProperties(
     std::vector<FJointProperties>& JointLocalPropertiesList,
     std::vector<FJointProperties>& JointPropertiesList)
 {
+#if 0 // @TODO
   TRACE_CPUPROFILER_EVENT_SCOPE(USpringBasedVegetationComponent::ComputePerJointProperties);
   for(FSkeletonJoint& Joint : Skeleton.Joints)
   {
@@ -483,6 +485,7 @@ void USpringBasedVegetationComponent::ComputePerJointProperties(
     }
     ACC_LOG(Log, "Local Joint: %s \n Inertia \n %s \n Force \n %s \n Torque \n %s \n COM: \n %s \n Mass %f", *Joint.JointName, *EigenToFString(Properties.InertiaTensor), *EigenToFString(Properties.Force), *EigenToFString(Properties.Torque), *EigenToFString(Properties.CenterOfMass), Properties.Mass);
   }
+#endif
 }
 
 // Compute accumulated properties (Center of Mass, Inertia, Forces and Torque)
@@ -490,6 +493,7 @@ void USpringBasedVegetationComponent::ComputeCompositeBodyContribution(
     std::vector<FJointProperties>& JointLocalPropertiesList,
     std::vector<FJointProperties>& JointPropertiesList)
 {
+#if 0 // @TODO
   TRACE_CPUPROFILER_EVENT_SCOPE(USpringBasedVegetationComponent::ComputeCompositeBodyContribution);
   for (int Id : Skeleton.EndToRootOrder)
   {
@@ -546,12 +550,14 @@ void USpringBasedVegetationComponent::ComputeCompositeBodyContribution(
     }
     ACC_LOG(Log, "Accumulated Joint: %s \n Inertia \n %s \n Force \n %s \n Torque \n %s \n COM: \n %s \n Mass %f", *Joint.JointName, *EigenToFString(JointProperties.InertiaTensor), *EigenToFString(JointProperties.Force), *EigenToFString(JointProperties.Torque), *EigenToFString(JointProperties.CenterOfMass), JointProperties.Mass);
   }
+#endif
 }
 
 void USpringBasedVegetationComponent::ComputeFictitiousForces(
     std::vector<FJointProperties>& JointLocalPropertiesList,
     std::vector<FJointProperties>& JointPropertiesList)
 {
+#if 0 // @TODO
   TRACE_CPUPROFILER_EVENT_SCOPE(USpringBasedVegetationComponent::ComputeFictitiousForces);
   // fictitious forces
   FSkeletonJoint& RootJoint = Skeleton.Joints[0];
@@ -595,12 +601,14 @@ void USpringBasedVegetationComponent::ComputeFictitiousForces(
 
     FICT_LOG(Log, "Joint: %s \n Position \n %s \n Velocity \n %s \n Acceleration \n %s \n Fictitious forces: \n %s", *Joint.JointName, *EigenToFString(CompositeCenterOfMass), *EigenToFString(CompositeLinearVelocity), *EigenToFString(CompositeLinearAcceleration), *EigenToFString(JointProperties.FictitiousTorque));
   }
+#endif
 }
 
 void USpringBasedVegetationComponent::ResolveContactsAndCollisions(
     std::vector<FJointProperties>& JointLocalPropertiesList,
     std::vector<FJointProperties>& JointPropertiesList)
 {
+#if 0 // @TODO
   TRACE_CPUPROFILER_EVENT_SCOPE(USpringBasedVegetationComponent::ResolveContactsAndCollisions);
 
   // set all joints that can rest
@@ -761,12 +769,14 @@ void USpringBasedVegetationComponent::ResolveContactsAndCollisions(
       }
     }
   }
+#endif
 }
 
 void USpringBasedVegetationComponent::SolveEquationOfMotion(
     std::vector<FJointProperties>& JointPropertiesList,
     float DeltaTime)
 {
+#if 0 // @TODO
   TRACE_CPUPROFILER_EVENT_SCOPE(USpringBasedVegetationComponent::SolveEquationOfMotion);
   // solver
   for (FSkeletonJoint& Joint : Skeleton.Joints)
@@ -940,6 +950,7 @@ void USpringBasedVegetationComponent::SolveEquationOfMotion(
     Joint.AngularVelocity = NewAngularVelocity;
     Joint.AngularAcceleration = NewAngularAccel;
   }
+#endif
 }
 
 void USpringBasedVegetationComponent::TickComponent(

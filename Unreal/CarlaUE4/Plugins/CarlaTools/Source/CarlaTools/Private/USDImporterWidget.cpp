@@ -22,7 +22,6 @@
 #include "Components/LightComponent.h"
 #include "Components/PointLightComponent.h"
 #include "Components/SpotLightComponent.h"
-#include "VehicleWheel.h"
 #include "IAssetTools.h"
 #include "AssetToolsModule.h"
 #include "AssetRegistryModule.h"
@@ -31,6 +30,7 @@
 #include "BlueprintEditor.h"
 #include "Carla/Vehicle/CarlaWheeledVehicle.h"
 
+DECLARE_LOG_CATEGORY_EXTERN(LogCarlaTools, Log, All);
 
 void UUSDImporterWidget::ImportUSDProp(
     const FString& USDPath, const FString& DestinationAssetPath, bool bAsBlueprint)
@@ -538,6 +538,7 @@ AActor* UUSDImporterWidget::GenerateNewVehicleBlueprint(
     TemplateActor->AddInstanceComponent(LightComponent);
     UE_LOG(LogCarlaTools, Log, TEXT("Spawn Light %s, %s, %s"), *Light.Name, *Light.Location.ToString(), *Light.Color.ToString());
   }
+#if 0 // @TODO
   // assign generated wheel types
   TArray<FWheelSetup> WheelSetups;
   FWheelSetup Setup;
@@ -557,8 +558,8 @@ AActor* UUSDImporterWidget::GenerateNewVehicleBlueprint(
       Cast<ACarlaWheeledVehicle>(TemplateActor);
   if(CarlaVehicle)
   {
-    UWheeledVehicleMovementComponent4W* MovementComponent = 
-        Cast<UWheeledVehicleMovementComponent4W>(
+    UChaosWheeledVehicleMovementComponent* MovementComponent = 
+        Cast<UChaosWheeledVehicleMovementComponent>(
             CarlaVehicle->GetVehicleMovementComponent());
     MovementComponent->WheelSetups = WheelSetups;
   }
@@ -566,7 +567,7 @@ AActor* UUSDImporterWidget::GenerateNewVehicleBlueprint(
   {
     UE_LOG(LogCarlaTools, Error, TEXT("Null CarlaVehicle"));
   }
-
+#endif
   // Create the new blueprint vehicle
   FKismetEditorUtilities::FCreateBlueprintFromActorParams Params;
   Params.bReplaceActor = false;

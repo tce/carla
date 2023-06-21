@@ -1191,13 +1191,15 @@ bool UMapGeneratorWidget::CookVegetationToWorld(
   {
     ULevel* Level = World->GetCurrentLevel();
 
-    VectorRegister	Rotation{ 0,0,0 };
-    VectorRegister	Translation{ 200000.0, 200000.0, 0.0 };
-    VectorRegister Scale3D{ 2500,2500,900 };
     EObjectFlags InObjectFlags = RF_Transactional;
     FName InName = NAME_None;
 
-    FTransform Transform{ Rotation,Translation,Scale3D };
+    FTransform Transform
+    {
+      FRotator::ZeroRotator,
+      FVector(200000.0, 200000.0, 0.0),
+      FVector(2500.0, 2500.0, 900.0)
+    };
 
     UActorFactory* ActorFactory = GEditor->FindActorFactoryForActorClass(AProceduralFoliageVolume::StaticClass());
     AProceduralFoliageVolume* FoliageVolumeActor = (AProceduralFoliageVolume*) ActorFactory->CreateActor(

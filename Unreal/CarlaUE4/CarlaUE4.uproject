@@ -10,7 +10,7 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"PhysXVehicles",
+				"ChaosVehicles",
 				"Carla",
 				"CoreUObject"
 			]
@@ -115,6 +115,10 @@
 		},
 		{
 			"Name": "PythonScriptPlugin",
+			"Enabled": true
+		},
+		{
+			"Name": "ChaosVehiclesPlugin",
 			"Enabled": true
 		}
 	]

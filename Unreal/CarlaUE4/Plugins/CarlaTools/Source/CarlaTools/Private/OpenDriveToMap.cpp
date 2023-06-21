@@ -605,7 +605,7 @@ UStaticMesh* UOpenDriveToMap::CreateStaticMeshAsset( UProceduralMeshComponent* P
     UStaticMesh* StaticMesh = NewObject<UStaticMesh>(Package, *MeshName, RF_Public | RF_Standalone);
     StaticMesh->InitResources();
 
-    StaticMesh->LightingGuid = FGuid::NewGuid();
+    StaticMesh->SetLightingGuid(FGuid::NewGuid());;
 
     // Add source to new StaticMesh
     FStaticMeshSourceModel& SrcModel = StaticMesh->AddSourceModel();
@@ -625,7 +625,7 @@ UStaticMesh* UOpenDriveToMap::CreateStaticMeshAsset( UProceduralMeshComponent* P
     if (!ProcMeshComp->bUseComplexAsSimpleCollision )
     {
       StaticMesh->CreateBodySetup();
-      UBodySetup* NewBodySetup = StaticMesh->BodySetup;
+      UBodySetup* NewBodySetup = StaticMesh->GetBodySetup();
       NewBodySetup->BodySetupGuid = FGuid::NewGuid();
       NewBodySetup->AggGeom.ConvexElems = ProcMeshComp->ProcMeshBodySetup->AggGeom.ConvexElems;
       NewBodySetup->bGenerateMirroredCollision = false;
@@ -647,7 +647,7 @@ UStaticMesh* UOpenDriveToMap::CreateStaticMeshAsset( UProceduralMeshComponent* P
     // Copy materials to new mesh
     for (auto* Material : UniqueMaterials)
     {
-      StaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
+      StaticMesh->GetStaticMaterials().Add(FStaticMaterial(Material));
     }
 
     //Set the Imported version before calling the build
@@ -710,7 +710,7 @@ TArray<UStaticMesh*> UOpenDriveToMap::CreateStaticMeshAssets()
       UStaticMesh* CurrentStaticMesh = NewObject<UStaticMesh>(Package, *MeshName, RF_Public | RF_Standalone);
       CurrentStaticMesh->InitResources();
 
-      CurrentStaticMesh->LightingGuid = FGuid::NewGuid();
+      CurrentStaticMesh->SetLightingGuid(FGuid::NewGuid());;
 
       // Add source to new StaticMesh
       FStaticMeshSourceModel& SrcModel = CurrentStaticMesh->AddSourceModel();
@@ -732,7 +732,7 @@ TArray<UStaticMesh*> UOpenDriveToMap::CreateStaticMeshAssets()
       if (!ProcMeshComp->bUseComplexAsSimpleCollision)
       {
         CurrentStaticMesh->CreateBodySetup();
-        UBodySetup* NewBodySetup = CurrentStaticMesh->BodySetup;
+        UBodySetup* NewBodySetup = CurrentStaticMesh->GetBodySetup();
         NewBodySetup->BodySetupGuid = FGuid::NewGuid();
         NewBodySetup->AggGeom.ConvexElems = ProcMeshComp->ProcMeshBodySetup->AggGeom.ConvexElems;
         NewBodySetup->bGenerateMirroredCollision = false;
@@ -754,7 +754,7 @@ TArray<UStaticMesh*> UOpenDriveToMap::CreateStaticMeshAssets()
       // Copy materials to new mesh
       for (auto* Material : UniqueMaterials)
       {
-        CurrentStaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
+        CurrentStaticMesh->GetStaticMaterials().Add(FStaticMaterial(Material));
       }
 
       end = FPlatformTime::Seconds();

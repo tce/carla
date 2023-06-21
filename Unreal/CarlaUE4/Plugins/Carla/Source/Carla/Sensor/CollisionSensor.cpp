@@ -81,7 +81,12 @@ void ACollisionSensor::OnCollisionEvent(
       *this,
       Episode.SerializeActor(Actor),
       Episode.SerializeActor(OtherActor),
-      carla::geom::Vector3D{NormalImpulse.X, NormalImpulse.Y, NormalImpulse.Z});
+      carla::geom::Vector3D
+      {
+        static_cast<float>(NormalImpulse.X),
+        static_cast<float>(NormalImpulse.Y),
+        static_cast<float>(NormalImpulse.Z)
+      });
   // record the collision event
   if (Episode.GetRecorder()->IsEnabled()){
     Episode.GetRecorder()->AddCollision(Actor, OtherActor);

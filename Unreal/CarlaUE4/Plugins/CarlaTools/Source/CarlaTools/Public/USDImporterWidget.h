@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Animation/Skeleton.h"
-#include "VehicleWheel.h"
 #include "Materials/MaterialInterface.h"
 
 #include "USDImporterWidget.generated.h"
@@ -14,6 +13,7 @@ USTRUCT(BlueprintType)
 struct FWheelTemplates
 {
   GENERATED_BODY()
+#if 0
   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="USD Wheel")
   TSubclassOf<UVehicleWheel> WheelFR;
   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="USD Wheel")
@@ -22,6 +22,7 @@ struct FWheelTemplates
   TSubclassOf<UVehicleWheel> WheelRR;
   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="USD Wheel")
   TSubclassOf<UVehicleWheel> WheelRL;
+#endif
 };
 
 USTRUCT(BlueprintType)

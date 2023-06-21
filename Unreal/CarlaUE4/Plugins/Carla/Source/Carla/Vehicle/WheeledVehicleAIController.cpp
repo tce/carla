@@ -15,7 +15,6 @@
 
 #include "EngineUtils.h"
 #include "GameFramework/Pawn.h"
-#include "WheeledVehicleMovementComponent.h"
 
 // =============================================================================
 // -- Static local methods -----------------------------------------------------

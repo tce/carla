@@ -6,11 +6,11 @@ using UnrealBuildTool;
 
 public class CarlaTools : ModuleRules
 {
-  bool UsingHoudini = true;
+  bool UsingHoudini = false;
   bool bUsingOmniverseConnector = false;
   private bool IsWindows(ReadOnlyTargetRules Target)
   {
-    return (Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32);
+    return (Target.Platform == UnrealTargetPlatform.Win64);
   }
 
 	public CarlaTools(ReadOnlyTargetRules Target) : base(Target)
@@ -82,7 +82,7 @@ public class CarlaTools : ModuleRules
 				"FoliageEdit",
         "MeshMergeUtilities",
 				"Carla",
-				"PhysXVehicles",
+				"ChaosVehicles",
         "Json",
         "JsonUtilities",
         "Networking",
@@ -102,6 +102,7 @@ public class CarlaTools : ModuleRules
           "HoudiniEngineEditor",
           "HoudiniEngineRuntime"
         });
+      PublicDefinitions.Add("CARLA_TOOLS_HOUDINI_ENABLED");
     }
     if(bUsingOmniverseConnector)
     {
@@ -197,11 +198,13 @@ public class CarlaTools : ModuleRules
     PublicIncludePaths.Add(LibCarlaIncludePath);
     PrivateIncludePaths.Add(LibCarlaIncludePath);
 
+    if (IsWindows(Target))
+      PublicDefinitions.Add("NOMINMAX");
     PublicDefinitions.Add("ASIO_NO_EXCEPTIONS");
     PublicDefinitions.Add("BOOST_NO_EXCEPTIONS");
     // PublicDefinitions.Add("LIBCARLA_NO_EXCEPTIONS");
     PublicDefinitions.Add("PUGIXML_NO_EXCEPTIONS");
     PublicDefinitions.Add("BOOST_DISABLE_ABI_HEADERS");
-    PublicDefinitions.Add("BOOST_TYPE_INDEX_FORCE_NO_RTTI_COMPATIBILITY");
+    // PublicDefinitions.Add("BOOST_TYPE_INDEX_FORCE_NO_RTTI_COMPATIBILITY");
 	}
 }

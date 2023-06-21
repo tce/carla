@@ -12,7 +12,7 @@
 #include "Carla/Sensor/ImageUtil.h"
 
 #include "Async/Async.h"
-#include "Renderer/Public/GBufferView.h"
+// #include "Renderer/Public/GBufferView.h"
 
 #include <type_traits>
 
@@ -402,6 +402,7 @@ public:
     // FlushRenderingCommands();
   }
 
+/*
   struct
   {
     FCameraGBufferUint8 SceneColor;
@@ -418,12 +419,15 @@ public:
     FCameraGBufferUint8 CustomDepth;
     FCameraGBufferUint8 CustomStencil;
   } CameraGBuffers;
+*/
 
 protected:
     
   void CaptureSceneExtended();
 
+/*
   virtual void SendGBufferTextures(FGBufferRequest& GBuffer);
+*/
 
   virtual void BeginPlay() override;
 
@@ -463,6 +467,7 @@ protected:
 
 private:
 
+/*
   template <
     typename SensorT,
     typename CameraGBufferT>
@@ -587,5 +592,5 @@ protected:
       }
     }
   }
-
+*/
 };

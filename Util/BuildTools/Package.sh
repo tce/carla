@@ -56,8 +56,8 @@ done
 # ==============================================================================
 source $(dirname "$0")/Environment.sh
 
-if [ ! -d "${UE4_ROOT}" ]; then
-  fatal_error "UE4_ROOT is not defined, or points to a non-existent directory, please set this environment variable."
+if [ ! -d "${UE5_ROOT}" ]; then
+  fatal_error "UE5_ROOT is not defined, or points to a non-existent directory, please set this environment variable."
 fi
 
 if [ ! -n "${PACKAGES}" ] ; then
@@ -108,10 +108,10 @@ if ${DO_CARLA_RELEASE} ; then
   rm -Rf ${RELEASE_BUILD_FOLDER}
   mkdir -p ${RELEASE_BUILD_FOLDER}
 
-  ${UE4_ROOT}/Engine/Build/BatchFiles/RunUAT.sh BuildCookRun \
+  ${UE5_ROOT}/Engine/Build/BatchFiles/RunUAT.sh BuildCookRun \
       -project="${PWD}/CarlaUE4.uproject" \
       -nocompileeditor -nop4 -cook -stage -archive -package -iterate \
-      -clientconfig=${PACKAGE_CONFIG} -ue4exe=UE4Editor \
+      -clientconfig=${PACKAGE_CONFIG} -ue4exe=UnrealEditor \
       -prereqs -targetplatform=Linux -build -utf8output \
       -archivedirectory="${RELEASE_BUILD_FOLDER}"
 
@@ -238,7 +238,7 @@ for PACKAGE_NAME in "${PACKAGES[@]}" ; do if [[ ${PACKAGE_NAME} != "Carla" ]] ; 
   pushd "${CARLAUE4_ROOT_FOLDER}" > /dev/null
 
   # Prepare cooking of package
-  ${UE4_ROOT}/Engine/Binaries/Linux/UE4Editor "${CARLAUE4_ROOT_FOLDER}/CarlaUE4.uproject" \
+  ${UE5_ROOT}/Engine/Binaries/Linux/UnrealEditor "${CARLAUE4_ROOT_FOLDER}/CarlaUE4.uproject" \
       -run=PrepareAssetsForCooking -PackageName=${PACKAGE_NAME} -OnlyPrepareMaps=false
 
   PACKAGE_FILE=$(<${PACKAGE_PATH_FILE})
@@ -253,7 +253,7 @@ for PACKAGE_NAME in "${PACKAGES[@]}" ; do if [[ ${PACKAGE_NAME} != "Carla" ]] ; 
   for MAP in "${MAP_LIST[@]}"; do
     if (($(($TOTAL+${#MAP})) > $MAX_STRINGLENGTH)); then
       echo "Cooking $MAP_STRING"
-      ${UE4_ROOT}/Engine/Binaries/Linux/UE4Editor "${CARLAUE4_ROOT_FOLDER}/CarlaUE4.uproject" \
+      ${UE5_ROOT}/Engine/Binaries/Linux/UnrealEditor "${CARLAUE4_ROOT_FOLDER}/CarlaUE4.uproject" \
           -run=cook -map="${MAP_STRING}" -cooksinglepackage -targetplatform="LinuxNoEditor" \
           -OutputDir="${BUILD_FOLDER}" -iterate
       MAP_STRING=""
@@ -263,7 +263,7 @@ for PACKAGE_NAME in "${PACKAGES[@]}" ; do if [[ ${PACKAGE_NAME} != "Carla" ]] ; 
     TOTAL=$(($TOTAL+${#MAP}))
   done
   if (($TOTAL > 0)); then
-    ${UE4_ROOT}/Engine/Binaries/Linux/UE4Editor "${CARLAUE4_ROOT_FOLDER}/CarlaUE4.uproject" \
+    ${UE5_ROOT}/Engine/Binaries/Linux/UnrealEditor "${CARLAUE4_ROOT_FOLDER}/CarlaUE4.uproject" \
         -run=cook -map="${MAP_STRING}" -cooksinglepackage -targetplatform="LinuxNoEditor" \
         -OutputDir="${BUILD_FOLDER}" -iterate
   fi

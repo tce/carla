@@ -212,6 +212,7 @@ private:
 
 void FCarlaServer::FPimpl::BindActions()
 {
+#if 0
   namespace cr = carla::rpc;
   namespace cg = carla::geom;
 
@@ -2145,6 +2146,7 @@ void FCarlaServer::FPimpl::BindActions()
         " Actor Id: " + FString::FromInt(ActorId));
     }
 
+#if 0 // @TODO
     switch (GBufferId)
     {
       case 0:
@@ -2216,6 +2218,9 @@ void FCarlaServer::FPimpl::BindActions()
         UE_LOG(LogCarla, Error, TEXT("Requested invalid GBuffer ID %u"), GBufferId);
         return {};
     }
+#else
+    return {};
+#endif
   };
 
   // ~~ Logging and playback ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2481,7 +2486,7 @@ void FCarlaServer::FPimpl::BindActions()
     }
     return URayTracer::CastRay(StartLocation, EndLocation, World);
   };
-
+#endif
 }
 
 // =============================================================================
@@ -2507,7 +2512,7 @@ FCarlaServer::~FCarlaServer() {
 
 FDataMultiStream FCarlaServer::Start(uint16_t RPCPort, uint16_t StreamingPort, uint16_t SecondaryPort)
 {
-  Pimpl = MakeUnique<FPimpl>(RPCPort, StreamingPort, SecondaryPort);
+  Pimpl = std::make_unique<FPimpl>(RPCPort, StreamingPort, SecondaryPort);
   StreamingPort = Pimpl->StreamingServer.GetLocalEndpoint().port();
   SecondaryPort = Pimpl->SecondaryServer->GetLocalEndpoint().port();
 
@@ -2579,6 +2584,8 @@ void FCarlaServer::Tick()
 
 bool FCarlaServer::TickCueReceived()
 {
+    if (Pimpl->TickCuesReceived.load(std::memory_order_acquire) == 0)
+        return false;
   auto k = Pimpl->TickCuesReceived.fetch_sub(1, std::memory_order_acquire);
   bool flag = (k > 0);
   if (!flag)
@@ -2588,7 +2595,7 @@ bool FCarlaServer::TickCueReceived()
 
 void FCarlaServer::Stop()
 {
-  if (Pimpl)
+  if (Pimpl != nullptr)
   {
     Pimpl->Server.Stop();
     Pimpl->SecondaryServer->Stop();
@@ -2606,7 +2613,7 @@ std::shared_ptr<carla::multigpu::Router> FCarlaServer::GetSecondaryServer()
   return Pimpl->GetSecondaryServer();
 }
 
-carla::streaming::Server &FCarlaServer::GetStreamingServer() 
+carla::streaming::Server &FCarlaServer::GetStreamingServer()
 {
   return Pimpl->StreamingServer;
 }

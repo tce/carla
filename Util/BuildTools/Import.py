@@ -198,7 +198,7 @@ def generate_decals_file(folder):
 
 def invoke_commandlet(name, arguments):
     """Generic function for running a commandlet with its arguments."""
-    ue4_path = os.environ["UE4_ROOT"]
+    ue4_path = os.environ["UE5_ROOT"]
     uproject_path = os.path.join(CARLA_ROOT_PATH, "Unreal", "CarlaUE4", "CarlaUE4.uproject")
     run = "-run=%s" % (name)
 

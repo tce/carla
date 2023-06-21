@@ -491,7 +491,7 @@ void AVegetationManager::UpdateMaterials(FTileData* Tile)
 {
   TRACE_CPUPROFILER_EVENT_SCOPE(AVegetationManager::UpdateMaterials);
   const FTransform GlobalTransform = HeroVehicle->GetActorTransform();
-  const FLinearColor Position = GlobalTransform.GetLocation();
+  const FLinearColor Position = FLinearColor(GlobalTransform.GetLocation());
   Tile->UpdateMaterialCache(Position, DebugMaterials);
 }
 

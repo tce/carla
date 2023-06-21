@@ -51,5 +51,6 @@ public:
 private:
 
   class FPimpl;
-  TUniquePtr<FPimpl> Pimpl;
+
+  std::unique_ptr<FPimpl> Pimpl;
 };

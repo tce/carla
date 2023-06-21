@@ -4,7 +4,6 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
-#include <PxScene.h>
 
 #include "Carla.h"
 #include "Carla/Sensor/Radar.h"
@@ -114,6 +113,7 @@ void ARadar::SendLineTraces(float DeltaTime)
     Rays[i].Hitted = false;
   }
 
+#if 0 // @TODO
   FCriticalSection Mutex;
   GetWorld()->GetPhysicsScene()->GetPxScene()->lockRead();
   {
@@ -142,7 +142,7 @@ void ARadar::SendLineTraces(float DeltaTime)
         FCollisionResponseParams::DefaultResponseParam
       );
 
-      const TWeakObjectPtr<AActor> HittedActor = OutHit.Actor;
+      const TWeakObjectPtr<AActor> HittedActor = OutHit.GetActor();
       if (Hitted && HittedActor.Get()) {
         Rays[idx].Hitted = true;
 
@@ -160,14 +160,14 @@ void ARadar::SendLineTraces(float DeltaTime)
     });
   }
   GetWorld()->GetPhysicsScene()->GetPxScene()->unlockRead();
-
+#endif
   // Write the detections in the output structure
   for (auto& ray : Rays) {
     if (ray.Hitted) {
       RadarData.WriteDetection({
         ray.RelativeVelocity,
-        ray.AzimuthAndElevation.X,
-        ray.AzimuthAndElevation.Y,
+        (float)ray.AzimuthAndElevation.X,
+        (float)ray.AzimuthAndElevation.Y,
         ray.Distance
       });
     }
@@ -179,7 +179,7 @@ float ARadar::CalculateRelativeVelocity(const FHitResult& OutHit, const FVector&
 {
   constexpr float TO_METERS = 1e-2;
 
-  const TWeakObjectPtr<AActor> HittedActor = OutHit.Actor;
+  const TWeakObjectPtr<AActor> HittedActor = OutHit.GetActor();
   const FVector TargetVelocity = HittedActor->GetVelocity();
   const FVector TargetLocation = OutHit.ImpactPoint;
   const FVector Direction = (TargetLocation - RadarLocation).GetSafeNormal();

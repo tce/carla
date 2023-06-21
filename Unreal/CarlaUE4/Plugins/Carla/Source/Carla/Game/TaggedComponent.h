@@ -4,6 +4,9 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Engine/InstancedStaticMesh.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "SkeletalMeshTypes.h"
+#include "SkeletalMeshSceneProxy.h"
+#include "HierarchicalStaticMeshSceneProxy.h"
 
 #include "TaggedComponent.generated.h"
 

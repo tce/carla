@@ -140,7 +140,7 @@ void FPixelReader::SendPixelsInRenderThread(TSensor &Sensor, bool use16BitFormat
 #ifdef _WIN32
             // DirectX uses additional bytes to align each row to 256 boundry, 
             // so we need to remove that extra data
-            if (IsD3DPlatform(GMaxRHIShaderPlatform, false))
+            if (IsD3DPlatform(GMaxRHIShaderPlatform))
             {
               CurrentRowBytes = Align(ExpectedRowBytes, D3D12_TEXTURE_DATA_PITCH_ALIGNMENT);
               if (ExpectedRowBytes != CurrentRowBytes)

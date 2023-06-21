@@ -5,14 +5,9 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
 #pragma once
-#include "WheeledVehicleMovementComponent.h"
+#include "ChaosWheeledVehicleMovementComponent.h"
 #include "Curves/CurveFloat.h"
 #include "WheeledVehicleMovementComponentNW.generated.h"
-
-namespace physx
-{
-	class PxVehicleWheelData;
-}
 
 USTRUCT()
 struct FVehicleNWWheelDifferentialData
@@ -117,21 +112,21 @@ struct FVehicleNWTransmissionData
 };
 
 UCLASS(ClassGroup = (Physics), meta = (BlueprintSpawnableComponent), hidecategories = (PlanarMovement, "Components|Movement|Planar", Activation, "Components|Activation"))
-class CARLA_API UWheeledVehicleMovementComponentNW : public UWheeledVehicleMovementComponent
+class CARLA_API UWheeledVehicleMovementComponentNW : public UChaosWheeledVehicleMovementComponent
 {
 	GENERATED_UCLASS_BODY()
 
 		/** Engine */
 	UPROPERTY(EditAnywhere, Category = MechanicalSetup)
-	FVehicleNWEngineData EngineSetup;
+	FVehicleNWEngineData EngineData;
 
 	/** Differential */
 	UPROPERTY(EditAnywhere, Category = MechanicalSetup)
-	TArray<FVehicleNWWheelDifferentialData> DifferentialSetup;
+	TArray<FVehicleNWWheelDifferentialData> DifferentialData;
 
 	/** Transmission data */
 	UPROPERTY(EditAnywhere, Category = MechanicalSetup)
-	FVehicleNWTransmissionData TransmissionSetup;
+	FVehicleNWTransmissionData TransmissionData;
 
 	/** Maximum steering versus forward speed (km/h) */
 	UPROPERTY(EditAnywhere, Category = SteeringSetup)
@@ -145,16 +140,12 @@ class CARLA_API UWheeledVehicleMovementComponentNW : public UWheeledVehicleMovem
 
 protected:
 
-	virtual const void* GetTireData(physx::PxVehicleWheels* Wheels, UVehicleWheel* Wheel);
-	virtual const int32 GetWheelShapeMapping(physx::PxVehicleWheels* Wheels, uint32 Wheel);
-	virtual const physx::PxVehicleWheelData GetWheelData(physx::PxVehicleWheels* Wheels, uint32 Wheel);
-
-	/** Allocate and setup the PhysX vehicle */
-	virtual void SetupVehicle() override;
+	/** Allocate and setup the Chaos vehicle */
+	virtual void SetupVehicle(TUniquePtr<Chaos::FSimpleWheeledVehicle> & PVehicle) override;
 
 	virtual int32 GetCustomGearBoxNumForwardGears() const;
 
-	virtual void UpdateSimulation(float DeltaTime) override;
+	virtual void Update(float DeltaTime) override;
 
 	/** update simulation data: engine */
 	virtual void UpdateEngineSetup(const FVehicleNWEngineData& NewEngineSetup);

@@ -5,43 +5,41 @@
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
 #include "WheeledVehicleMovementComponentNW.h"
-#include "PhysicsPublic.h"
-#include "PhysXPublic.h"
-#include "PhysXVehicleManager.h"
 #include "Components/PrimitiveComponent.h"
 #include "Logging/MessageLog.h"
 
 UWheeledVehicleMovementComponentNW::UWheeledVehicleMovementComponentNW(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
+#if 0 // @TODO
 	// grab default values from physx
 	PxVehicleEngineData DefEngineData;
-	EngineSetup.MOI = DefEngineData.mMOI;
-	EngineSetup.MaxRPM = OmegaToRPM(DefEngineData.mMaxOmega);
-	EngineSetup.DampingRateFullThrottle = DefEngineData.mDampingRateFullThrottle;
-	EngineSetup.DampingRateZeroThrottleClutchEngaged = DefEngineData.mDampingRateZeroThrottleClutchEngaged;
-	EngineSetup.DampingRateZeroThrottleClutchDisengaged = DefEngineData.mDampingRateZeroThrottleClutchDisengaged;
+	EngineData.MOI = DefEngineData.mMOI;
+	EngineData.MaxRPM = OmegaToRPM(DefEngineData.mMaxOmega);
+	EngineData.DampingRateFullThrottle = DefEngineData.mDampingRateFullThrottle;
+	EngineData.DampingRateZeroThrottleClutchEngaged = DefEngineData.mDampingRateZeroThrottleClutchEngaged;
+	EngineData.DampingRateZeroThrottleClutchDisengaged = DefEngineData.mDampingRateZeroThrottleClutchDisengaged;
 
 	// Convert from PhysX curve to ours
-	FRichCurve* TorqueCurveData = EngineSetup.TorqueCurve.GetRichCurve();
+	FRichCurve* TorqueCurveData = EngineData.TorqueCurve.GetRichCurve();
 	for (PxU32 KeyIdx = 0; KeyIdx < DefEngineData.mTorqueCurve.getNbDataPairs(); ++KeyIdx)
 	{
-		float Input = DefEngineData.mTorqueCurve.getX(KeyIdx) * EngineSetup.MaxRPM;
+		float Input = DefEngineData.mTorqueCurve.getX(KeyIdx) * EngineData.MaxRPM;
 		float Output = DefEngineData.mTorqueCurve.getY(KeyIdx) * DefEngineData.mPeakTorque;
 		TorqueCurveData->AddKey(Input, Output);
 	}
 
 	PxVehicleClutchData DefClutchData;
-	TransmissionSetup.ClutchStrength = DefClutchData.mStrength;
+	TransmissionData.ClutchStrength = DefClutchData.mStrength;
 
 	PxVehicleGearsData DefGearSetup;
-	TransmissionSetup.GearSwitchTime = DefGearSetup.mSwitchTime;
-	TransmissionSetup.ReverseGearRatio = DefGearSetup.mRatios[PxVehicleGearsData::eREVERSE];
-	TransmissionSetup.FinalRatio = DefGearSetup.mFinalRatio;
+	TransmissionData.GearSwitchTime = DefGearSetup.mSwitchTime;
+	TransmissionData.ReverseGearRatio = DefGearSetup.mRatios[PxVehicleGearsData::eREVERSE];
+	TransmissionData.FinalRatio = DefGearSetup.mFinalRatio;
 
 	PxVehicleAutoBoxData DefAutoBoxSetup;
-	TransmissionSetup.NeutralGearUpRatio = DefAutoBoxSetup.mUpRatios[PxVehicleGearsData::eNEUTRAL];
-	TransmissionSetup.GearAutoBoxLatency = DefAutoBoxSetup.getLatency();
-	TransmissionSetup.bUseGearAutoBox = true;
+	TransmissionData.NeutralGearUpRatio = DefAutoBoxSetup.mUpRatios[PxVehicleGearsData::eNEUTRAL];
+	TransmissionData.GearAutoBoxLatency = DefAutoBoxSetup.getLatency();
+	TransmissionData.bUseGearAutoBox = true;
 
 	for (uint32 i = PxVehicleGearsData::eFIRST; i < DefGearSetup.mNbRatios; ++i)
 	{
@@ -49,7 +47,7 @@ UWheeledVehicleMovementComponentNW::UWheeledVehicleMovementComponentNW(const FOb
 		GearData.DownRatio = DefAutoBoxSetup.mDownRatios[i];
 		GearData.UpRatio = DefAutoBoxSetup.mUpRatios[i];
 		GearData.Ratio = DefGearSetup.mRatios[i];
-		TransmissionSetup.ForwardGears.Add(GearData);
+		TransmissionData.ForwardGears.Add(GearData);
 	}
 
 	// Init steering speed curve
@@ -62,9 +60,10 @@ UWheeledVehicleMovementComponentNW::UWheeledVehicleMovementComponentNW(const FOb
 	// Initialize WheelSetups array with 4 wheels, this can be modified via editor later
 	const int32 NbrWheels = 4;
 	WheelSetups.SetNum(NbrWheels);
-	DifferentialSetup.SetNum(NbrWheels);
+	DifferentialData.SetNum(NbrWheels);
 
 	IdleBrakeInput = 10;
+#endif
 }
 
 #if WITH_EDITOR
@@ -75,17 +74,17 @@ void UWheeledVehicleMovementComponentNW::PostEditChangeProperty(struct FProperty
 
 	if (PropertyName == TEXT("DownRatio"))
 	{
-		for (int32 GearIdx = 0; GearIdx < TransmissionSetup.ForwardGears.Num(); ++GearIdx)
+		for (int32 GearIdx = 0; GearIdx < TransmissionData.ForwardGears.Num(); ++GearIdx)
 		{
-			FVehicleNWGearData& GearData = TransmissionSetup.ForwardGears[GearIdx];
+			FVehicleNWGearData& GearData = TransmissionData.ForwardGears[GearIdx];
 			GearData.DownRatio = FMath::Min(GearData.DownRatio, GearData.UpRatio);
 		}
 	}
 	else if (PropertyName == TEXT("UpRatio"))
 	{
-		for (int32 GearIdx = 0; GearIdx < TransmissionSetup.ForwardGears.Num(); ++GearIdx)
+		for (int32 GearIdx = 0; GearIdx < TransmissionData.ForwardGears.Num(); ++GearIdx)
 		{
-			FVehicleNWGearData& GearData = TransmissionSetup.ForwardGears[GearIdx];
+			FVehicleNWGearData& GearData = TransmissionData.ForwardGears[GearIdx];
 			GearData.UpRatio = FMath::Max(GearData.DownRatio, GearData.UpRatio);
 		}
 	}
@@ -102,14 +101,6 @@ void UWheeledVehicleMovementComponentNW::PostEditChangeProperty(struct FProperty
 }
 #endif
 
-static void GetVehicleDifferentialNWSetup(const TArray<FVehicleNWWheelDifferentialData>& Setup, PxVehicleDifferentialNWData& PxSetup)
-{
-	for (int32 i = 0; i < Setup.Num(); ++i)
-	{
-		PxSetup.setDrivenWheel(i, Setup[i].bDriven);
-	}
-}
-
 float FVehicleNWEngineData::FindPeakTorque() const
 {
 	// Find max torque
@@ -123,84 +114,14 @@ float FVehicleNWEngineData::FindPeakTorque() const
 	return PeakTorque;
 }
 
-static void GetVehicleEngineSetup(const FVehicleNWEngineData& Setup, PxVehicleEngineData& PxSetup)
-{
-	PxSetup.mMOI = M2ToCm2(Setup.MOI);
-	PxSetup.mMaxOmega = RPMToOmega(Setup.MaxRPM);
-	PxSetup.mDampingRateFullThrottle = M2ToCm2(Setup.DampingRateFullThrottle);
-	PxSetup.mDampingRateZeroThrottleClutchEngaged = M2ToCm2(Setup.DampingRateZeroThrottleClutchEngaged);
-	PxSetup.mDampingRateZeroThrottleClutchDisengaged = M2ToCm2(Setup.DampingRateZeroThrottleClutchDisengaged);
-
-	float PeakTorque = Setup.FindPeakTorque(); // In Nm
-	PxSetup.mPeakTorque = M2ToCm2(PeakTorque);	// convert Nm to (kg cm^2/s^2)
-
-	// Convert from our curve to PhysX
-	PxSetup.mTorqueCurve.clear();
-	TArray<FRichCurveKey> TorqueKeys = Setup.TorqueCurve.GetRichCurveConst()->GetCopyOfKeys();
-	int32 NumTorqueCurveKeys = FMath::Min<int32>(TorqueKeys.Num(), PxVehicleEngineData::eMAX_NB_ENGINE_TORQUE_CURVE_ENTRIES);
-	for (int32 KeyIdx = 0; KeyIdx < NumTorqueCurveKeys; ++KeyIdx)
-	{
-		FRichCurveKey& Key = TorqueKeys[KeyIdx];
-		PxSetup.mTorqueCurve.addPair(FMath::Clamp(Key.Time / Setup.MaxRPM, 0.0f, 1.0f), Key.Value / PeakTorque); // Normalize torque to 0-1 range
-	}
-}
-
-static void GetVehicleGearSetup(const FVehicleNWTransmissionData& Setup, PxVehicleGearsData& PxSetup)
-{
-	PxSetup.mSwitchTime = Setup.GearSwitchTime;
-	PxSetup.mRatios[PxVehicleGearsData::eREVERSE] = Setup.ReverseGearRatio;
-	for (int32 i = 0; i < Setup.ForwardGears.Num(); i++)
-	{
-		PxSetup.mRatios[i + PxVehicleGearsData::eFIRST] = Setup.ForwardGears[i].Ratio;
-	}
-	PxSetup.mFinalRatio = Setup.FinalRatio;
-	PxSetup.mNbRatios = Setup.ForwardGears.Num() + PxVehicleGearsData::eFIRST;
-}
-
-static void GetVehicleAutoBoxSetup(const FVehicleNWTransmissionData& Setup, PxVehicleAutoBoxData& PxSetup)
-{
-	for (int32 i = 0; i < Setup.ForwardGears.Num(); ++i)
-	{
-		const FVehicleNWGearData& GearData = Setup.ForwardGears[i];
-		PxSetup.mUpRatios[i + PxVehicleGearsData::eFIRST] = GearData.UpRatio;
-		PxSetup.mDownRatios[i + PxVehicleGearsData::eFIRST] = GearData.DownRatio;
-	}
-	PxSetup.mUpRatios[PxVehicleGearsData::eNEUTRAL] = Setup.NeutralGearUpRatio;
-	PxSetup.setLatency(Setup.GearAutoBoxLatency);
-
-}
-
 int32 UWheeledVehicleMovementComponentNW::GetCustomGearBoxNumForwardGears() const
 {
-	return TransmissionSetup.ForwardGears.Num();
+	return TransmissionData.ForwardGears.Num();
 }
 
-void SetupDriveHelper(const UWheeledVehicleMovementComponentNW* VehicleData, const PxVehicleWheelsSimData* PWheelsSimData, PxVehicleDriveSimDataNW& DriveData)
+void UWheeledVehicleMovementComponentNW::SetupVehicle(TUniquePtr<Chaos::FSimpleWheeledVehicle> & PVehicle)
 {
-	PxVehicleDifferentialNWData DifferentialSetup;
-	GetVehicleDifferentialNWSetup(VehicleData->DifferentialSetup, DifferentialSetup);
-
-	DriveData.setDiffData(DifferentialSetup);
-
-	PxVehicleEngineData EngineSetup;
-	GetVehicleEngineSetup(VehicleData->EngineSetup, EngineSetup);
-	DriveData.setEngineData(EngineSetup);
-
-	PxVehicleClutchData ClutchSetup;
-	ClutchSetup.mStrength = M2ToCm2(VehicleData->TransmissionSetup.ClutchStrength);
-	DriveData.setClutchData(ClutchSetup);
-
-	PxVehicleGearsData GearSetup;
-	GetVehicleGearSetup(VehicleData->TransmissionSetup, GearSetup);
-	DriveData.setGearsData(GearSetup);
-
-	PxVehicleAutoBoxData AutoBoxSetup;
-	GetVehicleAutoBoxSetup(VehicleData->TransmissionSetup, AutoBoxSetup);
-	DriveData.setAutoBoxData(AutoBoxSetup);
-}
-
-void UWheeledVehicleMovementComponentNW::SetupVehicle()
-{
+#if 0 // @TODO
 	if (!UpdatedPrimitive)
 	{
 		return;
@@ -266,12 +187,13 @@ void UWheeledVehicleMovementComponentNW::SetupVehicle()
 	PVehicle = PVehicleDriveNW;
 	PVehicleDrive = PVehicleDriveNW;
 
-	SetUseAutoGears(TransmissionSetup.bUseGearAutoBox);
-
+	SetUseAutomaticGears(TransmissionData.bUseGearAutoBox);
+#endif
 }
 
-void UWheeledVehicleMovementComponentNW::UpdateSimulation(float DeltaTime)
+void UWheeledVehicleMovementComponentNW::Update(float DeltaTime)
 {
+#if 0 // @TODO
 	if (PVehicleDrive == nullptr)
 		return;
 
@@ -309,10 +231,12 @@ void UWheeledVehicleMovementComponentNW::UpdateSimulation(float DeltaTime)
 		PxVehicleDriveNW* PVehicleDriveNW = (PxVehicleDriveNW*)PVehicleDrive;
 		PxVehicleDriveNWSmoothAnalogRawInputsAndSetAnalogInputs(SmoothData, SpeedSteerLookup, RawInputData, DeltaTime, false, *PVehicleDriveNW);
 	});
+#endif
 }
 
 void UWheeledVehicleMovementComponentNW::UpdateEngineSetup(const FVehicleNWEngineData& NewEngineSetup)
 {
+#if 0 // @TODO
 	if (PVehicleDrive)
 	{
 		PxVehicleEngineData EngineData;
@@ -321,10 +245,12 @@ void UWheeledVehicleMovementComponentNW::UpdateEngineSetup(const FVehicleNWEngin
 		PxVehicleDriveNW* PVehicleDriveNW = (PxVehicleDriveNW*)PVehicleDrive;
 		PVehicleDriveNW->mDriveSimData.setEngineData(EngineData);
 	}
+#endif
 }
 
 void UWheeledVehicleMovementComponentNW::UpdateDifferentialSetup(const TArray<FVehicleNWWheelDifferentialData>& NewDifferentialSetup)
 {
+#if 0 // @TODO
 	if (PVehicleDrive)
 	{
 		PxVehicleDifferentialNWData DifferentialData;
@@ -333,10 +259,12 @@ void UWheeledVehicleMovementComponentNW::UpdateDifferentialSetup(const TArray<FV
 		PxVehicleDriveNW* PVehicleDriveNW = (PxVehicleDriveNW*)PVehicleDrive;
 		PVehicleDriveNW->mDriveSimData.setDiffData(DifferentialData);
 	}
+#endif
 }
 
 void UWheeledVehicleMovementComponentNW::UpdateTransmissionSetup(const FVehicleNWTransmissionData& NewTransmissionSetup)
 {
+#if 0 // @TODO
 	if (PVehicleDrive)
 	{
 		PxVehicleGearsData GearData;
@@ -349,26 +277,20 @@ void UWheeledVehicleMovementComponentNW::UpdateTransmissionSetup(const FVehicleN
 		PVehicleDriveNW->mDriveSimData.setGearsData(GearData);
 		PVehicleDriveNW->mDriveSimData.setAutoBoxData(AutoBoxData);
 	}
-}
-
-void BackwardsConvertCm2ToM2NW(float& val, float defaultValue)
-{
-	if (val != defaultValue)
-	{
-		val = Cm2ToM2(val);
-	}
+#endif
 }
 
 void UWheeledVehicleMovementComponentNW::Serialize(FArchive& Ar)
 {
 	Super::Serialize(Ar);
+#if 0 // @TODO
 	if (Ar.IsLoading() && Ar.UE4Ver() < VER_UE4_VEHICLES_UNIT_CHANGE)
 	{
 		PxVehicleEngineData DefEngineData;
 		const float DefaultRPM = OmegaToRPM(DefEngineData.mMaxOmega);
 
 		// We need to convert from old units to new. This backwards compatible code fails in the rare case that they were using very strange values that are the new defaults in the correct units.
-		EngineSetup.MaxRPM = EngineSetup.MaxRPM != DefaultRPM ? OmegaToRPM(EngineSetup.MaxRPM) : DefaultRPM;	//need to convert from rad/s to RPM
+		EngineData.MaxRPM = EngineData.MaxRPM != DefaultRPM ? OmegaToRPM(EngineData.MaxRPM) : DefaultRPM;	//need to convert from rad/s to RPM
 	}
 
 	if (Ar.IsLoading() && Ar.UE4Ver() < VER_UE4_VEHICLES_UNIT_CHANGE2)
@@ -377,34 +299,19 @@ void UWheeledVehicleMovementComponentNW::Serialize(FArchive& Ar)
 		PxVehicleClutchData DefClutchData;
 
 		// We need to convert from old units to new. This backwards compatable code fails in the rare case that they were using very strange values that are the new defaults in the correct units.
-		BackwardsConvertCm2ToM2NW(EngineSetup.DampingRateFullThrottle, DefEngineData.mDampingRateFullThrottle);
-		BackwardsConvertCm2ToM2NW(EngineSetup.DampingRateZeroThrottleClutchDisengaged, DefEngineData.mDampingRateZeroThrottleClutchDisengaged);
-		BackwardsConvertCm2ToM2NW(EngineSetup.DampingRateZeroThrottleClutchEngaged, DefEngineData.mDampingRateZeroThrottleClutchEngaged);
-		BackwardsConvertCm2ToM2NW(EngineSetup.MOI, DefEngineData.mMOI);
-		BackwardsConvertCm2ToM2NW(TransmissionSetup.ClutchStrength, DefClutchData.mStrength);
+		BackwardsConvertCm2ToM2NW(EngineData.DampingRateFullThrottle, DefEngineData.mDampingRateFullThrottle);
+		BackwardsConvertCm2ToM2NW(EngineData.DampingRateZeroThrottleClutchDisengaged, DefEngineData.mDampingRateZeroThrottleClutchDisengaged);
+		BackwardsConvertCm2ToM2NW(EngineData.DampingRateZeroThrottleClutchEngaged, DefEngineData.mDampingRateZeroThrottleClutchEngaged);
+		BackwardsConvertCm2ToM2NW(EngineData.MOI, DefEngineData.mMOI);
+		BackwardsConvertCm2ToM2NW(TransmissionData.ClutchStrength, DefClutchData.mStrength);
 	}
+#endif
 }
 
 void UWheeledVehicleMovementComponentNW::ComputeConstants()
 {
+#if 0 // @TODO
 	Super::ComputeConstants();
-	MaxEngineRPM = EngineSetup.MaxRPM;
-}
-
-const void* UWheeledVehicleMovementComponentNW::GetTireData(physx::PxVehicleWheels* InWheels, UVehicleWheel* InWheel)
-{
-	const void* realShaderData = &InWheels->mWheelsSimData.getTireData((PxU32)InWheel->WheelIndex);
-	return realShaderData;
-}
-
-const int32 UWheeledVehicleMovementComponentNW::GetWheelShapeMapping(physx::PxVehicleWheels* InWheels, uint32 InWheel)
-{
-	const physx::PxI32 ShapeIndex = InWheels->mWheelsSimData.getWheelShapeMapping((PxU32)InWheel);
-	return ShapeIndex;
-}
-
-const physx::PxVehicleWheelData UWheeledVehicleMovementComponentNW::GetWheelData(physx::PxVehicleWheels* InWheels, uint32 InWheel)
-{
-	const physx::PxVehicleWheelData WheelData = InWheels->mWheelsSimData.getWheelData((physx::PxU32)InWheel);
-	return WheelData;
+	MaxEngineRPM = EngineData.MaxRPM;
+#endif
 }

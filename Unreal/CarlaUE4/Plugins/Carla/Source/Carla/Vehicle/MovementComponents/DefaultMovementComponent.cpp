@@ -29,12 +29,12 @@ void UDefaultMovementComponent::ProcessControl(FVehicleControl &Control)
   MovementComponent->SetHandbrakeInput(Control.bHandBrake);
   if (CarlaVehicle->GetVehicleControl().bReverse != Control.bReverse)
   {
-    MovementComponent->SetUseAutoGears(!Control.bReverse);
+    MovementComponent->SetUseAutomaticGears(!Control.bReverse);
     MovementComponent->SetTargetGear(Control.bReverse ? -1 : 1, true);
   }
   else
   {
-    MovementComponent->SetUseAutoGears(!Control.bManualGearShift);
+    MovementComponent->SetUseAutomaticGears(!Control.bManualGearShift);
     if (Control.bManualGearShift)
     {
       MovementComponent->SetTargetGear(Control.Gear, true);

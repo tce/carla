@@ -138,6 +138,7 @@ FActorSpawnResult ASensorFactory::SpawnActor(
     Sensor->SetEpisode(*Episode);
     Sensor->Set(Description);
     Sensor->SetDataStream(GameInstance->GetServer().OpenStream());
+#if 0 // @TODO
     ASceneCaptureSensor * SceneCaptureSensor = Cast<ASceneCaptureSensor>(Sensor);
     if(SceneCaptureSensor)
     {
@@ -155,6 +156,7 @@ FActorSpawnResult ASensorFactory::SpawnActor(
       SceneCaptureSensor->CameraGBuffers.CustomDepth.SetDataStream(GameInstance->GetServer().OpenStream());
       SceneCaptureSensor->CameraGBuffers.CustomStencil.SetDataStream(GameInstance->GetServer().OpenStream());
     }
+#endif
   }
   UGameplayStatics::FinishSpawningActor(Sensor, Transform);
   return FActorSpawnResult{Sensor};

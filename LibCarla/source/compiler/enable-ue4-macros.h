@@ -4,6 +4,7 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
+#if 1
 #if defined(_MSC_VER)
 #  pragma warning(pop)
 #  ifdef UpdateResource
@@ -2256,4 +2257,7 @@
 #undef LIBCARLA_INCLUDED_FROM_UE4
 #else
 #error "This file does not support nesting guards (preprocessor can't do math) - instead, in LibCarla, enable macros, include Unreal header, and disable macros."
+#endif
+#else
+THIRD_PARTY_INCLUDES_END
 #endif

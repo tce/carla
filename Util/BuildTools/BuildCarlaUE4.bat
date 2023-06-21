@@ -77,17 +77,17 @@ if %REMOVE_INTERMEDIATE% == false (
 )
 
 rem Get Unreal Engine root path
-if not defined UE4_ROOT (
+if not defined UE5_ROOT (
     set KEY_NAME="HKEY_LOCAL_MACHINE\SOFTWARE\EpicGames\Unreal Engine"
     set VALUE_NAME=InstalledDirectory
     for /f "usebackq tokens=1,2,*" %%A in (`reg query !KEY_NAME! /s /reg:64`) do (
         if "%%A" == "!VALUE_NAME!" (
-            set UE4_ROOT=%%C
+            set UE5_ROOT=%%C
         )
     )
-    if not defined UE4_ROOT goto error_unreal_no_found
+    if not defined UE5_ROOT goto error_unreal_no_found
 )
-if not "%UE4_ROOT:~-1%"=="\" set UE4_ROOT=%UE4_ROOT%\
+if not "%UE5_ROOT:~-1%"=="\" set UE5_ROOT=%UE5_ROOT%\
 
 rem Set the visual studio solution directory
 rem
@@ -126,18 +126,18 @@ if %REMOVE_INTERMEDIATE% == true (
 
 rem Download Houdini Plugin
 
-set HOUDINI_PLUGIN_REPO=https://github.com/sideeffects/HoudiniEngineForUnreal.git
-set HOUDINI_PLUGIN_PATH=Plugins/HoudiniEngine
-set HOUDINI_PLUGIN_BRANCH=Houdini19.5-Unreal4.26
-set HOUDINI_PATCH=${CARLA_UTIL_FOLDER}/Patches/houdini_patch.txt
-if not exist "%HOUDINI_PLUGIN_PATH%" (
-  call git clone -b %HOUDINI_PLUGIN_BRANCH% %HOUDINI_PLUGIN_REPO% %HOUDINI_PLUGIN_PATH%
-)
+rem set HOUDINI_PLUGIN_REPO=https://github.com/sideeffects/HoudiniEngineForUnreal.git
+rem set HOUDINI_PLUGIN_PATH=Plugins/HoudiniEngine
+rem set HOUDINI_PLUGIN_BRANCH=Houdini19.5-Unreal4.26
+rem set HOUDINI_PATCH=${CARLA_UTIL_FOLDER}/Patches/houdini_patch.txt
+rem if not exist "%HOUDINI_PLUGIN_PATH%" (
+rem   call git clone -b %HOUDINI_PLUGIN_BRANCH% %HOUDINI_PLUGIN_REPO% %HOUDINI_PLUGIN_PATH%
+rem )
 
 rem Build Carla Editor
 rem
 set OMNIVERSE_PATCH_FOLDER=%ROOT_PATH%Util\Patches\omniverse_4.26\
-set OMNIVERSE_PLUGIN_FOLDER=%UE4_ROOT%Engine\Plugins\Marketplace\NVIDIA\Omniverse\
+set OMNIVERSE_PLUGIN_FOLDER=%UE5_ROOT%Engine\Plugins\Marketplace\NVIDIA\Omniverse\
 if exist %OMNIVERSE_PLUGIN_FOLDER% (
     set OMNIVERSE_PLUGIN_INSTALLED="Omniverse ON"
     xcopy /Y /S /I "%OMNIVERSE_PATCH_FOLDER%USDCARLAInterface.h" "%OMNIVERSE_PLUGIN_FOLDER%Source\OmniverseUSD\Public\" > NUL
@@ -170,7 +170,7 @@ echo %OPTIONAL_MODULES_TEXT% > "%ROOT_PATH%Unreal/CarlaUE4/Config/OptionalModule
 if %BUILD_UE4_EDITOR% == true (
     echo %FILE_N% Building Unreal Editor...
 
-    call "%UE4_ROOT%Engine\Build\BatchFiles\Build.bat"^
+    call "%UE5_ROOT%Engine\Build\BatchFiles\Build.bat"^
         CarlaUE4Editor^
         Win64^
         Development^
@@ -179,7 +179,7 @@ if %BUILD_UE4_EDITOR% == true (
         "%ROOT_PATH%Unreal/CarlaUE4/CarlaUE4.uproject"
     if errorlevel 1 goto bad_exit
 
-    call "%UE4_ROOT%Engine\Build\BatchFiles\Build.bat"^
+    call "%UE5_ROOT%Engine\Build\BatchFiles\Build.bat"^
         CarlaUE4^
         Win64^
         Development^
@@ -193,7 +193,7 @@ rem Launch Carla Editor
 rem
 if %LAUNCH_UE4_EDITOR% == true (
     echo %FILE_N% Launching Unreal Editor...
-    call "%UE4_ROOT%\Engine\Binaries\Win64\UE4Editor.exe"^
+    call "%UE5_ROOT%\Engine\Binaries\Win64\UnrealEditor.exe"^
         "%UE4_PROJECT_FOLDER%CarlaUE4.uproject" %EDITOR_FLAGS%
     if %errorlevel% neq 0 goto error_build
 )

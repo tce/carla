@@ -22,7 +22,7 @@ void ACarlaHUD::DrawHUD()
   if(DebugVehicle) {
     float YL = 1600.0f;
     float Y0 = 0.0f;
-    DebugVehicle->DrawDebug(Canvas, YL, Y0);
+    // DebugVehicle->DrawDebug(Canvas, YL, Y0);
   }
 
   double Now = FPlatformTime::Seconds();

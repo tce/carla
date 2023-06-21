@@ -12,9 +12,11 @@
 #include "IMeshMergeUtilities.h"
 #include "Materials/MaterialInstanceConstant.h"
 #include "MeshMergeModule.h"
+#include "MeshDescription.h"
 #include "ProceduralMeshComponent.h"
 #include "UObject/Class.h"
 #include "UObject/UObjectGlobals.h"
+#include "ProceduralMeshConversion.h"
 
 void AProceduralBuildingUtilities::GenerateImpostorTexture(const FVector& BuildingSize)
 {
@@ -151,7 +153,7 @@ void AProceduralBuildingUtilities::CookProceduralMeshToMesh(
 
   UStaticMesh* StaticMesh = NewObject<UStaticMesh>(NewPackage, *FileName, RF_Public | RF_Standalone);
   StaticMesh->InitResources();
-  StaticMesh->LightingGuid = FGuid::NewGuid();
+  StaticMesh->SetLightingGuid(FGuid::NewGuid());;
 
   FStaticMeshSourceModel& SrcModel = StaticMesh->AddSourceModel();
   SrcModel.BuildSettings.bRecomputeNormals = false;
@@ -168,7 +170,7 @@ void AProceduralBuildingUtilities::CookProceduralMeshToMesh(
   if (!Mesh->bUseComplexAsSimpleCollision )
   {
     StaticMesh->CreateBodySetup();
-    UBodySetup* NewBodySetup = StaticMesh->BodySetup;
+    UBodySetup* NewBodySetup = StaticMesh->GetBodySetup();
     NewBodySetup->BodySetupGuid = FGuid::NewGuid();
     NewBodySetup->AggGeom.ConvexElems = Mesh->ProcMeshBodySetup->AggGeom.ConvexElems;
     NewBodySetup->bGenerateMirroredCollision = false;
@@ -189,7 +191,7 @@ void AProceduralBuildingUtilities::CookProceduralMeshToMesh(
 
   for (auto* Material : UniqueMaterials)
   {
-    StaticMesh->StaticMaterials.Add(FStaticMaterial(Material));
+    StaticMesh->GetStaticMaterials().Add(FStaticMaterial(Material));
   }
 
   StaticMesh->ImportVersion = EImportStaticMeshVersion::LastVersion;

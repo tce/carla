@@ -87,10 +87,10 @@ done
 
 source $(dirname "$0")/Environment.sh
 
-if [ ! -d "${UE4_ROOT}" ]; then
-  fatal_error "UE4_ROOT is not defined, or points to a non-existant directory, please set this environment variable."
+if [ ! -d "${UE5_ROOT}" ]; then
+  fatal_error "UE5_ROOT is not defined, or points to a non-existant directory, please set this environment variable."
 else
-  log "Using Unreal Engine at '$UE4_ROOT'"
+  log "Using Unreal Engine at '$UE5_ROOT'"
 fi
 
 if ! { ${REMOVE_INTERMEDIATE} || ${BUILD_CARLAUE4} || ${LAUNCH_UE4_EDITOR}; }; then
@@ -184,7 +184,7 @@ if ${BUILD_CARLAUE4} ; then
     # This command fails sometimes but normally we can continue anyway.
     set +e
     log "Generate Unreal project files."
-    ${UE4_ROOT}/GenerateProjectFiles.sh -project="${PWD}/CarlaUE4.uproject" -game -engine -makefiles
+    ${UE5_ROOT}/GenerateProjectFiles.sh -project="${PWD}/CarlaUE4.uproject" -game -engine -makefiles
     set -e
 
   fi
@@ -200,13 +200,13 @@ if ${BUILD_CARLAUE4} ; then
 fi
 
 # ==============================================================================
-# -- Launch UE4Editor ----------------------------------------------------------
+# -- Launch UnrealEditor ----------------------------------------------------------
 # ==============================================================================
 
 if ${LAUNCH_UE4_EDITOR} ; then
 
-  log "Launching UE4Editor..."
-  ${GDB} ${UE4_ROOT}/Engine/Binaries/Linux/UE4Editor "${PWD}/CarlaUE4.uproject" ${RHI} ${EDITOR_FLAGS}
+  log "Launching UnrealEditor..."
+  ${GDB} ${UE5_ROOT}/Engine/Binaries/Linux/UnrealEditor "${PWD}/CarlaUE4.uproject" ${RHI} ${EDITOR_FLAGS}
 
 else
 

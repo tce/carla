@@ -11,7 +11,7 @@ public class Carla : ModuleRules
   bool UsingPytorch = false;
   private bool IsWindows(ReadOnlyTargetRules Target)
   {
-    return (Target.Platform == UnrealTargetPlatform.Win64) || (Target.Platform == UnrealTargetPlatform.Win32);
+    return (Target.Platform == UnrealTargetPlatform.Win64);
   }
 
   public Carla(ReadOnlyTargetRules Target) : base(Target)
@@ -101,9 +101,8 @@ public class Carla : ModuleRules
         "Json",
         "JsonUtilities",
         "Landscape",
-        "PhysX",
-        "PhysXVehicles",
-        "PhysXVehicleLib",
+        "Chaos",
+        "ChaosVehicles",
         "Slate",
         "SlateCore",
         "PhysicsCore"
@@ -324,11 +323,13 @@ public class Carla : ModuleRules
     PublicIncludePaths.Add(LibCarlaIncludePath);
     PrivateIncludePaths.Add(LibCarlaIncludePath);
 
+    if (IsWindows(Target))
+      PublicDefinitions.Add("NOMINMAX");
     PublicDefinitions.Add("ASIO_NO_EXCEPTIONS");
     PublicDefinitions.Add("BOOST_NO_EXCEPTIONS");
     PublicDefinitions.Add("LIBCARLA_NO_EXCEPTIONS");
     PublicDefinitions.Add("PUGIXML_NO_EXCEPTIONS");
     PublicDefinitions.Add("BOOST_DISABLE_ABI_HEADERS");
-    PublicDefinitions.Add("BOOST_TYPE_INDEX_FORCE_NO_RTTI_COMPATIBILITY");
+    // PublicDefinitions.Add("BOOST_TYPE_INDEX_FORCE_NO_RTTI_COMPATIBILITY");
   }
 }

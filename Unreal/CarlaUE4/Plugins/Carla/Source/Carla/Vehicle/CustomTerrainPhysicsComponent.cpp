@@ -853,10 +853,18 @@ void FSparseHighDetailMap::Update(FVector Position, float RadiusX, float RadiusY
   PositionTranslated.Z = ( Position.Z * 0.01 ) + (Extension.Z * 0.5f);
   PositionToUpdate = PositionTranslated;
 
-  double MinX = std::min( std::max( PositionTranslated.X - RadiusX, 0.0f) , static_cast<float>(Extension.X - 1.0f) );
-  double MinY = std::min( std::max( PositionTranslated.Y - RadiusY, 0.0f) , static_cast<float>(-Extension.Y + 1.0f) );
-  double MaxX = std::min( std::max( PositionTranslated.X + RadiusX, 0.0f) , static_cast<float>(Extension.X - 1.0f) );
-  double MaxY = std::min( std::max( PositionTranslated.Y + RadiusY, 0.0f) , static_cast<float>(-Extension.Y + 1.0f) );
+  double MinX = std::min(
+    std::max(static_cast<float>(PositionTranslated.X) - RadiusX, 0.0f),
+    static_cast<float>(Extension.X - 1.0f));
+  double MinY = std::min(
+    std::max(static_cast<float>(PositionTranslated.Y) - RadiusY, 0.0f),
+    static_cast<float>(-Extension.Y + 1.0f));
+  double MaxX = std::min(
+    std::max(static_cast<float>(PositionTranslated.X) + RadiusX, 0.0f),
+    static_cast<float>(Extension.X - 1.0f));
+  double MaxY = std::min(
+    std::max(static_cast<float>(PositionTranslated.Y) + RadiusY, 0.0f),
+    static_cast<float>(-Extension.Y + 1.0f));
 
   FIntVector MinVector = GetVectorTileId(FDVector(std::floor(MinX), std::floor(MinY), 0));
   FIntVector MaxVector = GetVectorTileId(FDVector(std::floor(MaxX), std::floor(MaxY), 0));
@@ -2560,18 +2568,30 @@ void UCustomTerrainPhysicsComponent::SetUpWheelArrays(ACarlaWheeledVehicle *Vehi
     Position = FVector(0,0,0);
     FVector Velocity = UEFrameToSI(
         InverseTransform.TransformVector(Vehicle->GetVelocity()));
-    WheelPos = {Position.X, Position.Y, Position.Z};
+    WheelPos =
+    {
+      static_cast<float>(Position.X),
+      static_cast<float>(Position.Y),
+      static_cast<float>(Position.Z)
+    };
     // convert to SI
     WheelOrientation = {1.f, 0.f, 0.f, 0.f};
-    WheelLinearVelocity = {Velocity.X, Velocity.Y, Velocity.Z};
+    WheelLinearVelocity =
+    {
+      static_cast<float>(Velocity.X),
+      static_cast<float>(Velocity.Y),
+      static_cast<float>(Velocity.Z)
+    };
     FVector LocalAngularVelocity = InverseTransform.TransformVector(PhysAngularVelocity);
     //UE_LOG(LogCarla, Log, TEXT("Local Total AngVel: %s"), *LocalAngularVelocity.ToString());
     float ForwardSpeed = Velocity.X;
     float AngularSpeed = (ForwardSpeed/(CMToM*TireRadius));
-    WheelAngularVelocity = {
-        LocalAngularVelocity.X, 
-        AngularSpeed + LocalAngularVelocity.Y, 
-        -LocalAngularVelocity.Z};
+    WheelAngularVelocity =
+    {
+      static_cast<float>(LocalAngularVelocity.X),
+      static_cast<float>(AngularSpeed + LocalAngularVelocity.Y),
+      static_cast<float>(-LocalAngularVelocity.Z)
+    };
   }
   else
   {
@@ -2584,19 +2604,37 @@ void UCustomTerrainPhysicsComponent::SetUpWheelArrays(ACarlaWheeledVehicle *Vehi
     float ForwardSpeed = FVector::DotProduct(
         Vehicle->GetVelocity(),VehicleTransform.GetRotation().GetForwardVector());
     FVector Velocity = UEFrameToSI(Vehicle->GetVelocity());
-    WheelPos = {Position.X, Position.Y, Position.Z};
+    WheelPos =
+    {
+      static_cast<float>(Position.X),
+      static_cast<float>(Position.Y),
+      static_cast<float>(Position.Z)
+    };
     FQuat Quat = VehicleTransform.GetRotation();
     //UE_LOG(LogCarla, Log, TEXT("Quat: %s"), *Quat.ToString());
     // convert to SI
-    WheelOrientation = {Quat.W,Quat.X,-Quat.Y,Quat.Z};
-    WheelLinearVelocity = {Velocity.X, Velocity.Y, Velocity.Z};
+    WheelOrientation =
+    {
+      static_cast<float>(Quat.W),
+      static_cast<float>(Quat.X),
+      static_cast<float>(-Quat.Y),
+      static_cast<float>(Quat.Z)
+    };
+    WheelLinearVelocity =
+    {
+      static_cast<float>(Velocity.X),
+      static_cast<float>(Velocity.Y),
+      static_cast<float>(Velocity.Z)
+    };
     float AngularSpeed = (ForwardSpeed)/(TireRadius);
     FVector GlobalAngulaSpeed = VehicleTransform.TransformVector(FVector(0, AngularSpeed, 0));
     PhysAngularVelocity = PhysAngularVelocity + GlobalAngulaSpeed;
-    WheelAngularVelocity = {
-        PhysAngularVelocity.X, 
-        PhysAngularVelocity.Y, 
-        -PhysAngularVelocity.Z};
+    WheelAngularVelocity =
+    {
+      static_cast<float>(PhysAngularVelocity.X), 
+      static_cast<float>(PhysAngularVelocity.Y), 
+      static_cast<float>(-PhysAngularVelocity.Z)
+    };
     //UE_LOG(LogCarla, Log, TEXT("Total AngVel: %s"), *PhysAngularVelocity.ToString());
   }
 }

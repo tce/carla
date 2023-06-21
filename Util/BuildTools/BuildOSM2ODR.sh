@@ -89,9 +89,9 @@ if ${BUILD_OSM2ODR} ; then
   mkdir -p ${OSM2ODR_BUILD_FOLDER}
   cd ${OSM2ODR_BUILD_FOLDER}
 
-  export CC="$UE4_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang"
-  export CXX="$UE4_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++"
-  export PATH="$UE4_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin:$PATH"
+  export CC="$UE5_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang"
+  export CXX="$UE5_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin/clang++"
+  export PATH="$UE5_ROOT/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v17_clang-10.0.1-centos7/x86_64-unknown-linux-gnu/bin:$PATH"
 
   cmake ${OSM2ODR_SOURCE_FOLDER} \
       -G "Eclipse CDT4 - Ninja" \
@@ -109,8 +109,8 @@ if ${BUILD_OSM2ODR} ; then
   cd ${OSM2ODR_SERVER_BUILD_FOLDER}
 
   LLVM_BASENAME=llvm-8.0
-  LLVM_INCLUDE="$UE4_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/include/c++/v1"
-  LLVM_LIBPATH="$UE4_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/lib/Linux/x86_64-unknown-linux-gnu"
+  LLVM_INCLUDE="$UE5_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/include/c++/v1"
+  LLVM_LIBPATH="$UE5_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/lib/Linux/x86_64-unknown-linux-gnu"
   
   echo $LLVM_INCLUDE
   echo $LLVM_LIBPATH
@@ -131,8 +131,8 @@ if ${BUILD_OSM2ODR} ; then
   cd ${OSM2ODR_SERVER_BUILD_FOLDER}
 
   LLVM_BASENAME=llvm-8.0
-  LLVM_INCLUDE="$UE4_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/include/c++/v1"
-  LLVM_LIBPATH="$UE4_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/lib/Linux/x86_64-unknown-linux-gnu"
+  LLVM_INCLUDE="$UE5_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/include/c++/v1"
+  LLVM_LIBPATH="$UE5_ROOT/Engine/Source/ThirdParty/Linux/LibCxx/lib/Linux/x86_64-unknown-linux-gnu"
 
   cmake ${OSM2ODR_SOURCE_FOLDER} \
       -G "Eclipse CDT4 - Ninja" \

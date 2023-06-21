@@ -74,8 +74,8 @@ if not exist "%EIGEN_INSTALL_DIR%" (
 
 xcopy /q /Y /S /I /d "%EIGEN_SRC_DIR%\Eigen" "%EIGEN_INCLUDE%\Eigen"
 xcopy /q /Y /S /I /d "%EIGEN_SRC_DIR%\unsupported\Eigen" "%EIGEN_INCLUDE%\unsupported\Eigen"
-copy "%BUILD_DIR%..\Util\Patches\Eigen3.1.0\Macros.h" "%EIGEN_INCLUDE%\Eigen\src\Core\util\Macros.h"
-copy "%BUILD_DIR%..\Util\Patches\Eigen3.1.0\VectorBlock.h" "%EIGEN_INCLUDE%\Eigen\src\Core\VectorBlock.h"
+copy "%BUILD_DIR%..\Util\Patches\Eigen%EIGEN_VERSION%\Macros.h" "%EIGEN_INCLUDE%\Eigen\src\Core\util\Macros.h"
+copy "%BUILD_DIR%..\Util\Patches\Eigen%EIGEN_VERSION%\VectorBlock.h" "%EIGEN_INCLUDE%\Eigen\src\Core\VectorBlock.h"
 
 goto success
 

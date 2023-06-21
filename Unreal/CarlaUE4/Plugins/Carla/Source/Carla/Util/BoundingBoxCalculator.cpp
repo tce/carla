@@ -272,8 +272,8 @@ FBoundingBox UBoundingBoxCalculator::GetSkeletalMeshBoundingBox(const USkeletalM
   uint32 NumVertices = FPositionVertexBuffer.GetNumVertices();
 
   // Look for Skeletal Mesh bounds (vertex perfect)
-  FVector Max(TNumericLimits<float>::Lowest());
-  FVector Min(TNumericLimits<float>::Max());
+  FVector3f Max(TNumericLimits<float>::Lowest());
+  FVector3f Min(TNumericLimits<float>::Max());
 
   for(uint32 i = 0; i < NumVertices; i++)
   {
@@ -285,7 +285,11 @@ FBoundingBox UBoundingBoxCalculator::GetSkeletalMeshBoundingBox(const USkeletalM
   auto Extent = (Max - Min) * 0.5f;
   auto Origin = Min + Extent;
 
-  return {Origin, Extent};
+  return
+  {
+    FVector(Origin),
+    FVector(Extent)
+  };
 }
 
 FBoundingBox UBoundingBoxCalculator::GetStaticMeshBoundingBox(const UStaticMesh* StaticMesh)

@@ -4,6 +4,7 @@
 // This work is licensed under the terms of the MIT license.
 // For a copy, see <https://opensource.org/licenses/MIT>.
 
+/*
 #include "HoudiniImporterWidget.h"
 
 #include "EditorLevelUtils.h"
@@ -169,3 +170,4 @@ bool UHoudiniImporterWidget::GetNumberOfClusters(
   OutNumClusters = -1;
   return false;
 }
+*/

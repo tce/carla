@@ -14,6 +14,7 @@
 #include "Carla/Game/CarlaStatics.h"
 #include "Carla/Settings/CarlaSettings.h"
 #include "Carla/Lights/CarlaLightSubsystem.h"
+#include "VehicleAnimationInstance.h"
 
 #include <compiler/disable-ue4-macros.h>
 #include "carla/rpc/VehicleLightState.h"
@@ -424,9 +425,9 @@ void FFrameData::AddVehicleWheelsAnimation(FCarlaActor *CarlaActor)
   check(CarlaVehicle != nullptr)
   USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
   check(SkeletalMesh != nullptr)
-  UVehicleAnimInstance* VehicleAnim = Cast<UVehicleAnimInstance>(SkeletalMesh->GetAnimInstance());
+  UVehicleAnimationInstance* VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
   check(VehicleAnim != nullptr)
-  const UWheeledVehicleMovementComponent* WheeledVehicleMovementComponent = VehicleAnim->GetWheeledVehicleMovementComponent();
+  const UChaosWheeledVehicleMovementComponent* WheeledVehicleMovementComponent = VehicleAnim->GetWheeledVehicleComponent();
   check(WheeledVehicleMovementComponent != nullptr)
 
   CarlaRecorderAnimWheels Record;
@@ -1022,15 +1023,17 @@ void FFrameData::ProcessReplayerAnimVehicleWheels(CarlaRecorderAnimWheels Vehicl
   check(CarlaVehicle != nullptr)
   USkeletalMeshComponent* SkeletalMesh = CarlaVehicle->GetMesh();
   check(SkeletalMesh != nullptr)
-  UVehicleAnimInstance* VehicleAnim = Cast<UVehicleAnimInstance>(SkeletalMesh->GetAnimInstance());
+  UVehicleAnimationInstance* VehicleAnim = Cast<UVehicleAnimationInstance>(SkeletalMesh->GetAnimInstance());
   check(VehicleAnim != nullptr)
 
+#if 0 // @TODO
   for (uint32_t i = 0; i < VehicleAnimWheels.WheelValues.size(); ++i)
   {
     const WheelInfo& Element = VehicleAnimWheels.WheelValues[i];
     VehicleAnim->SetWheelRotYaw(static_cast<uint8>(Element.Location), Element.SteeringAngle);
     VehicleAnim->SetWheelPitchAngle(static_cast<uint8>(Element.Location), Element.TireRotation);
   }
+#endif
 }
 
 // set the lights for vehicles

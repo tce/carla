@@ -10,6 +10,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include <vector>
 
+#if 0 // @TODO
 // disable warnings for eigen 3.1.0
 #if defined(__clang__)
 #  pragma clang diagnostic push
@@ -24,6 +25,7 @@
 #include <Eigen/Eigenvalues>
 #if defined(__clang__)
 #  pragma clang diagnostic pop
+#endif
 #endif
 
 #include "SpringBasedVegetationComponent.generated.h"
@@ -89,6 +91,7 @@ struct FJointCollision
 struct FJointProperties
 {
   float Mass = 0.0;
+#if 0 // @TODO
   Eigen::Matrix3d InertiaTensor = Eigen::Matrix3d::Zero();
   Eigen::Vector3d Force = Eigen::Vector3d::Zero();
   Eigen::Vector3d Torque = Eigen::Vector3d::Zero();
@@ -100,6 +103,7 @@ struct FJointProperties
   Eigen::Vector3d AngularAcceleration = Eigen::Vector3d::Zero();
   Eigen::Vector3d LinearAcceleration = Eigen::Vector3d::Zero();
   Eigen::Vector3d LocalAngularAcceleration = Eigen::Vector3d::Zero();
+#endif
 };
 
 USTRUCT(BlueprintType)

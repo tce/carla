@@ -77,9 +77,9 @@ const carla::geom::Vector3D AInertialMeasurementUnit::ComputeAccelerometerNoise(
   // determined by the client
   constexpr float Mean = 0.0f;
   return carla::geom::Vector3D {
-      Accelerometer.X + RandomEngine->GetNormalDistribution(Mean, StdDevAccel.X),
-      Accelerometer.Y + RandomEngine->GetNormalDistribution(Mean, StdDevAccel.Y),
-      Accelerometer.Z + RandomEngine->GetNormalDistribution(Mean, StdDevAccel.Z)
+      static_cast<float>(Accelerometer.X + RandomEngine->GetNormalDistribution(Mean, StdDevAccel.X)),
+      static_cast<float>(Accelerometer.Y + RandomEngine->GetNormalDistribution(Mean, StdDevAccel.Y)),
+      static_cast<float>(Accelerometer.Z + RandomEngine->GetNormalDistribution(Mean, StdDevAccel.Z))
   };
 }
 
@@ -92,9 +92,9 @@ const carla::geom::Vector3D AInertialMeasurementUnit::ComputeGyroscopeNoise(
   // bias are determined by the client
   constexpr float Mean = 0.0f;
   return carla::geom::Vector3D {
-      Gyroscope.X + BiasGyro.X + RandomEngine->GetNormalDistribution(Mean, StdDevGyro.X),
-      Gyroscope.Y + BiasGyro.Y + RandomEngine->GetNormalDistribution(Mean, StdDevGyro.Y),
-      Gyroscope.Z + BiasGyro.Z + RandomEngine->GetNormalDistribution(Mean, StdDevGyro.Z)
+      static_cast<float>(Gyroscope.X + BiasGyro.X + RandomEngine->GetNormalDistribution(Mean, StdDevGyro.X)),
+      static_cast<float>(Gyroscope.Y + BiasGyro.Y + RandomEngine->GetNormalDistribution(Mean, StdDevGyro.Y)),
+      static_cast<float>(Gyroscope.Z + BiasGyro.Z + RandomEngine->GetNormalDistribution(Mean, StdDevGyro.Z))
   };
 }
 
