@@ -383,6 +383,10 @@ void FWorldObserver::BroadcastTick(
     bool PendingLightUpdates)
 {
   TRACE_CPUPROFILER_EVENT_SCOPE_STR(__FUNCTION__);
+
+  if (!Stream.IsStreamReady())
+    return;
+
   auto AsyncStream = Stream.MakeAsyncDataStream(*this, Episode.GetElapsedGameTime());
 
   carla::Buffer buffer = FWorldObserver_Serialize(

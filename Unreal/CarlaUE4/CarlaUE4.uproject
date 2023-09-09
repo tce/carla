@@ -10,7 +10,7 @@
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"ChaosVehicles",
+				"PhysXVehicles",
 				"Carla",
 				"CoreUObject"
 			]
@@ -118,7 +118,11 @@
 			"Enabled": true
 		},
 		{
-			"Name": "ChaosVehiclesPlugin",
+			"Name": "AlembicHairImporter",
+			"Enabled": true
+		},
+		{
+			"Name": "HairStrands",
 			"Enabled": true
 		}
 	]

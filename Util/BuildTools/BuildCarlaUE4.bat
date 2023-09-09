@@ -128,10 +128,13 @@ rem Download Houdini Plugin
 
 rem set HOUDINI_PLUGIN_REPO=https://github.com/sideeffects/HoudiniEngineForUnreal.git
 rem set HOUDINI_PLUGIN_PATH=Plugins/HoudiniEngine
-rem set HOUDINI_PLUGIN_BRANCH=Houdini19.5-Unreal4.26
+rem set HOUDINI_PLUGIN_COMMIT=55b6a16cdf274389687fce3019b33e3b6e92a914
 rem set HOUDINI_PATCH=${CARLA_UTIL_FOLDER}/Patches/houdini_patch.txt
 rem if not exist "%HOUDINI_PLUGIN_PATH%" (
-rem   call git clone -b %HOUDINI_PLUGIN_BRANCH% %HOUDINI_PLUGIN_REPO% %HOUDINI_PLUGIN_PATH%
+rem   call git clone %HOUDINI_PLUGIN_REPO% %HOUDINI_PLUGIN_PATH%
+rem   cd %HOUDINI_PLUGIN_PATH%
+rem   call git checkout %HOUDINI_PLUGIN_COMMIT%
+rem   cd ../..
 rem )
 
 rem Build Carla Editor
