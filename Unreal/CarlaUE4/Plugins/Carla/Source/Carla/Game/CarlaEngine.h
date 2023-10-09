@@ -98,6 +98,9 @@ private:
 
   bool bMapChanged = false;
 
+  float updateLODTimer = 0.0f;
+  bool bUpdatedLODs = false;
+
   FCarlaServer Server;
 
   FWorldObserver WorldObserver;

@@ -234,6 +234,27 @@ void FCarlaEngine::OnPreTick(UWorld *, ELevelTick TickType, float DeltaSeconds)
 
     if (bIsPrimaryServer)
     {
+      if(CurrentSettings.bNoRenderingMode){
+        updateLODTimer += DeltaSeconds;
+        if(updateLODTimer > 5.0f){
+          updateLODTimer = 0.0f;
+          if (GEngine && GEngine->GameViewport)
+          {
+            GEngine->GameViewport->bDisableWorldRendering = false;
+            //GEngine->GameViewport->HandleForceSkelLODCommand();
+            bUpdatedLODs = true;
+          }
+        }
+        else if (bUpdatedLODs)
+        {
+          if (GEngine && GEngine->GameViewport)
+          {
+            GEngine->GameViewport->bDisableWorldRendering = true;
+            bUpdatedLODs = false;
+          }
+        }
+      }
+
       if (CurrentEpisode && !bSynchronousMode && SecondaryServer->HasClientsConnected()) 
       {
         // set synchronous mode
