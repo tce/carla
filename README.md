@@ -12,6 +12,9 @@ When you are ready to commit your code to your branch, type:
 git commit -m "<your commit comment>"
 git push --set-upstream origin fit-main-TCE
 ```
+this will push to a new branch that everyone else can monitor
+
+
 
 CARLA Simulator
 ===============
