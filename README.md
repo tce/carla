@@ -1,3 +1,11 @@
+FIT Version of CARLA Simulator
+===============
+1. We need to use v13 to work with ScenarioRunner, so
+   ```sh
+   git clone https://github.com/tce/carla
+   git checkout
+   ```
+
 CARLA Simulator
 ===============
 
