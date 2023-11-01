@@ -3,8 +3,15 @@ FIT Version of CARLA Simulator
 1. We need to use v13 to work with ScenarioRunner, so
    ```sh
    git clone https://github.com/tce/carla
-   git checkout
+   git checkout -b fit-main-TCE fit-main
    ```
+This clones the repository and creates a new branch for you to work on (use your own initials instead of TCE) based on the main FIT branch which is a copy of carla v0.9.13
+When you are ready to commit your code to your branch, type:
+
+```sh
+git commit -m "<your commit comment>"
+git push --set-upstream origin fit-main-TCE
+```
 
 CARLA Simulator
 ===============
